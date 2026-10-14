@@ -1,0 +1,191 @@
+// QUARR — First Look data model.
+// A Run is one store walk. It owns the captured Pages (evidence), the
+// CheckResults (deterministic verdicts), and the Findings (what a founder reads).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum RunStatus {
+  QUEUED
+  CRAWLING
+  CRAWLED
+  CHECKED
+  DRAFTED
+  IN_REVIEW
+  APPROVED
+  PUBLISHED
+  DELIVERED
+  CRAWL_FAILED
+  REJECTED
+}
+
+enum RunSource {
+  PUBLIC // a founder submitted their own store
+  BENCH // you queued it yourself (outreach)
+}
+
+enum Outcome {
+  PASS
+  FAIL
+  NOT_OBSERVABLE
+}
+
+enum FindingState {
+  DRAFT
+  APPROVED
+  EDITED
+  DROPPED
+}
+
+enum EditReason {
+  WORDING
+  SEVERITY
+  EVIDENCE_WRONG
+  FALSE_POSITIVE
+  MISSED
+  UNSAFE
+}
+
+model Run {
+  id             String    @id @default(cuid())
+  publicToken    String    @unique
+  storeUrl       String
+  domain         String
+  email          String
+  source         RunSource @default(PUBLIC)
+  status         RunStatus @default(QUEUED)
+  failureCode    String? // BLOCKED | PASSWORD | NOT_STORE | UNREACHABLE | TIMEOUT | ERROR
+  failureDetail  String?
+  platform       String? // shopify | woocommerce | unknown
+  storeName      String?
+  ipHash         String?
+  attempts       Int       @default(0)
+  lockedAt       DateTime?
+  autoPublished  Boolean   @default(false)
+  reviewStartAt  DateTime?
+  reviewSeconds  Int?
+  otherIssues    Int       @default(0)
+  otherLenses    Int       @default(0)
+  checksPassed   Int       @default(0)
+  checksNotSeen  Int       @default(0)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  crawledAt      DateTime?
+  publishedAt    DateTime?
+  deliveredAt    DateTime?
+  repliedAt      DateTime?
+  paidAt         DateTime?
+  notes          String?
+
+  pages    Page[]
+  results  CheckResult[]
+  findings Finding[]
+  events   ReviewEvent[]
+
+  @@index([domain, createdAt])
+  @@index([email, createdAt])
+  @@index([status, createdAt])
+}
+
+model Page {
+  id               String   @id @default(cuid())
+  runId            String
+  run              Run      @relation(fields: [runId], references: [id], onDelete: Cascade)
+  kind             String // HOME | PRODUCT_1 | PRODUCT_2 | CART | CHECKOUT | SHIPPING | RETURNS | TERMS | PRIVACY | CONTACT | ABOUT
+  url              String
+  finalUrl         String?
+  httpStatus       Int?
+  title            String?
+  text             String   @db.Text
+  mobileShot       String?
+  desktopShot      String?
+  mobileHeight     Int?
+  desktopHeight    Int?
+  data             Json // headings, links, jsonLd, metrics, element boxes
+  createdAt        DateTime @default(now())
+
+  @@index([runId])
+}
+
+model CheckResult {
+  id               String   @id @default(cuid())
+  runId            String
+  run              Run      @relation(fields: [runId], references: [id], onDelete: Cascade)
+  checkId          String
+  lens             String
+  outcome          Outcome
+  severity         Int
+  evidenceStrength Float
+  citation         Json?
+  detail           Json?
+  createdAt        DateTime @default(now())
+  finding          Finding?
+
+  @@index([runId])
+  @@index([checkId, createdAt])
+}
+
+model Finding {
+  id            String       @id @default(cuid())
+  runId         String
+  run           Run          @relation(fields: [runId], references: [id], onDelete: Cascade)
+  checkResultId String       @unique
+  checkResult   CheckResult  @relation(fields: [checkResultId], references: [id], onDelete: Cascade)
+  checkId       String
+  lens          String
+  score         Float
+  selected      Boolean      @default(false)
+  position      Int?
+  title         String
+  observed      String       @db.Text
+  likelyEffect  String       @db.Text
+  notYetProven  String       @db.Text
+  draftedBy     String // claude | template
+  original      Json? // the draft as written, before any edit
+  state         FindingState @default(DRAFT)
+  editReason    EditReason?
+  editNote      String?
+  reviewedAt    DateTime?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  @@index([runId])
+  @@index([checkId, reviewedAt])
+}
+
+// Every Bench decision, kept forever. This is what trains the engine.
+model ReviewEvent {
+  id        String      @id @default(cuid())
+  runId     String
+  run       Run         @relation(fields: [runId], references: [id], onDelete: Cascade)
+  findingId String?
+  checkId   String
+  action    String // APPROVE | EDIT | DROP | PROMOTE | DEMOTE
+  reason    EditReason?
+  note      String?
+  createdAt DateTime    @default(now())
+
+  @@index([checkId, createdAt])
+}
+
+model CheckSetting {
+  checkId   String   @id
+  suspended Boolean  @default(false)
+  note      String?
+  updatedAt DateTime @updatedAt
+}
+
+model RemovalRequest {
+  id        String    @id @default(cuid())
+  domain    String
+  email     String
+  note      String?
+  createdAt DateTime  @default(now())
+  handledAt DateTime?
+}

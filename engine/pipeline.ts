@@ -1,0 +1,165 @@
+import type { Prisma } from "@prisma/client";
+import { db } from "@/lib/db";
+import { putFile } from "@/lib/storage";
+import { publishRun, sendFailureEmail } from "@/lib/deliver";
+import { CHECKS, CHECKS_BY_ID } from "./checks";
+import { crawlStore } from "./crawl";
+import { checkModes } from "./promotion";
+import { candidateFrom, scoreOf, selectFindings } from "./select";
+import type { CheckContext, CheckVerdict, Citation, CrawlSignals, PageData, PageKind, StoredPage } from "./types";
+import { draftFindings } from "./write";
+
+// QUEUED → CRAWLING → CRAWLED → CHECKED → DRAFTED → IN_REVIEW (or auto-publish)
+export async function processRun(runId: string) {
+  const run = await db.run.update({ where: { id: runId }, data: { status: "CRAWLING", lockedAt: new Date(), attempts: { increment: 1 } } });
+  const log = (msg: string) => console.log(`[run ${run.id} ${run.domain}] ${msg}`);
+
+  log("crawling");
+  const crawl = await crawlStore(run.storeUrl);
+  if (!crawl.ok) {
+    log(`crawl failed: ${crawl.code} ${crawl.detail}`);
+    await db.run.update({ where: { id: run.id }, data: { status: "CRAWL_FAILED", failureCode: crawl.code, failureDetail: crawl.detail, lockedAt: null } });
+    if (run.source === "PUBLIC") await sendFailureEmail(run.id).catch((e) => log(`failure email error: ${e}`));
+    return;
+  }
+
+  // Evidence first: every finding must be traceable to a stored page.
+  const stored: Partial<Record<PageKind, StoredPage>> = {};
+  for (const p of crawl.pages) {
+    const base = `runs/${run.id}/${p.kind.toLowerCase()}`;
+    const mobileShot = p.mobileShot ? await putFile(`${base}-mobile.jpg`, p.mobileShot) : null;
+    const desktopShot = p.desktopShot ? await putFile(`${base}-desktop.jpg`, p.desktopShot) : null;
+    const row = await db.page.create({
+      data: {
+        runId: run.id,
+        kind: p.kind,
+        url: p.url,
+        finalUrl: p.finalUrl,
+        httpStatus: p.httpStatus,
+        title: p.title,
+        text: p.text,
+        mobileShot,
+        desktopShot,
+        mobileHeight: p.mobileHeight,
+        desktopHeight: p.desktopHeight,
+        data: p.data as unknown as Prisma.InputJsonValue,
+      },
+    });
+    stored[p.kind] = { id: row.id, kind: p.kind, url: p.url, finalUrl: p.finalUrl, httpStatus: p.httpStatus, title: p.title, text: p.text, data: p.data };
+  }
+  await db.run.update({
+    where: { id: run.id },
+    data: { status: "CRAWLED", crawledAt: new Date(), platform: crawl.signals.platform, storeName: crawl.signals.storeName, notes: crawl.signals.isStore ? null : "Partial review: no product pages found." },
+  });
+  log(`crawled ${crawl.pages.length} pages (${crawl.signals.platform})`);
+
+  const { results, checked } = await runChecks(run.id, { pages: stored, signals: crawl.signals });
+  log(`checks: ${checked.FAIL} fail, ${checked.PASS} pass, ${checked.NOT_OBSERVABLE} not observable`);
+
+  const modes = await checkModes();
+  const candidates = results
+    .filter((r) => r.outcome === "FAIL" && modes.get(r.checkId) !== "SUSPENDED")
+    .map(candidateFrom)
+    .filter((c): c is NonNullable<typeof c> => !!c);
+  const { selected, otherIssues, otherLenses } = selectFindings(candidates);
+  const selectedIds = new Set(selected.map((s) => s.resultId));
+
+  const drafts = await draftFindings(
+    crawl.signals.storeName,
+    selected.map((s) => {
+      const r = results.find((x) => x.id === s.resultId)!;
+      const def = CHECKS_BY_ID[s.checkId];
+      const citation = r.citation as unknown as Citation;
+      const detail = (r.detail ?? {}) as Record<string, unknown>;
+      return { checkId: s.checkId, checkName: def.name, template: def.copy(detail, citation), citation, detail };
+    }),
+  );
+
+  for (const c of candidates) {
+    const r = results.find((x) => x.id === c.resultId)!;
+    const def = CHECKS_BY_ID[c.checkId];
+    const position = selected.findIndex((s) => s.resultId === c.resultId);
+    const draft = drafts.find((d) => d.checkId === c.checkId && selectedIds.has(c.resultId));
+    const copy = draft ?? { ...def.copy((r.detail ?? {}) as Record<string, unknown>, r.citation as unknown as Citation), draftedBy: "template" as const };
+    await db.finding.create({
+      data: {
+        runId: run.id,
+        checkResultId: r.id,
+        checkId: c.checkId,
+        lens: c.lens,
+        score: scoreOf(c),
+        selected: position >= 0,
+        position: position >= 0 ? position : null,
+        title: copy.title,
+        observed: copy.observed,
+        likelyEffect: copy.likelyEffect,
+        notYetProven: copy.notYetProven,
+        draftedBy: copy.draftedBy,
+        original: { title: copy.title, observed: copy.observed, likelyEffect: copy.likelyEffect, notYetProven: copy.notYetProven },
+      },
+    });
+  }
+
+  const autoEligible = selected.length > 0 && selected.every((s) => modes.get(s.checkId) === "AUTO");
+  await db.run.update({
+    where: { id: run.id },
+    data: {
+      status: "DRAFTED",
+      otherIssues,
+      otherLenses,
+      checksPassed: checked.PASS,
+      checksNotSeen: checked.NOT_OBSERVABLE,
+      lockedAt: null,
+    },
+  });
+
+  if (autoEligible) {
+    log("all selected checks are AUTO: publishing without review");
+    await db.run.update({ where: { id: run.id }, data: { autoPublished: true } });
+    await publishRun(run.id);
+  } else {
+    await db.run.update({ where: { id: run.id }, data: { status: "IN_REVIEW" } });
+    log(`in review: ${selected.length} findings drafted`);
+  }
+}
+
+export async function runChecks(runId: string, ctx: CheckContext) {
+  const checked = { PASS: 0, FAIL: 0, NOT_OBSERVABLE: 0 };
+  const results = [];
+  for (const def of CHECKS) {
+    let v: CheckVerdict;
+    try {
+      v = def.run(ctx);
+    } catch (err) {
+      v = { outcome: "NOT_OBSERVABLE", detail: { why: `Check error: ${err instanceof Error ? err.message : String(err)}` } };
+    }
+    // No citation, no finding.
+    if (v.outcome === "FAIL" && !v.citation) v = { outcome: "NOT_OBSERVABLE", detail: { why: "Fired without a citation" } };
+    checked[v.outcome]++;
+    const citation = v.citation ? { ...v.citation, pageId: ctx.pages[v.citation.pageKind]?.id ?? null } : null;
+    results.push(
+      await db.checkResult.create({
+        data: {
+          runId,
+          checkId: def.id,
+          lens: def.lens,
+          outcome: v.outcome,
+          severity: def.severity,
+          evidenceStrength: v.outcome === "FAIL" ? (v.evidenceStrength ?? 0.8) : v.outcome === "PASS" ? 1 : 0,
+          citation: (citation ?? undefined) as Prisma.InputJsonValue | undefined,
+          detail: (v.detail ?? undefined) as Prisma.InputJsonValue | undefined,
+        },
+      }),
+    );
+  }
+  return { results, checked };
+}
+
+// Rebuild a check context from stored evidence (used by tests and re-checks).
+export function contextFromRows(pages: { id: string; kind: string; url: string; finalUrl: string | null; httpStatus: number | null; title: string | null; text: string; data: unknown }[], signals: CrawlSignals): CheckContext {
+  const out: Partial<Record<PageKind, StoredPage>> = {};
+  for (const p of pages) {
+    out[p.kind as PageKind] = { id: p.id, kind: p.kind as PageKind, url: p.url, finalUrl: p.finalUrl ?? p.url, httpStatus: p.httpStatus, title: p.title ?? "", text: p.text, data: p.data as PageData };
+  }
+  return { pages: out, signals };
+}
