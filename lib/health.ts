@@ -19,7 +19,7 @@ export async function runHealthChecks(requestHost: string | null): Promise<Check
     name: "Site address (APP_URL)",
     ok: !!app && (!requestHost || appHost === requestHost),
     detail: !app ? "Not set." : requestHost && appHost !== requestHost ? `Set to ${app}, but you're visiting ${requestHost}. Links in emails and sign-in will point to the wrong place.` : app,
-    fix: "Netlify → Environment variables → APP_URL = your site address, e.g. https://quarr.netlify.app",
+    fix: "Netlify → Environment variables → APP_URL = your site address, e.g. https://qurr.netlify.app",
   });
   out.push({ name: "Session secret", ok: (process.env.SESSION_SECRET ?? "").length >= 32, detail: (process.env.SESSION_SECRET ?? "").length >= 32 ? "Set." : "Missing or shorter than 32 characters.", fix: "Netlify → SESSION_SECRET = a random string of 40+ characters" });
 

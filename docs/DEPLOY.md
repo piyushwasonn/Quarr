@@ -12,7 +12,7 @@
 
 It takes about an hour. Do the steps in order, because later steps need values from earlier ones. Put keys only where this guide says: Netlify environment variables or GitHub secrets. Never put them in chat or code.
 
-Your site address will be `https://<name>.netlify.app`. This guide calls it **SITE**. Try `quarr` first, e.g. `https://quarr.netlify.app`.
+Your site is live at **`https://qurr.netlify.app`**. This guide calls it **SITE**. Note the spelling (`qurr`): use exactly this address everywhere below.
 
 ---
 
@@ -42,13 +42,13 @@ Gmail sends up to about 500 emails a day. Founders will see "QUARR <quarr.firstl
 ## 3. Netlify: the website
 
 1. In Netlify, go to **Add new project** → **Import an existing project** → **GitHub**, and pick **piyushwasonn/Quarr**. The build settings come from `netlify.toml`; don't change them.
-2. Before the first deploy (or right after it), go to **Project configuration** → **General** → **Change project name**, and enter `quarr`. Your SITE is now `https://quarr.netlify.app`.
+2. Your project name is `qurr`, so SITE is `https://qurr.netlify.app`. If you later rename the project or add a domain, update `APP_URL`, the Google redirect URI and the Razorpay webhook to match.
 3. Go to **Project configuration** → **Environment variables** and add:
 
 | Variable | Value |
 |---|---|
 | `DATABASE_URL` | from Neon (step 1) |
-| `APP_URL` | SITE, e.g. `https://quarr.netlify.app` |
+| `APP_URL` | SITE, e.g. `https://qurr.netlify.app` |
 | `SESSION_SECRET` | a random string of 40+ characters (password manager → generate) |
 | `BENCH_PASSWORD` | a long password only you know, used for `/bench` |
 | `STORAGE_DRIVER` | `netlify` |
@@ -100,7 +100,7 @@ Gmail sends up to about 500 emails a day. Founders will see "QUARR <quarr.firstl
    - **Authorised JavaScript origins:** SITE
    - **Authorised redirect URIs:** SITE + `/auth/google/callback`
 
-   If Google asks for an authorised domain, enter your Netlify address without `https://` (e.g. `quarr.netlify.app`).
+   If Google asks for an authorised domain, enter your Netlify address without `https://` (e.g. `qurr.netlify.app`).
 4. Add **Client ID** → `GOOGLE_CLIENT_ID` and **Client secret** → `GOOGLE_CLIENT_SECRET` in Netlify, then redeploy.
 5. Go to **Audience** → **Publish app**. QUARR asks only for name and email, so Google doesn't need to review it.
 
