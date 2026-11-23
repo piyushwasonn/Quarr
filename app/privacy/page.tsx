@@ -1,6 +1,7 @@
 import { ProsePage } from "@/components/Prose";
 
 export const metadata = { title: "Privacy" };
+export const dynamic = "force-dynamic";
 
 export default function Privacy() {
   const contact = process.env.CONTACT_EMAIL || "hello@quarr.in";

@@ -52,6 +52,8 @@ export function SiteFooter() {
             <li><Link href="/crawler">How our browser behaves</Link></li>
             <li><Link href="/privacy">Privacy</Link></li>
             <li><Link href="/terms">Terms</Link></li>
+            <li><Link href="/refunds">Cancellation &amp; refunds</Link></li>
+            <li><Link href="/contact">Contact</Link></li>
             <li><Link href="/removal">Remove my data</Link></li>
           </ul>
         </div>

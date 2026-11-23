@@ -42,7 +42,7 @@ Selection (`engine/select.ts`) ranks findings by severity × evidence strength, 
 ## Run it locally
 
 ```bash
-cd quarr
+git clone https://github.com/piyushwasonn/Quarr && cd Quarr
 cp .env.example .env          # set DATABASE_URL, BENCH_PASSWORD, SESSION_SECRET
 npm install
 npx prisma db push            # create tables
@@ -78,6 +78,8 @@ npm test
   - "Glow Basics", the flawed store, fires all 30 planted problems and none of the things that are fine.
 
 ## Deploying
+
+Step-by-step guide (Neon, Railway, Resend, Google sign-in, Razorpay): **[docs/DEPLOY.md](docs/DEPLOY.md)**. The `Dockerfile` runs the web app and the worker in one container sharing a `/data` volume; `scripts/run-all.mjs` syncs the schema on start.
 
 - **Web app:** Vercel, or any Node host. **Database:** Neon Postgres (`DATABASE_URL`).
 - **Worker:** it needs Chromium and runs for minutes, so put it on Railway, Fly or Render, using the official Playwright Docker image.
