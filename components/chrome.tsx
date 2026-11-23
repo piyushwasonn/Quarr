@@ -3,7 +3,6 @@ import Link from "next/link";
 export function Wordmark() {
   return (
     <Link href="/" className="wordmark" aria-label="QUARR home">
-      <span className="mark" aria-hidden />
       QUARR
     </Link>
   );
@@ -15,7 +14,7 @@ export function SiteHeader({ dark = false }: { dark?: boolean }) {
       <div className="wrap">
         <Wordmark />
         <nav className="nav" aria-label="Main">
-          <Link href="/#how" className="hide-sm">How it works</Link>
+          <Link href="/approach" className="hide-sm">Our approach</Link>
           <Link href="/#sample" className="hide-sm">Sample</Link>
           <Link href="/#pricing" className="hide-sm">Pricing</Link>
           <Link href="/account">Sign in</Link>
@@ -34,20 +33,20 @@ export function SiteFooter() {
       <div className="wrap footer-grid">
         <div className="stack" style={{ ["--stack" as string]: "14px" }}>
           <Wordmark />
-          <p style={{ maxWidth: 340 }}>
-            QUARR walks your online store the way a first-time buyer does and shows you what they trust, question or abandon, with a screenshot behind every finding.
-          </p>
+          <p className="tagline">See what the customer will see.</p>
+          <p style={{ maxWidth: 340 }}>Every founder has blind spots. QUARR helps you find them before your customers do.</p>
         </div>
         <div>
-          <p className="eyebrow" style={{ color: "rgba(255,255,255,0.5)", marginBottom: 12 }}>Product</p>
+          <p className="eyebrow" style={{ marginBottom: 12 }}>Product</p>
           <ul>
             <li><Link href="/#start">Free First Look</Link></li>
             <li><Link href="/journey">First-purchase journey</Link></li>
             <li><Link href="/#sample">Sample report</Link></li>
+            <li><Link href="/approach">Our approach</Link></li>
           </ul>
         </div>
         <div>
-          <p className="eyebrow" style={{ color: "rgba(255,255,255,0.5)", marginBottom: 12 }}>Trust</p>
+          <p className="eyebrow" style={{ marginBottom: 12 }}>Trust</p>
           <ul>
             <li><Link href="/crawler">How our browser behaves</Link></li>
             <li><Link href="/privacy">Privacy</Link></li>
@@ -59,7 +58,7 @@ export function SiteFooter() {
         </div>
       </div>
       <div className="wrap" style={{ marginTop: 40 }}>
-        <p className="tiny" style={{ color: "rgba(255,255,255,0.45)" }}>© {new Date().getFullYear()} QUARR. Built in India for Indian D2C brands.</p>
+        <p className="tiny muted">© {new Date().getFullYear()} QUARR. Built in India for Indian D2C brands.</p>
       </div>
     </footer>
   );

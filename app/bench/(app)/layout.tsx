@@ -11,7 +11,7 @@ export default async function BenchLayout({ children }: { children: React.ReactN
     <div className="bench">
       <header className="bench-top">
         <div className="wrap">
-          <Link href="/bench" className="wordmark"><span className="mark" aria-hidden />QUARR <span style={{ fontFamily: "var(--sans)", letterSpacing: 0, fontWeight: 500, opacity: 0.6, fontSize: 13 }}>Bench</span></Link>
+          <Link href="/bench" className="wordmark">QUARR <span style={{ fontFamily: "var(--sans)", letterSpacing: 0, fontWeight: 500, opacity: 0.6, fontSize: 13 }}>Bench</span></Link>
           <nav>
             <Link href="/bench">Queue</Link>
             <Link href="/bench/orders">Orders</Link>

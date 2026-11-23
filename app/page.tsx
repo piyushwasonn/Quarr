@@ -12,7 +12,7 @@ const lensCount = new Set(CHECKS.map((c) => c.lens)).size;
 export default function Home() {
   return (
     <>
-      <SiteHeader dark />
+      <SiteHeader />
       <section className="hero" style={{ marginTop: -64, paddingTop: "calc(64px + clamp(56px, 9vw, 112px))" }}>
         <div className="wrap hero-grid">
           <div>
@@ -117,7 +117,7 @@ export default function Home() {
       <section className="section wrap">
         <div className="offer">
           <div className="stack">
-            <p className="eyebrow" style={{ color: "#c9b28a" }}>When three findings aren&apos;t enough</p>
+            <p className="eyebrow" style={{ color: "rgba(255,255,255,0.7)" }}>When three findings aren&apos;t enough</p>
             <h2>The full first-purchase journey</h2>
             <p>
               A QUARR Expert walks your whole path to a first order (discovery, product, cart, checkout, delivery promise, returns) and gives you a prioritised action guide. Every point is backed by evidence, the same way.

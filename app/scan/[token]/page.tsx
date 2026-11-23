@@ -84,7 +84,7 @@ export default async function Scan({ params }: { params: Promise<{ token: string
 
             <div className="offer">
               <div className="stack">
-                <p className="eyebrow" style={{ color: "#c9b28a" }}>Free</p>
+                <p className="eyebrow" style={{ color: "rgba(255,255,255,0.7)" }}>Free</p>
                 <h2>Unlock your full First Look</h2>
                 <p>
                   Sign up with Google or your email. We start the full walk immediately: cart, checkout entry, every policy, phone and desktop. You see the first findings in minutes, and the Expert-reviewed First Look by email.

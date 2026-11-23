@@ -37,7 +37,7 @@ export default async function Report({ params }: { params: Promise<{ token: stri
           Bench preview: this report is not published yet. <Link href={`/bench/runs/${run.id}`} style={{ color: "#fff" }}>Back to review</Link>
         </div>
       ) : null}
-      <SiteHeader dark />
+      <SiteHeader />
       <section className="report-head" style={{ marginTop: -64, paddingTop: "calc(64px + clamp(40px, 7vw, 72px))" }}>
         <div className="wrap">
           <p className="eyebrow">QUARR First Look · {date}</p>
