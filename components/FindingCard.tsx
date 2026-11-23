@@ -18,6 +18,10 @@ const PAGE_LABEL: Record<string, string> = {
 };
 export const pageLabel = (k: string) => PAGE_LABEL[k] ?? k;
 
+// Run evidence comes through /e (access-checked, from Blobs). The homepage sample is a
+// static file in public/, served directly: Netlify functions can't read public/ from disk.
+const shotUrl = (shot: string) => (shot.startsWith("sample/") ? `/${shot}` : `/e/${shot}`);
+
 export function FindingCard({
   index,
   lens,
@@ -68,8 +72,8 @@ export function FindingCard({
         <aside className="finding-evidence" aria-label="Evidence">
           <span className="eyebrow">Evidence · {pageLabel(citation?.pageKind ?? "")}</span>
           {shot ? (
-            <a href={`/e/${shot}`} target="_blank" rel="noreferrer" title="Open the full screenshot">
-              <Shot src={`/e/${shot}`} pageWidth={desktop ? 1440 : 390} pageHeight={height} box={citation?.box} windowHeight={desktop ? 900 : 640} alt={`Screenshot of ${pageLabel(citation?.pageKind ?? "")}`} phone={!desktop} />
+            <a href={shotUrl(shot)} target="_blank" rel="noreferrer" title="Open the full screenshot">
+              <Shot src={shotUrl(shot)} pageWidth={desktop ? 1440 : 390} pageHeight={height} box={citation?.box} windowHeight={desktop ? 900 : 640} alt={`Screenshot of ${pageLabel(citation?.pageKind ?? "")}`} phone={!desktop} />
             </a>
           ) : null}
           {citation?.snippet ? <p className="snippet">{citation.snippet}</p> : null}

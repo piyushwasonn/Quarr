@@ -19,7 +19,7 @@ export const SAMPLE_FINDING: {
   citation: {
     pageKind: "RETURNS",
     url: "https://glowbasics.example/policies/refund-policy",
-    snippet: "…Policy [INSERT COMPANY NAME] accepts returns of eligible items. To be eligible for a return, your item must be unused…",
+    snippet: "[INSERT COMPANY NAME] accepts returns of eligible items. To be eligible for a return, your item must be unused…",
     viewport: "mobile",
     box: { x: 12, y: 190, w: 366, h: 116 },
   },
