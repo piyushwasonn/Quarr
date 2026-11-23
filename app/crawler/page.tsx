@@ -16,7 +16,7 @@ export default function Crawler() {
       <h2>What it never does</h2>
       <ul>
         <li>Pay, enter card or UPI details, log in, create an account, request an OTP, enter a pincode or submit any form.</li>
-        <li>Visit the same store more than once in 24 hours.</li>
+        <li>Visit the same store more than twice in 24 hours: one quick scan (homepage, one product, two policies) and one full walk once you sign up. Re-checks you buy are limited to one an hour.</li>
         <li>Try to get around bot protection. If your store blocks automated browsers, we stop and offer to do the review by hand.</li>
       </ul>
       <h2>How to recognise it</h2>

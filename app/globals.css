@@ -89,6 +89,7 @@ p { margin: 0; }
 .nav a { color: var(--ink-2); text-decoration: none; }
 .site-header.dark .nav a { color: rgba(255,255,255,0.78); }
 .nav a:hover { color: var(--navy-900); }
+.nav a.btn-primary, .nav a.btn-primary:hover { color: #fff; }
 .site-header.dark .nav a:hover { color: #fff; }
 @media (max-width: 640px) { .nav .hide-sm { display: none; } }
 

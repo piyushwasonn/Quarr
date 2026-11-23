@@ -211,3 +211,9 @@ export async function handleRemoval(form: FormData) {
   await db.removalRequest.update({ where: { id: req.id }, data: { handledAt: new Date() } });
   revalidatePath("/bench/removals");
 }
+
+export async function markFulfilled(form: FormData) {
+  await requireBench();
+  await db.purchase.update({ where: { id: String(form.get("id")) }, data: { fulfilledAt: new Date() } });
+  revalidatePath("/bench/orders");
+}

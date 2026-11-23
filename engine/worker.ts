@@ -7,12 +7,24 @@ const POLL_MS = 4000;
 const STALE_MINUTES = 15;
 const MAX_ATTEMPTS = 2;
 
-async function claimNext(): Promise<string | null> {
-  const rows = await db.$queryRaw<{ id: string }[]>`
+// Two lanes: quick previews never wait behind a full walk of someone else's store.
+type Lane = "preview" | "main";
+
+async function claimNext(lane: Lane): Promise<string | null> {
+  const rows =
+    lane === "preview"
+      ? await db.$queryRaw<{ id: string }[]>`
     UPDATE "Run" SET status = 'CRAWLING', "lockedAt" = now()
     WHERE id = (
-      SELECT id FROM "Run" WHERE status = 'QUEUED'
+      SELECT id FROM "Run" WHERE status = 'QUEUED' AND kind = 'PREVIEW'
       ORDER BY "createdAt" ASC LIMIT 1 FOR UPDATE SKIP LOCKED
+    )
+    RETURNING id`
+      : await db.$queryRaw<{ id: string }[]>`
+    UPDATE "Run" SET status = 'CRAWLING', "lockedAt" = now()
+    WHERE id = (
+      SELECT id FROM "Run" WHERE status = 'QUEUED' AND kind <> 'PREVIEW'
+      ORDER BY priority ASC, "createdAt" ASC LIMIT 1 FOR UPDATE SKIP LOCKED
     )
     RETURNING id`;
   return rows[0]?.id ?? null;
@@ -31,22 +43,26 @@ let stopping = false;
 process.on("SIGINT", () => (stopping = true));
 process.on("SIGTERM", () => (stopping = true));
 
-async function main() {
-  console.log("[worker] started");
+async function loop(lane: Lane) {
   while (!stopping) {
-    await recoverStale();
-    const id = await claimNext();
+    if (lane === "main") await recoverStale();
+    const id = await claimNext(lane);
     if (!id) {
-      await new Promise((r) => setTimeout(r, POLL_MS));
+      await new Promise((r) => setTimeout(r, lane === "preview" ? 1000 : POLL_MS));
       continue;
     }
     try {
       await processRun(id);
     } catch (err) {
-      console.error(`[worker] run ${id} errored`, err);
-      await db.run.update({ where: { id }, data: { status: "CRAWL_FAILED", failureCode: "ERROR", failureDetail: String(err).slice(0, 500), lockedAt: null } });
+      console.error(`[worker:${lane}] run ${id} errored`, err);
+      await db.run.update({ where: { id }, data: { status: "CRAWL_FAILED", failureCode: "ERROR", failureDetail: String(err).slice(0, 500), lockedAt: null, progress: null } });
     }
   }
+}
+
+async function main() {
+  console.log("[worker] started (preview lane + main lane)");
+  await Promise.all([loop("preview"), loop("main")]);
   await db.$disconnect();
   console.log("[worker] stopped");
 }

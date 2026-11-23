@@ -10,7 +10,7 @@ export async function publishRun(runId: string) {
     data: { status: "PUBLISHED", publishedAt: new Date() },
     include: { findings: { where: { selected: true, state: { not: "DROPPED" } }, orderBy: { position: "asc" } } },
   });
-  if (run.source !== "PUBLIC") return run;
+  if (run.source !== "PUBLIC" || !run.email) return run;
 
   const link = appUrl(`/r/${run.publicToken}`);
   const items = run.findings.map((f, i) => `${i + 1}. ${f.title}`);
@@ -55,9 +55,27 @@ const FAILURE_COPY: Record<string, string> = {
 
 export async function sendFailureEmail(runId: string) {
   const run = await db.run.findUniqueOrThrow({ where: { id: runId } });
+  if (!run.email) return;
   const why = FAILURE_COPY[run.failureCode ?? "ERROR"] ?? FAILURE_COPY.ERROR;
   const text = `${why}\n\nIf you reply to this email, a QUARR Expert will do your First Look by hand instead, at no cost.\n\nQUARR`;
   const html = `<div style="font-family:-apple-system,Segoe UI,Inter,Arial,sans-serif;font-size:15px;line-height:1.6;color:#1F2933;max-width:520px">
   <p>${esc(why)}</p><p>If you reply to this email, a QUARR Expert will do your First Look by hand instead, at no cost.</p><p>QUARR</p></div>`;
   await sendEmail(run.email, `About your QUARR First Look for ${run.domain}`, html, text);
+}
+
+export async function sendRecheckEmail(runId: string) {
+  const run = await db.run.findUniqueOrThrow({ where: { id: runId } });
+  if (!run.email) return;
+  const sum = (run.summary ?? {}) as { fixed?: unknown[]; stillOpen?: unknown[]; appeared?: unknown[]; hidden?: { fixed: number; stillOpen: number; appeared: number } };
+  const fixed = (sum.fixed?.length ?? 0) + (sum.hidden?.fixed ?? 0);
+  const open = (sum.stillOpen?.length ?? 0) + (sum.hidden?.stillOpen ?? 0);
+  const appeared = (sum.appeared?.length ?? 0) + (sum.hidden?.appeared ?? 0);
+  const link = appUrl(`/account/runs/${run.id}`);
+  const line = `${fixed} fixed · ${open} still open · ${appeared} new`;
+  const text = `We walked ${run.domain} again and compared it with your last First Look.\n\n${line}\n\nSee exactly what changed: ${link}\n\nQUARR`;
+  const html = `<div style="font-family:-apple-system,Segoe UI,Inter,Arial,sans-serif;font-size:15px;line-height:1.6;color:#1F2933;max-width:520px">
+  <p>We walked <strong>${esc(run.domain)}</strong> again and compared it with your last First Look.</p>
+  <p style="font-size:18px;color:#14243B"><strong>${line}</strong></p>
+  <p><a href="${link}" style="display:inline-block;background:#1C3354;color:#fff;text-decoration:none;padding:12px 20px;border-radius:8px;font-weight:600">See what changed</a></p></div>`;
+  await sendEmail(run.email, `Your QUARR re-check for ${run.domain}: ${fixed} fixed`, html, text);
 }

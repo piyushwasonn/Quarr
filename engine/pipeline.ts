@@ -1,25 +1,39 @@
 import type { Prisma } from "@prisma/client";
 import { db } from "@/lib/db";
 import { putFile } from "@/lib/storage";
-import { publishRun, sendFailureEmail } from "@/lib/deliver";
+import { publishRun, sendFailureEmail, sendRecheckEmail } from "@/lib/deliver";
 import { CHECKS, CHECKS_BY_ID } from "./checks";
 import { crawlStore } from "./crawl";
 import { checkModes } from "./promotion";
 import { candidateFrom, scoreOf, selectFindings } from "./select";
+import { instantSummary, previewSummary, recheckSummary, type ResultRow } from "./summary";
 import type { CheckContext, CheckVerdict, Citation, CrawlSignals, PageData, PageKind, StoredPage } from "./types";
 import { draftFindings } from "./write";
 
-// QUEUED → CRAWLING → CRAWLED → CHECKED → DRAFTED → IN_REVIEW (or auto-publish)
+// Writes the crawler's current step for the founder's live screen, in order.
+function progressWriter(runId: string) {
+  let chain = Promise.resolve();
+  const set = (step: string | null) => {
+    chain = chain.then(() => db.run.update({ where: { id: runId }, data: { progress: step } }).then(() => undefined)).catch(() => undefined);
+  };
+  return { set, flush: () => chain };
+}
+
+// PREVIEW: QUEUED → CRAWLING → CRAWLED → READY (teaser)
+// FULL:    QUEUED → CRAWLING → CRAWLED → DRAFTED → IN_REVIEW (or auto-publish)
+// RECHECK: QUEUED → CRAWLING → CRAWLED → READY (comparison with the earlier run)
 export async function processRun(runId: string) {
   const run = await db.run.update({ where: { id: runId }, data: { status: "CRAWLING", lockedAt: new Date(), attempts: { increment: 1 } } });
-  const log = (msg: string) => console.log(`[run ${run.id} ${run.domain}] ${msg}`);
+  const log = (msg: string) => console.log(`[run ${run.id} ${run.kind} ${run.domain}] ${msg}`);
+  const progress = progressWriter(run.id);
 
   log("crawling");
-  const crawl = await crawlStore(run.storeUrl);
+  const crawl = await crawlStore(run.storeUrl, { mode: run.kind === "PREVIEW" ? "preview" : "full", onProgress: progress.set });
+  await progress.flush();
   if (!crawl.ok) {
     log(`crawl failed: ${crawl.code} ${crawl.detail}`);
-    await db.run.update({ where: { id: run.id }, data: { status: "CRAWL_FAILED", failureCode: crawl.code, failureDetail: crawl.detail, lockedAt: null } });
-    if (run.source === "PUBLIC") await sendFailureEmail(run.id).catch((e) => log(`failure email error: ${e}`));
+    await db.run.update({ where: { id: run.id }, data: { status: "CRAWL_FAILED", failureCode: crawl.code, failureDetail: crawl.detail, lockedAt: null, progress: null } });
+    if (run.kind !== "PREVIEW" && run.source === "PUBLIC" && run.email) await sendFailureEmail(run.id).catch((e) => log(`failure email error: ${e}`));
     return;
   }
 
@@ -53,10 +67,31 @@ export async function processRun(runId: string) {
   });
   log(`crawled ${crawl.pages.length} pages (${crawl.signals.platform})`);
 
+  progress.set("Running QUARR's checks");
   const { results, checked } = await runChecks(run.id, { pages: stored, signals: crawl.signals });
   log(`checks: ${checked.FAIL} fail, ${checked.PASS} pass, ${checked.NOT_OBSERVABLE} not observable`);
 
   const modes = await checkModes();
+  const auto = new Set([...modes].filter(([, m]) => m === "AUTO").map(([id]) => id));
+  const rows = results as ResultRow[];
+  const counts = { checksPassed: checked.PASS, checksNotSeen: checked.NOT_OBSERVABLE };
+
+  if (run.kind === "PREVIEW") {
+    await progress.flush();
+    await db.run.update({ where: { id: run.id }, data: { status: "READY", summary: previewSummary(rows, auto) as unknown as Prisma.InputJsonValue, ...counts, progress: null, lockedAt: null } });
+    log("preview ready");
+    return;
+  }
+
+  if (run.kind === "RECHECK") {
+    const before = run.parentRunId ? ((await db.checkResult.findMany({ where: { runId: run.parentRunId } })) as ResultRow[]) : [];
+    const visible = run.parentRunId ? await visibleChecks(run.parentRunId) : new Set<string>();
+    await progress.flush();
+    await db.run.update({ where: { id: run.id }, data: { status: "READY", summary: recheckSummary(before, rows, visible, auto) as unknown as Prisma.InputJsonValue, ...counts, progress: null, lockedAt: null } });
+    log("re-check ready");
+    if (run.email) await sendRecheckEmail(run.id).catch((e) => log(`re-check email error: ${e}`));
+    return;
+  }
   const candidates = results
     .filter((r) => r.outcome === "FAIL" && modes.get(r.checkId) !== "SUSPENDED")
     .map(candidateFrom)
@@ -107,8 +142,9 @@ export async function processRun(runId: string) {
       status: "DRAFTED",
       otherIssues,
       otherLenses,
-      checksPassed: checked.PASS,
-      checksNotSeen: checked.NOT_OBSERVABLE,
+      ...counts,
+      summary: instantSummary(rows, auto) as unknown as Prisma.InputJsonValue,
+      progress: null,
       lockedAt: null,
     },
   });
@@ -162,4 +198,17 @@ export function contextFromRows(pages: { id: string; kind: string; url: string; 
     out[p.kind as PageKind] = { id: p.id, kind: p.kind as PageKind, url: p.url, finalUrl: p.finalUrl ?? p.url, httpStatus: p.httpStatus, title: p.title ?? "", text: p.text, data: p.data as PageData };
   }
   return { pages: out, signals };
+}
+
+// Checks the founder has already been shown by name on a run: its instant findings,
+// the Expert-approved findings once published, or what an earlier re-check named.
+async function visibleChecks(runId: string) {
+  const run = await db.run.findUnique({ where: { id: runId }, include: { findings: { where: { selected: true, state: { not: "DROPPED" } }, select: { checkId: true } } } });
+  const out = new Set<string>();
+  if (!run) return out;
+  const sum = (run.summary ?? {}) as { findings?: { checkId: string }[]; visible?: string[] };
+  for (const f of sum.findings ?? []) out.add(f.checkId);
+  for (const id of sum.visible ?? []) out.add(id);
+  if (["PUBLISHED", "DELIVERED"].includes(run.status)) for (const f of run.findings) out.add(f.checkId);
+  return out;
 }

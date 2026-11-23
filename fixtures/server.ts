@@ -6,6 +6,9 @@ import http from "node:http";
 
 type Store = { name: string; good: boolean };
 
+// Lets a test "fix" the flawed store mid-run (POST /__fix) to exercise re-checks.
+let flawedFixed = false;
+
 const products = (good: boolean) => [
   { handle: "saffron-face-oil", title: "Saffron Face Oil", price: good ? "899.00" : "649.00", id: 101, available: true },
   { handle: "rose-water-mist", title: "Rose Water Mist", price: "399.00", id: 102, available: good },
@@ -90,7 +93,9 @@ const policies: Record<string, (s: boolean) => string> = {
   "refund-policy": (s) =>
     s
       ? "You can return any unopened product within 7 days of delivery. Reverse pickup is free. Once we receive the product, your refund is processed within 5-7 business days to the original payment method, or to your bank account for Cash on Delivery orders. Opened products can be exchanged if they arrived damaged; share a photo within 48 hours of delivery."
-      : "[INSERT COMPANY NAME] accepts returns of eligible items. To be eligible for a return, your item must be unused and in the same condition that you received it. Refunds will be processed after inspection. Please contact us at [your email] to start a return.",
+      : flawedFixed
+        ? "You can return any unused product within 7 days of delivery. Reverse pickup is free. Refunds are processed within 5-7 business days of the product reaching us, to your original payment method or bank account."
+        : "[INSERT COMPANY NAME] accepts returns of eligible items. To be eligible for a return, your item must be unused and in the same condition that you received it. Refunds will be processed after inspection. Please contact us at [your email] to start a return.",
   "terms-of-service": (s) =>
     `These terms govern your use of ${s ? "Kesar & Co Private Limited" : "this store"}. By placing an order you agree to these terms. Prices are listed in Indian rupees. We may update these terms from time to time and will post the updated version on this page. Disputes are subject to the courts of the place of registration of the company. Product images are for illustration and may differ slightly from the product delivered due to lighting and screen settings.`,
   "privacy-policy": () =>
@@ -112,6 +117,11 @@ function makeServer(store: Store) {
     };
     const p = url.pathname;
 
+    if (p === "/__fix" && req.method === "POST") {
+      flawedFixed = true;
+      return json({ fixed: true });
+    }
+    if (p === "/collections/gifting" && flawedFixed) return html(layout(store, "Gifting", "<h1>Gifting</h1><p>Gift sets for every occasion.</p>"));
     if (p === "/") return html(home(store));
     if (p === "/products.json") return json({ products: products(store.good).map((x) => ({ handle: x.handle, variants: [{ id: x.id, available: x.available, price: x.price }] })) });
     if (p.startsWith("/products/")) return html(product(store, p.split("/")[2]));

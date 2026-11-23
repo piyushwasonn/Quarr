@@ -1,10 +1,11 @@
 import Link from "next/link";
 import { SiteFooter, SiteHeader } from "@/components/chrome";
 import { FindingCard } from "@/components/FindingCard";
-import { SubmitForm } from "@/components/SubmitForm";
+import { ScanForm } from "@/components/ScanForm";
 import { SAMPLE_FINDING } from "@/components/sample";
 import { CHECKS } from "@/engine/checks";
 import { LENS_NAMES } from "@/engine/types";
+import { priceOf, rupees } from "@/lib/payments";
 
 const lensCount = new Set(CHECKS.map((c) => c.lens)).size;
 
@@ -18,18 +19,18 @@ export default function Home() {
             <p className="eyebrow">Free First Look · for Indian D2C brands</p>
             <h1 style={{ marginTop: 18 }}>See your store the way a first-time buyer does.</h1>
             <p className="lede">
-              Paste your store link. QUARR walks it on a phone and a laptop, from homepage to product to cart to the first screen of checkout, and shows you what a new buyer is likely to trust, question or abandon.
+              Paste your store link. In about a minute QUARR shows you what a new buyer is likely to question on your store. Sign up free, and it walks the whole thing (product, cart, the first screen of checkout, your policies) with a screenshot behind every finding.
             </p>
             <ul className="hero-points">
-              <li>Up to three findings, each traced to a screenshot of your live store</li>
-              <li>No call, no sales pitch. Results arrive by email</li>
-              <li>Checked by a QUARR Expert before it reaches you</li>
+              <li>A first result in about a minute, before you sign up</li>
+              <li>Every finding traced to a screenshot of your live store</li>
+              <li>The full First Look is read by a QUARR Expert before it&apos;s final</li>
             </ul>
           </div>
           <div className="submit-card" id="start">
-            <p className="eyebrow brass">Free · takes 30 seconds</p>
-            <h2 style={{ margin: "8px 0 20px" }}>Get your First Look</h2>
-            <SubmitForm />
+            <p className="eyebrow brass">Free · about a minute</p>
+            <h2 style={{ margin: "8px 0 20px" }}>Scan your store</h2>
+            <ScanForm />
           </div>
         </div>
       </section>
@@ -37,9 +38,9 @@ export default function Home() {
       <section className="wrap lift" id="how">
         <div className="steps">
           {[
-            ["01", "Paste your link", "Just your store address and an email. No login, no Shopify app, no access to your admin."],
-            ["02", "We walk it like a buyer", `QUARR's engine runs ${CHECKS.length} checks across ${lensCount} areas: pricing, delivery, returns, trust, checkout and more, on a 390 px phone and a desktop screen.`],
-            ["03", "You read what matters", "The three findings most likely to cost you a first order. What we saw, what it likely does to a buyer, and what we couldn't prove."],
+            ["01", "Scan in a minute", "Paste your store address. No sign-up, no Shopify app, no access to your admin. See how many things a new buyer may question, and one finding in full."],
+            ["02", "Unlock the full walk, free", `Sign up with Google or email. QUARR runs ${CHECKS.length} checks across ${lensCount} areas (pricing, delivery, returns, trust, checkout) on a phone and a desktop.`],
+            ["03", "Fix, then re-check", "Read the three findings most likely to cost you a first order. Fix them, then re-check and see exactly what changed."],
           ].map(([n, t, d]) => (
             <div className="card step" key={n}>
               <span className="num">{n}</span>
@@ -84,10 +85,32 @@ export default function Home() {
               <li className="tick">Add one item to the cart and open the first checkout screen</li>
               <li className="tick">Read your shipping, returns, terms and contact pages</li>
               <li className="cross">Pay, log in, request an OTP or submit any form</li>
-              <li className="cross">Visit your store more than once a day</li>
+              <li className="cross">Visit your store more than twice a day (a quick scan, then the full walk)</li>
             </ul>
             <Link href="/crawler" className="small">How our browser behaves →</Link>
           </div>
+        </div>
+      </section>
+
+      <section className="section wrap" id="pricing">
+        <div className="section-head">
+          <p className="eyebrow brass">Pricing</p>
+          <h2>Free to start. Pay only for what you use.</h2>
+          <p className="lede">No subscription. Buy a re-check when you&apos;ve fixed something, or the full journey when you want an Expert on your whole path to a first order.</p>
+        </div>
+        <div className="steps">
+          {[
+            ["Free", "First Look", "A one-minute scan, then the full walk and an Expert-reviewed report when you sign up.", "Scan my store", "/#start"],
+            [`${rupees(priceOf("RECHECK").basePaise)} + GST`, "Re-check", "Walk your store again after fixes and see, check by check, what's fixed, still open or new.", "Start with a free scan", "/#start"],
+            [`${rupees(priceOf("JOURNEY").basePaise)} + GST`, "First-purchase journey", "A QUARR Expert walks your whole path to a first order and gives you a prioritised action guide. Full refund if the scope doesn't fit.", "What's included", "/journey"],
+          ].map(([price, name, desc, cta, href]) => (
+            <div className="card step stack" key={name} style={{ ["--stack" as string]: "10px" }}>
+              <span className="num">{name}</span>
+              <h3 style={{ margin: 0 }}>{price}</h3>
+              <p className="muted small">{desc}</p>
+              <Link href={href} className="small">{cta} →</Link>
+            </div>
+          ))}
         </div>
       </section>
 
@@ -113,8 +136,9 @@ export default function Home() {
           <h2>Before you paste your link</h2>
         </div>
         {[
-          ["Is it really free?", "Yes. The First Look is free, with no card and no call. If it's useful, there's a deeper paid journey. If not, you keep the findings anyway."],
-          ["How fast is it?", "We promise within 12 hours, and most arrive much sooner. Every report is read by a QUARR Expert before it's sent, which is why we don't promise instant."],
+          ["Is it really free?", "Yes. The scan and the First Look are free, with no card and no call. Re-checks and the journey are paid, one at a time. There's no subscription."],
+          ["How fast is it?", "The scan takes about a minute. After you sign up, the first findings appear in minutes. The Expert-reviewed First Look follows by email within 12 hours, usually much sooner."],
+          ["Why do I need to sign up?", "So your reports, re-checks and purchases live in one place you can come back to. Google or a one-time email code: no password."],
           ["Will this affect my store or my analytics?", "We behave like one careful shopper: a handful of page views, one add-to-cart, no purchase. Our browser identifies itself as QUARRBot, so you can filter it out of analytics."],
           ["Why only three findings?", "Because three you act on beats thirty you skim. We tell you how many other issues we noticed, and the full journey covers them."],
           ["What happens to my email?", "We use it to send your First Look and, if you reply, to talk to you. No newsletters unless you ask. You can ask us to delete everything at any time."],

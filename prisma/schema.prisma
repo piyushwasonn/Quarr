@@ -21,8 +21,15 @@ enum RunStatus {
   APPROVED
   PUBLISHED
   DELIVERED
+  READY // automated result with no review step (preview, re-check)
   CRAWL_FAILED
   REJECTED
+}
+
+enum RunKind {
+  PREVIEW // quick anonymous walk on the landing page
+  FULL // the First Look, reviewed in the Bench
+  RECHECK // paid re-walk compared with an earlier run
 }
 
 enum RunSource {
@@ -57,7 +64,14 @@ model Run {
   publicToken    String    @unique
   storeUrl       String
   domain         String
-  email          String
+  email          String?
+  kind           RunKind   @default(FULL)
+  priority       Int       @default(5) // lower runs first
+  userId         String?
+  user           User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  parentRunId    String? // RECHECK: the run being compared; FULL: the preview it came from
+  progress       String? // what the crawler is doing right now, for the live screen
+  summary        Json? // preview teaser / instant findings / re-check comparison
   source         RunSource @default(PUBLIC)
   status         RunStatus @default(QUEUED)
   failureCode    String? // BLOCKED | PASSWORD | NOT_STORE | UNREACHABLE | TIMEOUT | ERROR
@@ -91,6 +105,7 @@ model Run {
   @@index([domain, createdAt])
   @@index([email, createdAt])
   @@index([status, createdAt])
+  @@index([userId, createdAt])
 }
 
 model Page {
@@ -188,4 +203,62 @@ model RemovalRequest {
   note      String?
   createdAt DateTime  @default(now())
   handledAt DateTime?
+}
+
+model User {
+  id         String     @id @default(cuid())
+  email      String     @unique
+  name       String?
+  googleSub  String?    @unique
+  createdAt  DateTime   @default(now())
+  lastSeenAt DateTime?
+  runs       Run[]
+  purchases  Purchase[]
+}
+
+model LoginCode {
+  id        String   @id @default(cuid())
+  email     String
+  codeHash  String
+  expiresAt DateTime
+  attempts  Int      @default(0)
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
+
+  @@index([email, createdAt])
+}
+
+enum Product {
+  JOURNEY
+  RECHECK
+}
+
+enum PurchaseStatus {
+  CREATED
+  PAID
+  FAILED
+  REFUNDED
+}
+
+model Purchase {
+  id              String         @id @default(cuid())
+  userId          String
+  user            User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product         Product
+  runId           String? // the First Look it was bought from
+  domain          String?
+  amountPaise     Int // what the buyer pays, GST included
+  basePaise       Int
+  gstPaise        Int
+  status          PurchaseStatus @default(CREATED)
+  provider        String // razorpay | dev
+  providerOrderId String?        @unique
+  paymentId       String?
+  fulfilledAt     DateTime? // journey delivered
+  note            String?
+  createdAt       DateTime       @default(now())
+  paidAt          DateTime?
+
+  @@index([userId, createdAt])
+  @@index([status, createdAt])
 }

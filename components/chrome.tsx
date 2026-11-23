@@ -17,9 +17,10 @@ export function SiteHeader({ dark = false }: { dark?: boolean }) {
         <nav className="nav" aria-label="Main">
           <Link href="/#how" className="hide-sm">How it works</Link>
           <Link href="/#sample" className="hide-sm">Sample</Link>
-          <Link href="/journey">Full journey</Link>
+          <Link href="/#pricing" className="hide-sm">Pricing</Link>
+          <Link href="/account">Sign in</Link>
           <Link href="/#start" className="btn btn-sm btn-primary" style={dark ? { background: "#fff", color: "var(--navy-900)" } : undefined}>
-            Free First Look
+            Scan my store
           </Link>
         </nav>
       </div>

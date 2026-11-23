@@ -2,19 +2,15 @@
 
 import Link from "next/link";
 import { useActionState } from "react";
-import { submitFirstLook, type SubmitState } from "@/app/actions";
+import { startScan, type ScanState } from "@/app/actions";
 
-export function SubmitForm() {
-  const [state, action, pending] = useActionState<SubmitState, FormData>(submitFirstLook, {});
+export function ScanForm() {
+  const [state, action, pending] = useActionState<ScanState, FormData>(startScan, {});
   return (
     <form action={action} className="stack" style={{ ["--stack" as string]: "16px" }} noValidate>
       <div className="field">
         <label htmlFor="url">Your store address</label>
-        <input id="url" name="url" className="input" placeholder="yourbrand.in" inputMode="url" autoComplete="url" autoCapitalize="none" spellCheck={false} required defaultValue={state.values?.url} />
-      </div>
-      <div className="field">
-        <label htmlFor="email">Where should we send it?</label>
-        <input id="email" name="email" type="email" className="input" placeholder="you@yourbrand.in" autoComplete="email" required defaultValue={state.values?.email} />
+        <input id="url" name="url" className="input" placeholder="yourbrand.in" inputMode="url" autoComplete="url" autoCapitalize="none" spellCheck={false} required defaultValue={state.url} />
       </div>
       <div className="hp" aria-hidden>
         <label>Company <input name="company" tabIndex={-1} autoComplete="off" /></label>
@@ -27,9 +23,9 @@ export function SubmitForm() {
       </label>
       {state.error ? <p className="form-error" role="alert">{state.error}</p> : null}
       <button className="btn btn-primary" type="submit" disabled={pending} style={{ width: "100%", padding: "14px 20px" }}>
-        {pending ? "Starting…" : "Walk my store"}
+        {pending ? "Starting…" : "Scan my store"}
       </button>
-      <p className="promise"><span className="dot" aria-hidden /> Free. No call, no card. Your First Look arrives by email.</p>
+      <p className="promise"><span className="dot" aria-hidden /> Free. About a minute. No sign-up to see the first result.</p>
     </form>
   );
 }

@@ -27,27 +27,30 @@ function median(xs: number[]) {
 export default async function Queue({ searchParams }: { searchParams: Promise<{ f?: string }> }) {
   const { f = "review" } = await searchParams;
   const filter = FILTERS[f] ?? FILTERS.review;
-  const where: Prisma.RunWhereInput = filter.statuses ? { status: { in: filter.statuses } } : {};
+  // Previews and re-checks are automated and never need review; the queue is First Looks only.
+  const where: Prisma.RunWhereInput = { kind: "FULL", ...(filter.statuses ? { status: { in: filter.statuses } } : {}) };
   const since = new Date(Date.now() - 30 * 24 * 3600 * 1000);
 
-  const [runs, byStatus, reviewed, funnelRuns] = await Promise.all([
+  const [runs, byStatus, reviewed, funnelRuns, previews, signups, journeys] = await Promise.all([
     db.run.findMany({ where, orderBy: { createdAt: f === "review" ? "asc" : "desc" }, take: 100, include: { _count: { select: { findings: { where: { selected: true, state: { not: "DROPPED" } } } } } } }),
-    db.run.groupBy({ by: ["status"], _count: { _all: true } }),
+    db.run.groupBy({ by: ["status"], where: { kind: "FULL" }, _count: { _all: true } }),
     db.run.findMany({ where: { reviewSeconds: { not: null }, publishedAt: { gte: since } }, select: { reviewSeconds: true } }),
     db.run.findMany({
-      where: { createdAt: { gte: since } },
+      where: { kind: "FULL", createdAt: { gte: since } },
       select: { status: true, deliveredAt: true, publishedAt: true, repliedAt: true, paidAt: true, source: true, findings: { where: { selected: true, position: 0 }, select: { checkId: true } } },
     }),
+    db.run.count({ where: { kind: "PREVIEW", createdAt: { gte: since } } }),
+    db.user.count({ where: { createdAt: { gte: since } } }),
+    db.purchase.count({ where: { product: "JOURNEY", status: "PAID", paidAt: { gte: since } } }),
   ]);
   const count = (s: RunStatus[]) => byStatus.filter((x) => s.includes(x.status)).reduce((a, x) => a + x._count._all, 0);
   const queueDepth = count(["QUEUED", "CRAWLING", "CRAWLED", "CHECKED", "DRAFTED", "IN_REVIEW"]);
-  const oldest = await db.run.findFirst({ where: { status: { in: ["QUEUED", "CRAWLING", "IN_REVIEW", "DRAFTED"] }, source: "PUBLIC" }, orderBy: { createdAt: "asc" } });
+  const oldest = await db.run.findFirst({ where: { kind: "FULL", status: { in: ["QUEUED", "CRAWLING", "IN_REVIEW", "DRAFTED"] }, source: "PUBLIC" }, orderBy: { createdAt: "asc" } });
   const oldestHours = oldest ? (Date.now() - oldest.createdAt.getTime()) / 3600000 : 0;
   const med = median(reviewed.map((r) => r.reviewSeconds!));
 
   const sent = funnelRuns.filter((r) => r.publishedAt);
   const replied = sent.filter((r) => r.repliedAt);
-  const paid = sent.filter((r) => r.paidAt);
   const byFirst = new Map<string, { sent: number; replied: number; paid: number }>();
   for (const r of sent) {
     const k = r.findings[0]?.checkId ?? "(none)";
@@ -74,7 +77,14 @@ export default async function Queue({ searchParams }: { searchParams: Promise<{ 
         <div className="card"><div className="n">{med === null ? "–" : `${(med / 60).toFixed(1)}m`}</div><div className="t">median review time (30d)</div></div>
         <div className="card"><div className="n">{sent.length}</div><div className="t">published (30d)</div></div>
         <div className="card"><div className="n">{sent.length ? `${Math.round((replied.length / sent.length) * 100)}%` : "–"}</div><div className="t">replied</div></div>
-        <div className="card"><div className="n">{paid.length}</div><div className="t">paid journeys</div></div>
+        <div className="card"><div className="n">{journeys}</div><div className="t">paid journeys (30d)</div></div>
+      </div>
+
+      <div className="tiles">
+        <div className="card"><div className="n">{previews}</div><div className="t">quick scans (30d)</div></div>
+        <div className="card"><div className="n">{signups}</div><div className="t">sign-ups (30d)</div></div>
+        <div className="card"><div className="n">{previews ? `${Math.round((signups / previews) * 100)}%` : "–"}</div><div className="t">scan → sign-up</div></div>
+        <div className="card"><div className="n">{signups ? `${Math.round((journeys / signups) * 100)}%` : "–"}</div><div className="t">sign-up → journey</div></div>
       </div>
 
       <div className="tabs">

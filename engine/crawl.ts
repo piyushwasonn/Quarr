@@ -47,7 +47,13 @@ const SHOPIFY_POLICY_PATHS: Partial<Record<PageKind, string>> = {
   CONTACT: "/pages/contact",
 };
 
-export type CrawlOptions = { timeoutMs?: number; allowPrivateHosts?: boolean };
+export type CrawlOptions = {
+  timeoutMs?: number;
+  allowPrivateHosts?: boolean;
+  // "preview": homepage, one product, shipping and returns policies, menu links. Phone only, no cart.
+  mode?: "full" | "preview";
+  onProgress?: (step: string) => void;
+};
 
 export async function crawlStore(startUrl: string, opts: CrawlOptions = {}): Promise<CrawlResult> {
   const timeoutMs = opts.timeoutMs ?? Number(process.env.CRAWL_TIMEOUT_MS || 240_000);
@@ -59,7 +65,7 @@ export async function crawlStore(startUrl: string, opts: CrawlOptions = {}): Pro
       executablePath: process.env.CHROMIUM_PATH || undefined,
       args: ["--disable-dev-shm-usage"],
     });
-    const work = walk(browser, startUrl, deadline, opts.allowPrivateHosts ?? process.env.ALLOW_LOCAL_TARGETS === "1");
+    const work = walk(browser, startUrl, deadline, opts.allowPrivateHosts ?? process.env.ALLOW_LOCAL_TARGETS === "1", opts.mode ?? "full", opts.onProgress ?? (() => {}));
     const timer = new Promise<CrawlResult>((resolve) =>
       setTimeout(() => resolve({ ok: false, code: "TIMEOUT", detail: `Crawl exceeded ${timeoutMs} ms` }), timeoutMs + 5000),
     );
@@ -71,7 +77,8 @@ export async function crawlStore(startUrl: string, opts: CrawlOptions = {}): Pro
   }
 }
 
-async function walk(browser: Browser, startUrl: string, deadline: number, allowPrivate: boolean): Promise<CrawlResult> {
+async function walk(browser: Browser, startUrl: string, deadline: number, allowPrivate: boolean, mode: "full" | "preview", progress: (step: string) => void): Promise<CrawlResult> {
+  const preview = mode === "preview";
   const mobile = await browser.newContext(MOBILE);
   const desktop = await browser.newContext(DESKTOP);
   for (const ctx of [mobile, desktop]) {
@@ -79,12 +86,13 @@ async function walk(browser: Browser, startUrl: string, deadline: number, allowP
     if (!allowPrivate) await guardPrivateHosts(ctx);
   }
   const page = await mobile.newPage();
-  const desk = await desktop.newPage();
+  const desk = preview ? null : await desktop.newPage();
   const pages: CapturedPage[] = [];
   const origin = new URL(startUrl).origin;
   const timeLeft = () => deadline - Date.now();
 
   // 1. Homepage
+  progress("Opening your homepage on a phone");
   const home = await capture(page, desk, "HOME", startUrl);
   if (!home) return { ok: false, code: "UNREACHABLE", detail: `Could not load ${startUrl}` };
   pages.push(home);
@@ -96,6 +104,7 @@ async function walk(browser: Browser, startUrl: string, deadline: number, allowP
   let platform: CrawlSignals["platform"] = extra.isShopify ? "shopify" : extra.isWoo ? "woocommerce" : "unknown";
 
   // 2. Product discovery
+  progress("Finding your products");
   let products: { url: string; variantId?: number; price?: number | null }[] = [];
   const shopifyProducts = await fetchShopifyProducts(page, origin);
   if (shopifyProducts.length) {
@@ -107,9 +116,10 @@ async function walk(browser: Browser, startUrl: string, deadline: number, allowP
   const isStore = products.length > 0;
 
   const productPrices: CrawlSignals["productPrices"] = [];
-  for (const [i, p] of products.slice(0, 2).entries()) {
+  for (const [i, p] of products.slice(0, preview ? 1 : 2).entries()) {
     if (timeLeft() < 30_000) break;
     const kind = (i === 0 ? "PRODUCT_1" : "PRODUCT_2") as PageKind;
+    progress(i === 0 ? "Reading a product page like a first-time buyer" : "Reading a second product page");
     const cap = await capture(page, desk, kind, p.url);
     if (cap) {
       pages.push(cap);
@@ -133,7 +143,8 @@ async function walk(browser: Browser, startUrl: string, deadline: number, allowP
     https: startUrl.startsWith("https://"),
   };
 
-  if (isStore && timeLeft() > 40_000) {
+  if (!preview && isStore && timeLeft() > 40_000) {
+    progress("Adding one item to the cart");
     await addToCart(page, origin, platform, products[0], signals);
     const cartUrl = platform === "woocommerce" ? `${origin}/cart/` : `${origin}/cart`;
     const cart = await capture(page, desk, "CART", cartUrl);
@@ -144,6 +155,7 @@ async function walk(browser: Browser, startUrl: string, deadline: number, allowP
         signals.cartPersistsAfterReload = await cartPersists(page, platform, cart);
       }
       if (signals.addToCart.succeeded && timeLeft() > 30_000) {
+        progress("Opening the first screen of checkout (we stop there)");
         const checkoutUrl = platform === "woocommerce" ? `${origin}/checkout/` : `${origin}/checkout`;
         const checkout = await capture(page, null, "CHECKOUT", checkoutUrl);
         if (checkout && (checkout.httpStatus ?? 500) < 400) {
@@ -158,8 +170,10 @@ async function walk(browser: Browser, startUrl: string, deadline: number, allowP
   }
 
   // 4. Policy and info pages
+  progress("Reading your shipping, returns and contact pages");
   const policyLinks = discoverPolicyLinks(home, origin);
   for (const [kind] of POLICY_PATTERNS) {
+    if (preview && kind !== "SHIPPING" && kind !== "RETURNS") continue;
     if (timeLeft() < 15_000) break;
     let url = policyLinks[kind];
     if (!url && platform === "shopify" && SHOPIFY_POLICY_PATHS[kind]) url = origin + SHOPIFY_POLICY_PATHS[kind];
@@ -169,6 +183,7 @@ async function walk(browser: Browser, startUrl: string, deadline: number, allowP
   }
 
   // 5. Primary navigation health
+  progress("Checking that your menu links open");
   signals.navLinkStatuses = await checkNavLinks(page, home, origin);
   signals.heroCta = await checkHeroCta(page, home);
 

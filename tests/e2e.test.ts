@@ -46,3 +46,15 @@ describe("flawed store", () => {
     for (const id of ["RTRN-01", "DELV-03", "CHKT-01", "STAT-01", "STAT-02"]) expect(verdicts.flawed[id], id).not.toBe("FAIL");
   });
 });
+
+describe("preview walk", () => {
+  it("visits only the homepage, one product and the two policies, phone only", async () => {
+    const steps: string[] = [];
+    const r = await crawlStore("http://127.0.0.1:4201/", { allowPrivateHosts: true, timeoutMs: 90_000, mode: "preview", onProgress: (s) => steps.push(s) });
+    if (!r.ok) throw new Error(r.detail);
+    expect(r.pages.map((p) => p.kind).sort()).toEqual(["HOME", "PRODUCT_1", "RETURNS", "SHIPPING"]);
+    expect(r.pages.every((p) => !p.desktopShot)).toBe(true);
+    expect(r.signals.addToCart.attempted).toBe(false);
+    expect(steps[0]).toBe("Opening your homepage on a phone");
+  });
+});
