@@ -41,3 +41,15 @@ export async function sendEmail(to: string, subject: string, html: string, text:
 export function appUrl(path = "") {
   return `${(process.env.APP_URL || "http://localhost:3000").replace(/\/$/, "")}${path}`;
 }
+
+// For the Bench health page: can we actually log in to the mail server?
+export async function verifyEmailTransport(): Promise<{ ok: boolean | null; detail: string }> {
+  if (process.env.RESEND_API_KEY) return { ok: null, detail: "Using Resend (not checked here)." };
+  if (!process.env.SMTP_USER || !process.env.SMTP_PASS) return { ok: false, detail: "SMTP_USER / SMTP_PASS not set, so emails are only printed to the server log." };
+  try {
+    await smtp().verify();
+    return { ok: true, detail: `Signed in to ${process.env.SMTP_HOST || "smtp.gmail.com"} as ${process.env.SMTP_USER}.` };
+  } catch (err) {
+    return { ok: false, detail: `Mail server refused the login: ${err instanceof Error ? err.message : String(err)}. For Gmail, use an app password, not the account password.` };
+  }
+}

@@ -219,3 +219,9 @@ export async function markFulfilled(form: FormData) {
   await db.purchase.update({ where: { id: String(form.get("id")) }, data: { fulfilledAt: new Date() } });
   revalidatePath("/bench/orders");
 }
+
+export async function wakeNow() {
+  await requireBench();
+  await wakeCrawler("bench health check");
+  revalidatePath("/bench/health");
+}

@@ -19,6 +19,7 @@ export default async function BenchLayout({ children }: { children: React.ReactN
             <Link href="/bench/checks">Checks</Link>
             <Link href="/bench/new">New runs</Link>
             <Link href="/bench/removals">Removals</Link>
+            <Link href="/bench/health">Health</Link>
             <form action={logout}><button className="btn btn-quiet btn-sm">Sign out</button></form>
           </nav>
         </div>

@@ -8,7 +8,7 @@ import { checkModes } from "./promotion";
 import { candidateFrom, scoreOf, selectFindings } from "./select";
 import { instantSummary, previewSummary, recheckSummary, type ResultRow } from "./summary";
 import type { CheckContext, CheckVerdict, Citation, CrawlSignals, PageData, PageKind, StoredPage } from "./types";
-import { draftFindings } from "./write";
+import { draftFindings, lastWriterIssue } from "./write";
 
 // Writes the crawler's current step for the founder's live screen, in order.
 function progressWriter(runId: string) {
@@ -109,6 +109,11 @@ export async function processRun(runId: string) {
       return { checkId: s.checkId, checkName: def.name, template: def.copy(detail, citation), citation, detail };
     }),
   );
+
+  if (lastWriterIssue && lastWriterIssue !== "No ANTHROPIC_API_KEY") {
+    const cur = await db.run.findUnique({ where: { id: run.id }, select: { notes: true } });
+    await db.run.update({ where: { id: run.id }, data: { notes: [cur?.notes, `AI wording: ${lastWriterIssue}`].filter(Boolean).join(" · ").slice(0, 500) } });
+  }
 
   for (const c of candidates) {
     const r = results.find((x) => x.id === c.resultId)!;

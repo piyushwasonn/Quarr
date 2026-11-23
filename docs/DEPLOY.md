@@ -116,6 +116,30 @@ Start in **Test mode** (the toggle at the top of the dashboard).
 3. Redeploy. Then sign in on SITE, open a First Look and buy a re-check with test UPI `success@razorpay`. The credit should appear right away, and the payment should show in `/bench/orders`.
 4. **Going live:** Razorpay reviews the website first. It looks for the Contact, Terms, Privacy, and Cancellation & Refund pages, which the site has at `/contact`, `/terms`, `/privacy` and `/refunds`. Make sure `/contact` shows your real name, address and phone. Razorpay may ask for a custom domain rather than a `netlify.app` address. If it does, that's the moment to buy one. Then switch to the Live keys and add a Live webhook.
 
+## 7. AI wording (Claude)
+
+QUARR's checks decide every finding. Claude rewrites each finding's wording so it reads naturally for that store. It never adds a finding, and it never adds a number that isn't in the evidence. Without a key, QUARR uses its own templates, so this step is optional but makes reports read better.
+
+1. Go to **console.anthropic.com**, sign in (Google works) and add billing under **Plans & billing**.
+2. Go to **API keys** → **Create key**, and name it `QUARR crawler`.
+3. Go to GitHub → **piyushwasonn/Quarr** → **Settings** → **Secrets and variables** → **Actions** → **New repository secret**: `ANTHROPIC_API_KEY`. It goes in GitHub, not Netlify, because the wording happens in the crawler.
+
+Cost: one short request per First Look, roughly ₹2–4 each at current prices.
+
+## 8. Check everything: Bench → Health
+
+Open SITE `/bench/health` and sign in with `BENCH_PASSWORD`. It tests each piece live and says what's wrong and how to fix it:
+
+- database
+- screenshot storage
+- email login
+- crawler wake-up, and whether queued stores are being picked up
+- whether Claude is actually wording findings (with the last error if it isn't)
+- Google sign-in
+- Razorpay
+
+It never shows a secret's value. **Wake the crawler now** starts a crawl on demand.
+
 ---
 
 ## After deploy: Step 0, before telling anyone

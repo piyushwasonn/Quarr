@@ -34,12 +34,21 @@ const Out = z.object({
   ),
 });
 
+// Why the last batch fell back to templates, if it did. The pipeline records it on the run,
+// so Bench → Health can show the real reason instead of a silent fallback.
+export let lastWriterIssue: string | null = null;
+
 export type DraftInput = { checkId: string; checkName: string; template: FindingCopy; citation: Citation; detail: Record<string, unknown> };
 export type DraftOutput = FindingCopy & { checkId: string; draftedBy: "claude" | "template" };
 
 export async function draftFindings(storeName: string | null, items: DraftInput[]): Promise<DraftOutput[]> {
   const fallback = items.map((i) => ({ ...i.template, checkId: i.checkId, draftedBy: "template" as const }));
-  if (!items.length || !process.env.ANTHROPIC_API_KEY || process.env.QUARR_DISABLE_AI === "1") return fallback;
+  lastWriterIssue = null;
+  if (!items.length || process.env.QUARR_DISABLE_AI === "1") return fallback;
+  if (!process.env.ANTHROPIC_API_KEY) {
+    lastWriterIssue = "No ANTHROPIC_API_KEY";
+    return fallback;
+  }
 
   const client = new Anthropic();
   const payload = items.map((i) => ({
@@ -64,15 +73,22 @@ export async function draftFindings(storeName: string | null, items: DraftInput[
         },
       ],
     });
-    if (response.stop_reason === "refusal" || !response.parsed_output) return fallback;
+    if (response.stop_reason === "refusal" || !response.parsed_output) {
+      lastWriterIssue = response.stop_reason === "refusal" ? "Claude declined the request" : `No structured output (stop reason: ${response.stop_reason})`;
+      return fallback;
+    }
 
     const byId = new Map(response.parsed_output.findings.map((f) => [f.checkId, f]));
     return items.map((item, idx) => {
       const draft = byId.get(item.checkId);
-      if (!draft || !numbersGrounded(draft, item)) return fallback[idx];
+      if (!draft || !numbersGrounded(draft, item)) {
+        lastWriterIssue = draft ? `Draft for ${item.checkId} added a number not in the evidence; template used` : `No draft returned for ${item.checkId}`;
+        return fallback[idx];
+      }
       return { checkId: item.checkId, title: draft.title, observed: draft.observed, likelyEffect: draft.likelyEffect, notYetProven: draft.notYetProven, draftedBy: "claude" as const };
     });
   } catch (err) {
+    lastWriterIssue = err instanceof Anthropic.APIError ? `Claude API error ${err.status}: ${err.message}` : `Claude call failed: ${err instanceof Error ? err.message : String(err)}`;
     if (err instanceof Anthropic.RateLimitError) console.warn("[writer] rate limited; using templates");
     else if (err instanceof Anthropic.APIError) console.warn(`[writer] API error ${err.status}; using templates`);
     else console.warn("[writer] failed; using templates", err);
