@@ -1,4 +1,5 @@
 import type { User } from "@prisma/client";
+import { wakeCrawler } from "./crawler";
 import { db } from "./db";
 import { newPublicToken } from "./tokens";
 
@@ -21,7 +22,7 @@ export async function claimPreview(user: User, previewToken: string) {
     if (!existing.userId) return db.run.update({ where: { id: existing.id }, data: { userId: user.id } });
     return null; // someone else already has today's walk of this store
   }
-  return db.run.create({
+  const full = await db.run.create({
     data: {
       publicToken: newPublicToken(),
       storeUrl: preview.storeUrl,
@@ -35,6 +36,8 @@ export async function claimPreview(user: User, previewToken: string) {
       ipHash: preview.ipHash,
     },
   });
+  await wakeCrawler(`first look ${full.domain}`);
+  return full;
 }
 
 export async function creditsFor(userId: string) {
@@ -56,5 +59,6 @@ export async function startRecheck(user: User, runId: string): Promise<{ ok: tru
   const run = await db.run.create({
     data: { publicToken: newPublicToken(), storeUrl: base.storeUrl, domain: base.domain, email: user.email, userId: user.id, kind: "RECHECK", priority: 3, parentRunId: base.id, source: "PUBLIC" },
   });
+  await wakeCrawler(`re-check ${run.domain}`);
   return { ok: true, id: run.id };
 }

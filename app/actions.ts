@@ -2,6 +2,7 @@
 
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { wakeCrawler } from "@/lib/crawler";
 import { db } from "@/lib/db";
 import { hashIp, newPublicToken } from "@/lib/tokens";
 import { isValidEmail, normalizeStoreUrl } from "@/lib/url";
@@ -34,6 +35,7 @@ export async function startScan(_prev: ScanState, form: FormData): Promise<ScanS
   const run = await db.run.create({
     data: { publicToken: newPublicToken(), storeUrl: store.url, domain: store.domain, kind: "PREVIEW", priority: 0, ipHash, source: "PUBLIC" },
   });
+  await wakeCrawler(`preview ${store.domain}`);
   redirect(`/scan/${run.publicToken}`);
 }
 

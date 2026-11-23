@@ -48,6 +48,7 @@ npm install
 npx prisma db push            # create tables
 npm run build && npm start    # web app on :3000
 npm run worker                # separate process: crawls run here, never in a web request
+                              # (production uses `npm run drain` on GitHub Actions instead)
 ```
 
 Bench: `http://localhost:3000/bench` (password = `BENCH_PASSWORD`).
@@ -79,12 +80,13 @@ npm test
 
 ## Deploying
 
-Step-by-step guide (Neon, Railway, Resend, Google sign-in, Razorpay): **[docs/DEPLOY.md](docs/DEPLOY.md)**. The `Dockerfile` runs the web app and the worker in one container sharing a `/data` volume; `scripts/run-all.mjs` syncs the schema on start.
+Step-by-step guide: **[docs/DEPLOY.md](docs/DEPLOY.md)**. No domain is needed.
 
-- **Web app:** Vercel, or any Node host. **Database:** Neon Postgres (`DATABASE_URL`).
-- **Worker:** it needs Chromium and runs for minutes, so put it on Railway, Fly or Render, using the official Playwright Docker image.
-- **Run the worker from an Indian region** (for example Mumbai). Geo-pricing and serviceability apps behave differently for foreign IPs, and STAT-02 (currency) would misfire.
-- **Screenshots:** `lib/storage.ts` writes to local disk. Swap its two functions for Cloudflare R2 or S3 before running more than one machine.
+- **Website:** Netlify (`netlify.toml`). Screenshots live in Netlify Blobs (`STORAGE_DRIVER=netlify`).
+- **Database:** Neon Postgres (`DATABASE_URL`).
+- **Crawler:** GitHub Actions (`.github/workflows/crawl.yml`) runs `npm run drain` in the Playwright image. The website wakes it through `repository_dispatch` whenever a run is queued (`lib/crawler.ts`). It drains the queue, exits after 20 s idle, and syncs the schema before each run. A 3-hourly scheduled run is a safety net.
+- **Email:** a Gmail account through SMTP (`SMTP_USER`/`SMTP_PASS`). Resend takes over once `RESEND_API_KEY` is set.
+- **Location:** GitHub's runners are in the US. Geo-pricing and serviceability apps behave differently for foreign visitors, so STAT-02 (currency) can misfire. Watch for it in the Bench.
 
 ## Known limits
 

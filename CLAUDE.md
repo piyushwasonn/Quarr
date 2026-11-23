@@ -1,6 +1,6 @@
 # QUARR
 
-Next.js 15 app + Playwright crawl worker + Postgres (Prisma). See README.md for the product and architecture.
+Next.js 15 app on Netlify + Playwright crawl worker on GitHub Actions + Neon Postgres (Prisma) + Netlify Blobs. See README.md and docs/DEPLOY.md.
 
 ## Source of truth
 Product decisions live in Notion, "QUARR — Source of Truth" (pages 01–07 and the 04 Decision Log). Any change to a name, price, promise, check rule or scope gets a row in 04.

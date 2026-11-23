@@ -1,7 +1,9 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { db } from "@/lib/db";
 import { sendLoginCode, verifyLoginCode } from "@/lib/login-code";
+import { claimPreview } from "@/lib/runs";
 import { safeNext, startUserSession } from "@/lib/session";
 import { isValidEmail } from "@/lib/url";
 
@@ -23,5 +25,12 @@ export async function signInStep(prev: SignInState, form: FormData): Promise<Sig
   const res = await verifyLoginCode(email, String(form.get("code") ?? ""));
   if (!res.ok) return { step: "code", email, next, error: res.error };
   await startUserSession(res.userId);
+  // Unlocking a scan: start the full First Look here and land on its page directly.
+  const claim = next.match(/^\/account\/claim\/([\w-]+)$/);
+  if (claim) {
+    const user = await db.user.findUniqueOrThrow({ where: { id: res.userId } });
+    const run = await claimPreview(user, claim[1]);
+    redirect(run ? `/account/runs/${run.id}` : "/account?notice=claimed");
+  }
   redirect(next);
 }

@@ -3,11 +3,11 @@
 import type { EditReason, Prisma } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { rm } from "node:fs/promises";
-import path from "node:path";
 import { checkPassword, endBenchSession, requireBench, startBenchSession } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { publishRun } from "@/lib/deliver";
+import { wakeCrawler } from "@/lib/crawler";
+import { deletePrefix } from "@/lib/storage";
 import { newPublicToken } from "@/lib/tokens";
 import { isValidEmail, normalizeStoreUrl } from "@/lib/url";
 
@@ -156,6 +156,7 @@ export async function requeueRun(form: FormData) {
     db.page.deleteMany({ where: { runId } }),
     db.run.update({ where: { id: runId }, data: { status: "QUEUED", failureCode: null, failureDetail: null, attempts: 0, lockedAt: null, reviewStartAt: null, autoPublished: false } }),
   ]);
+  await wakeCrawler("bench re-run");
   revalidatePath("/bench");
   redirect("/bench");
 }
@@ -188,6 +189,7 @@ export async function queueRuns(_prev: { error?: string; queued?: number }, form
     await db.run.create({ data: { publicToken: newPublicToken(), storeUrl: n.url, domain: n.domain, email, source: "BENCH" } });
     queued++;
   }
+  if (queued) await wakeCrawler(`bench queued ${queued}`);
   revalidatePath("/bench");
   return { queued };
 }
@@ -205,7 +207,7 @@ export async function handleRemoval(form: FormData) {
   const req = await db.removalRequest.findUniqueOrThrow({ where: { id: String(form.get("id")) } });
   const runs = await db.run.findMany({ where: { domain: req.domain }, select: { id: true } });
   for (const r of runs) {
-    await rm(path.resolve(process.env.STORAGE_DIR || "./storage", "runs", r.id), { recursive: true, force: true });
+    await deletePrefix(`runs/${r.id}/`);
   }
   await db.run.deleteMany({ where: { domain: req.domain } });
   await db.removalRequest.update({ where: { id: req.id }, data: { handledAt: new Date() } });

@@ -1,0 +1,67 @@
+# The QUARR crawler. The website wakes it (repository_dispatch) whenever a scan,
+# First Look or re-check is queued; it walks every queued store, then exits.
+# A run every 3 hours is a safety net in case a wake-up was missed.
+name: Crawl queued stores
+
+on:
+  repository_dispatch:
+    types: [crawl]
+  workflow_dispatch:
+  schedule:
+    - cron: "17 */3 * * *"
+
+# One crawler at a time; a wake-up that arrives mid-run waits and drains what's left.
+concurrency:
+  group: crawler
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  crawl:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    container:
+      image: mcr.microsoft.com/playwright:v1.64.1-noble
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      APP_URL: ${{ secrets.APP_URL }}
+      STORAGE_DRIVER: netlify
+      BLOBS_SITE_ID: ${{ secrets.BLOBS_SITE_ID }}
+      BLOBS_TOKEN: ${{ secrets.BLOBS_TOKEN }}
+      SMTP_USER: ${{ secrets.SMTP_USER }}
+      SMTP_PASS: ${{ secrets.SMTP_PASS }}
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      CRAWL_TIMEOUT_MS: "240000"
+    steps:
+      - name: Check configuration
+        id: config
+        run: |
+          if [ -z "$DATABASE_URL" ] || [ -z "$BLOBS_SITE_ID" ] || [ -z "$BLOBS_TOKEN" ]; then
+            echo "::notice::Crawler secrets are not set yet (see docs/DEPLOY.md). Skipping."
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/checkout@v4
+        if: steps.config.outputs.ready == 'true'
+
+      - uses: actions/cache@v4
+        if: steps.config.outputs.ready == 'true'
+        with:
+          path: ~/.npm
+          key: npm-${{ hashFiles('package-lock.json') }}
+
+      - name: Install
+        if: steps.config.outputs.ready == 'true'
+        run: npm ci --no-audit --no-fund
+
+      - name: Sync database schema
+        if: steps.config.outputs.ready == 'true'
+        run: npx prisma db push --skip-generate
+
+      - name: Walk queued stores
+        if: steps.config.outputs.ready == 'true'
+        run: npm run drain

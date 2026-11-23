@@ -91,7 +91,8 @@ export default async function Scan({ params }: { params: Promise<{ token: string
                 </p>
               </div>
               <div className="stack" style={{ justifySelf: "start" }}>
-                <Link href={unlock} className="btn btn-light" style={{ padding: "14px 22px" }}>{user ? "Start my full First Look" : "Sign up free to unlock"}</Link>
+                {/* A plain link: the claim route redirects, which needs a full page load. */}
+                <a href={unlock} className="btn btn-light" style={{ padding: "14px 22px" }}>{user ? "Start my full First Look" : "Sign up free to unlock"}</a>
                 <p className="small" style={{ color: "rgba(255,255,255,0.6)" }}>No card. No call.</p>
               </div>
             </div>

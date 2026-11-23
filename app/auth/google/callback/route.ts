@@ -1,5 +1,6 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
+import { appUrl } from "@/lib/email";
 import { db } from "@/lib/db";
 import { googleProfile } from "@/lib/google";
 import { safeNext, startUserSession } from "@/lib/session";
@@ -10,7 +11,7 @@ export async function GET(req: Request) {
   const jar = await cookies();
   const raw = verify(jar.get("quarr_oauth")?.value);
   jar.delete("quarr_oauth");
-  const fail = (next = "/account") => NextResponse.redirect(new URL(`/signin?next=${encodeURIComponent(next)}&error=google`, req.url));
+  const fail = (next = "/account") => NextResponse.redirect(appUrl(`/signin?next=${encodeURIComponent(next)}&error=google`));
   if (!raw) return fail();
   const saved = JSON.parse(Buffer.from(raw, "base64url").toString()) as { state: string; verifier: string; next: string; at: number };
   const next = safeNext(saved.next);
@@ -30,7 +31,7 @@ export async function GET(req: Request) {
         update: { googleSub: profile.sub, name: profile.name ?? undefined },
       }));
     await startUserSession(user.id);
-    return NextResponse.redirect(new URL(next, req.url));
+    return NextResponse.redirect(appUrl(next));
   } catch (err) {
     console.error("[google] sign-in failed", err);
     return fail(next);

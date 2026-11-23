@@ -3,7 +3,9 @@
 // CheckResults (deterministic verdicts), and the Findings (what a founder reads).
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  // native for local and GitHub Actions; rhel-openssl-3.0.x for Netlify Functions.
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
 }
 
 datasource db {

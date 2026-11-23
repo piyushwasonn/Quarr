@@ -1,8 +1,9 @@
-import "./env";
 import { db } from "@/lib/db";
 import { processRun } from "./pipeline";
 
-// Long-running job worker. Crawls take minutes, so they never run inside a web request.
+// The crawl worker. Crawls take minutes, so they never run inside a web request.
+// Locally it runs forever (engine/worker-cli.ts). On GitHub Actions it drains the
+// queue and exits when idle (engine/drain.ts), so it only uses minutes when there is work.
 const POLL_MS = 4000;
 const STALE_MINUTES = 15;
 const MAX_ATTEMPTS = 2;
@@ -39,32 +40,45 @@ async function recoverStale() {
   });
 }
 
-let stopping = false;
-process.on("SIGINT", () => (stopping = true));
-process.on("SIGTERM", () => (stopping = true));
+export type WorkerOptions = {
+  exitWhenIdleMs?: number; // stop once both lanes have had nothing to do for this long
+  maxRuntimeMs?: number; // stop claiming new runs after this long (finish the current ones)
+};
 
-async function loop(lane: Lane) {
-  while (!stopping) {
-    if (lane === "main") await recoverStale();
-    const id = await claimNext(lane);
-    if (!id) {
-      await new Promise((r) => setTimeout(r, lane === "preview" ? 1000 : POLL_MS));
-      continue;
-    }
-    try {
-      await processRun(id);
-    } catch (err) {
-      console.error(`[worker:${lane}] run ${id} errored`, err);
-      await db.run.update({ where: { id }, data: { status: "CRAWL_FAILED", failureCode: "ERROR", failureDetail: String(err).slice(0, 500), lockedAt: null, progress: null } });
-    }
-  }
-}
+export async function runWorker(opts: WorkerOptions = {}) {
+  const started = Date.now();
+  let stopping = false;
+  let busy = 0;
+  let lastActivity = Date.now();
+  const stop = () => (stopping = true);
+  process.on("SIGINT", stop);
+  process.on("SIGTERM", stop);
 
-async function main() {
+  const loop = async (lane: Lane) => {
+    while (!stopping) {
+      if (opts.maxRuntimeMs && Date.now() - started > opts.maxRuntimeMs) break;
+      if (lane === "main") await recoverStale();
+      const id = await claimNext(lane);
+      if (!id) {
+        if (opts.exitWhenIdleMs && busy === 0 && Date.now() - lastActivity > opts.exitWhenIdleMs) break;
+        await new Promise((r) => setTimeout(r, lane === "preview" ? 1000 : POLL_MS));
+        continue;
+      }
+      busy++;
+      try {
+        await processRun(id);
+      } catch (err) {
+        console.error(`[worker:${lane}] run ${id} errored`, err);
+        await db.run.update({ where: { id }, data: { status: "CRAWL_FAILED", failureCode: "ERROR", failureDetail: String(err).slice(0, 500), lockedAt: null, progress: null } });
+      } finally {
+        busy--;
+        lastActivity = Date.now();
+      }
+    }
+  };
+
   console.log("[worker] started (preview lane + main lane)");
   await Promise.all([loop("preview"), loop("main")]);
   await db.$disconnect();
-  console.log("[worker] stopped");
+  console.log(`[worker] stopped after ${Math.round((Date.now() - started) / 1000)}s`);
 }
-
-main();
