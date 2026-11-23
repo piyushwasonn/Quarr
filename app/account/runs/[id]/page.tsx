@@ -118,7 +118,7 @@ function FullView({ run, reviewed, pageFor }: { run: RunWithPages; reviewed: boo
         </div>
       )}
       {sum?.byLens.length ? (
-        <div className="row" style={{ gap: 8 }}>{sum.byLens.map((l) => <span key={l.lens} className="chip fail">{l.name} · {l.n}</span>)}</div>
+        <div className="row" style={{ gap: 8 }}>{sum.byLens.map((l) => <span key={l.lens} className="chip fail status">{l.name}: {l.n} possible {l.n === 1 ? "problem" : "problems"}</span>)}</div>
       ) : null}
       {!reviewed && sum?.findings.length
         ? sum.findings.map((f, i) => <FindingCard key={f.checkId} index={i + 1} {...f} page={pageFor(f.citation?.pageKind)} />)
@@ -132,12 +132,12 @@ function RecheckView({ sum }: { sum: RecheckSummary }) {
   const hidden = sum.hidden ?? { fixed: 0, stillOpen: 0, appeared: 0, unverified: 0 };
   const block = (title: string, items: RecheckItem[], tone: string, empty: string, more = 0) => (
     <div className="card card-pad stack">
-      <div className="spread"><h3>{title}</h3><span className={`chip ${tone}`}>{items.length + more}</span></div>
+      <div className="spread"><h3>{title}</h3><span className={`chip status ${tone}`}>{items.length + more} {tone === "pass" ? "fixed" : tone === "fail" ? (items.length + more === 1 ? "problem" : "problems") : "not assessed"}</span></div>
       {more ? <p className="small muted">{items.length ? `Plus ${more} more` : `${more}`} from checks a QUARR Expert hasn&apos;t reviewed with you yet. They&apos;re named in your reviewed First Look or journey.</p> : null}
       {items.length ? (
         <ul className="list-clean small">
           {items.map((i) => (
-            <li key={i.checkId} className={tone === "pass" ? "tick" : "cross"}>
+            <li key={i.checkId} className={tone === "pass" ? "tick" : tone === "fail" ? "problem" : "not-assessed"}>
               <span><strong style={{ color: "var(--navy-900)" }}>{i.title}</strong>{i.citation ? <span className="muted"> · {pageLabel(i.citation.pageKind)}</span> : null}</span>
             </li>
           ))}
@@ -154,7 +154,7 @@ function RecheckView({ sum }: { sum: RecheckSummary }) {
       {block("Fixed", sum.fixed, "pass", "Nothing from last time is fixed yet.", hidden.fixed)}
       {block("Still open", sum.stillOpen, "fail", "Nothing from last time is still open.", hidden.stillOpen)}
       {block("New since last time", sum.appeared, "fail", "Nothing new appeared.", hidden.appeared)}
-      {sum.unverified.length + hidden.unverified ? block("Couldn't confirm this time", sum.unverified, "unseen", "", hidden.unverified) : null}
+      {sum.unverified.length + hidden.unverified ? block("Not assessed this time", sum.unverified, "unseen", "We could not see these pages on this walk, so we can't say whether they are fixed.", hidden.unverified) : null}
     </div>
   );
 }

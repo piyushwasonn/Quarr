@@ -31,7 +31,7 @@ export function SiteHeader() {
           <Link href="/#pricing" className="hide-sm">Pricing</Link>
           <Link href="/account">Sign in</Link>
           <Link href="/#start" className="btn btn-sm btn-primary">
-            Scan my store
+            Free store check
           </Link>
         </nav>
       </div>

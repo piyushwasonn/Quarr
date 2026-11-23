@@ -5,8 +5,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: { default: "QUARR — See what the customer will see", template: "%s · QUARR" },
-  description:
-    "Paste your store URL. QUARR walks it like a first-time buyer, on a phone and a laptop, and sends you up to three evidence-backed findings, each traced to a screenshot. Free.",
+  description: "Every founder has blind spots. QUARR, a customer perspective consultancy, helps you find the gaps in your customer experience before they cost you sales. Free store check for Indian D2C brands.",
 };
 
 export const viewport: Viewport = { themeColor: "#f7f9fc", width: "device-width", initialScale: 1 };

@@ -23,7 +23,7 @@ export function ScanForm() {
       </label>
       {state.error ? <p className="form-error" role="alert">{state.error}</p> : null}
       <button className="btn btn-primary" type="submit" disabled={pending} style={{ width: "100%", padding: "14px 20px" }}>
-        {pending ? "Starting…" : "Scan my store"}
+        {pending ? "Starting…" : "Check my store"}
       </button>
       <p className="promise"><span className="dot" aria-hidden /> Free. About a minute. No sign-up to see the first result.</p>
     </form>

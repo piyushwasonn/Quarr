@@ -118,10 +118,10 @@ export function ReviewWorkspace({ runId, canPublish, pages, shown, others, passe
 
         <details className="more">
           <summary>Passed ({passes.length})</summary>
-          <div className="row" style={{ gap: 6 }}>{passes.map((p) => <span className="chip pass" key={p}>{p}</span>)}</div>
+          <div className="row" style={{ gap: 6 }}>{passes.map((p) => <span className="chip pass status" key={p}>{p}</span>)}</div>
         </details>
         <details className="more">
-          <summary>Not observable ({unseen.length})</summary>
+          <summary>Not assessed: could not be observed ({unseen.length})</summary>
           <ul className="small muted" style={{ paddingLeft: 18 }}>{unseen.map((u) => <li key={u.id}><strong>{u.id}</strong> {u.name}: {u.why}</li>)}</ul>
         </details>
       </div>

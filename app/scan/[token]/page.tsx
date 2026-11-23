@@ -68,7 +68,7 @@ export default async function Scan({ params }: { params: Promise<{ token: string
             {sum.byLens.length ? (
               <div className="row" style={{ gap: 8 }}>
                 {sum.byLens.map((l) => (
-                  <span key={l.lens} className="chip fail">{l.name} · {l.n}</span>
+                  <span key={l.lens} className="chip fail status">{l.name}: {l.n} possible {l.n === 1 ? "problem" : "problems"}</span>
                 ))}
               </div>
             ) : null}

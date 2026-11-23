@@ -17,20 +17,28 @@ export default function Home() {
         <div className="wrap hero-grid">
           <div>
             <div style={{ marginBottom: 28 }}><BrandLogo width={300} /></div>
-            <p className="eyebrow">Free First Look · for Indian D2C brands</p>
-            <h1 style={{ marginTop: 18 }}>See your store the way a first-time buyer does.</h1>
+            <p className="eyebrow">Customer Perspective Consultancy</p>
+            <h1 style={{ marginTop: 18 }}>Every founder has blind spots.</h1>
             <p className="lede">
-              Paste your store link. In about a minute QUARR shows you what a new buyer is likely to question on your store. Sign up free, and it walks the whole thing (product, cart, the first screen of checkout, your policies) with a screenshot behind every finding.
+              Your customers see what you might miss. QUARR helps you uncover the gaps in your customer experience before they cost you sales.
             </p>
-            <ul className="hero-points">
-              <li>A first result in about a minute, before you sign up</li>
-              <li>Every finding traced to a screenshot of your live store</li>
-              <li>The full First Look is read by a QUARR Expert before it&apos;s final</li>
-            </ul>
+            <div className="row" style={{ marginTop: 28, gap: 12 }}>
+              <a href="#start" className="btn btn-primary">Get your free store check</a>
+              <Link href="/approach" className="btn btn-ghost">How QUARR works</Link>
+            </div>
+            <div className="hero-focus">
+              <p className="eyebrow brass">Starting with Indian D2C brands</p>
+              <p>A guided review of the customer journey, from first impression to purchase.</p>
+              <ul className="hero-points">
+                <li>A first result in about a minute, before you sign up</li>
+                <li>Every finding traced to a screenshot of your live store</li>
+                <li>The full review is read by a QUARR Expert before it&apos;s final</li>
+              </ul>
+            </div>
           </div>
           <div className="submit-card" id="start">
             <p className="eyebrow brass">Free · about a minute</p>
-            <h2 style={{ margin: "8px 0 20px" }}>Scan your store</h2>
+            <h2 style={{ margin: "8px 0 20px" }}>Your free store check</h2>
             <ScanForm />
           </div>
         </div>

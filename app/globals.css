@@ -25,11 +25,14 @@
   --brass: #71869b;
   --brass-soft: #eef2f7;
 
-  --fail: #8a4f12;
-  --fail-bg: #fbf1e4;
-  --pass: #2d6a4f;
-  --pass-bg: #e6f2ec;
-  --unseen: #4f6275;
+  /* Status (Notion 04, 23 Nov). Problem text is #AC4F4F, a touch darker than the decided
+     #B45353, which is 4.29:1 on its background; this keeps small chip text at AA (4.63:1).
+     Always pair with a written status and an icon: colour alone never carries meaning. */
+  --fail: #ac4f4f;
+  --fail-bg: #fbeded;
+  --pass: #26745c;
+  --pass-bg: #eaf5ef;
+  --unseen: #4f6275; /* Not assessed: never shown as Passed */
   --unseen-bg: #eef2f7;
   --danger: #8f2d2d;
 
@@ -133,8 +136,15 @@ p { margin: 0; }
 .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-lg); box-shadow: var(--shadow); }
 .card-pad { padding: clamp(20px, 3vw, 32px); }
 .chip { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 999px; background: var(--navy-50); color: var(--navy-700); border: 1px solid var(--navy-100); white-space: nowrap; }
-.chip.fail { background: var(--fail-bg); color: var(--fail); border-color: #f0dcc2; }
-.chip.pass { background: var(--pass-bg); color: var(--pass); border-color: #cfe5d9; }
+.chip.fail { background: var(--fail-bg); color: var(--fail); border-color: #f1d3d3; }
+.chip.pass { background: var(--pass-bg); color: var(--pass); border-color: #cbe6d8; }
+/* Semantic status chips carry an icon as well as colour and words. */
+.chip.status::before { display: inline-grid; place-items: center; width: 14px; height: 14px; border-radius: 50%; font-size: 10px; font-weight: 800; line-height: 1; color: #fff; flex: none; }
+.chip.status.fail::before { content: "!"; background: var(--fail); }
+.chip.status.pass::before { content: "✓"; background: var(--pass); }
+.chip.status.unseen::before { content: "–"; background: var(--unseen); }
+.problem::before { content: "!"; color: #fff; background: var(--fail); width: 16px; height: 16px; border-radius: 50%; display: inline-grid; place-items: center; font-size: 11px; font-weight: 800; flex: none; transform: translateY(2px); }
+.not-assessed::before { content: "–"; color: var(--unseen); font-weight: 700; flex: none; }
 .chip.unseen { background: var(--unseen-bg); color: var(--unseen); border-color: var(--line); }
 .chip.brass { background: var(--brass-soft); color: #7a5d2f; border-color: #e8dcc6; }
 .chip.dark { background: var(--navy-900); color: #fff; border-color: var(--navy-900); }
@@ -146,6 +156,7 @@ p { margin: 0; }
 .hero .eyebrow { color: var(--muted); }
 .hero-grid { display: grid; grid-template-columns: 1.15fr 1fr; gap: 56px; align-items: start; position: relative; z-index: 1; }
 @media (max-width: 900px) { .hero-grid { grid-template-columns: 1fr; gap: 40px; } }
+.hero-focus { margin-top: 36px; padding-top: 24px; border-top: 1px solid var(--line); display: grid; gap: 6px; color: var(--ink-2); max-width: 56ch; }
 .hero-points { display: grid; gap: 12px; margin-top: 32px; padding: 0; list-style: none; color: var(--ink-2); font-size: 15px; }
 .hero-points li { display: flex; gap: 12px; align-items: baseline; }
 .hero-points li::before { content: ""; width: 14px; height: 1.5px; background: var(--brass); flex: none; transform: translateY(-4px); }
@@ -254,7 +265,7 @@ p { margin: 0; }
 .tiles .card { padding: 16px; border-radius: 12px; box-shadow: none; }
 .tiles .n { font-family: var(--serif); font-size: 28px; color: var(--navy-900); line-height: 1.1; }
 .tiles .t { font-size: 12px; color: var(--muted); margin-top: 4px; }
-.alert { border: 1px solid #f0dcc2; background: var(--fail-bg); color: var(--fail); padding: 10px 14px; border-radius: 10px; font-size: 14px; }
+.alert { border: 1px solid #f1d3d3; background: var(--fail-bg); color: var(--fail); padding: 10px 14px; border-radius: 10px; font-size: 14px; }
 .table-wrap { overflow-x: auto; }
 table.data { width: 100%; border-collapse: collapse; font-size: 14px; background: #fff; }
 table.data th { text-align: left; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 600; padding: 10px 12px; border-bottom: 1px solid var(--line); background: #fafbfc; white-space: nowrap; }
@@ -291,3 +302,4 @@ details.more > summary { cursor: pointer; font-weight: 600; font-size: 14px; col
 .approach-step { display: grid; grid-template-columns: 56px 1fr; gap: 20px; align-items: center; padding: 22px 24px; box-shadow: none; }
 .approach-step h2 { font-size: 20px; margin-bottom: 4px; }
 .approach-letter { width: 56px; height: 56px; border-radius: 12px; background: var(--navy-900); color: #fff; display: grid; place-items: center; font-weight: 650; font-size: 24px; letter-spacing: 0.02em; }
+.hero-focus .hero-points { margin-top: 12px; }

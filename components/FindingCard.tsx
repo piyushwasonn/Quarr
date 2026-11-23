@@ -46,7 +46,10 @@ export function FindingCard({
         <div className="finding-body">
           <div className="row" style={{ justifyContent: "space-between" }}>
             <span className="finding-num">FINDING {String(index).padStart(2, "0")}</span>
-            <span className="chip">{LENS_NAMES[lens as Lens] ?? lens}</span>
+            <span className="row" style={{ gap: 6 }}>
+              <span className="chip">{LENS_NAMES[lens as Lens] ?? lens}</span>
+              <span className="chip fail status">Problem found</span>
+            </span>
           </div>
           <h2>{title}</h2>
           <div className="facet observed">

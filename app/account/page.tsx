@@ -69,7 +69,7 @@ export default async function Account({ searchParams }: { searchParams: Promise<
                     <strong style={{ fontSize: 17, color: "var(--navy-900)" }}>{r.domain}</strong>
                     <span className="small muted">{r.kind === "RECHECK" ? "Re-check" : "First Look"} · {r.createdAt.toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</span>
                   </div>
-                  <span className={`chip ${tone}`}>{label}</span>
+                  <span className={`chip ${tone === "pass" || tone === "fail" ? `status ${tone}` : tone}`}>{label}</span>
                 </Link>
               );
             })
