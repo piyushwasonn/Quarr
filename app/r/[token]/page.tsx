@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { SiteFooter, SiteHeader } from "@/components/chrome";
+import { BrandLogo, SiteFooter, SiteHeader } from "@/components/chrome";
 import { FindingCard, pageLabel } from "@/components/FindingCard";
 import { CHECKS_BY_ID } from "@/engine/checks";
 import type { Citation } from "@/engine/types";
@@ -40,7 +40,8 @@ export default async function Report({ params }: { params: Promise<{ token: stri
       <SiteHeader />
       <section className="report-head" style={{ marginTop: -64, paddingTop: "calc(64px + clamp(40px, 7vw, 72px))" }}>
         <div className="wrap">
-          <p className="eyebrow">QUARR First Look · {date}</p>
+          <div style={{ marginBottom: 20 }}><BrandLogo width={200} /></div>
+          <p className="eyebrow">First Look · {date}</p>
           <h1 style={{ marginTop: 14 }}>What a first-time buyer meets on {run.storeName ? `${run.storeName}` : run.domain}.</h1>
           <p className="meta" style={{ marginTop: 14, maxWidth: 620 }}>
             We walked <strong style={{ color: "#fff" }}>{run.domain}</strong> on a 390 px phone and a desktop screen, from the homepage to the first screen of checkout. These are the pages we looked at:

@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { SiteHeader } from "@/components/chrome";
+import { BrandLogo, SiteHeader } from "@/components/chrome";
 import { SignInForm } from "@/components/SignInForm";
 import { googleConfigured } from "@/lib/google";
 import { currentUser, safeNext } from "@/lib/session";
@@ -17,7 +17,8 @@ export default async function SignIn({ searchParams }: { searchParams: Promise<{
       <SiteHeader />
       <main className="wrap" style={{ paddingTop: 56, display: "grid", placeItems: "start center" }}>
         <div className="card card-pad stack" style={{ width: "100%", maxWidth: 420, ["--stack" as string]: "18px" }}>
-          <p className="eyebrow brass">{unlocking ? "Free · no card" : "QUARR"}</p>
+          <BrandLogo width={180} />
+          <p className="eyebrow brass">{unlocking ? "Free · no card" : "Sign in"}</p>
           <h1 style={{ fontSize: 28 }}>{unlocking ? "Sign up to unlock your First Look" : "Sign in to QUARR"}</h1>
           {sp.error === "google" ? <p className="form-error">Google sign-in didn&apos;t work this time. Use your email instead, or try again.</p> : null}
           {googleConfigured() ? (

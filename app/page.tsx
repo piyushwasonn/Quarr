@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { SiteFooter, SiteHeader } from "@/components/chrome";
+import { BrandLogo, SiteFooter, SiteHeader } from "@/components/chrome";
 import { FindingCard } from "@/components/FindingCard";
 import { ScanForm } from "@/components/ScanForm";
 import { SAMPLE_FINDING } from "@/components/sample";
@@ -16,6 +16,7 @@ export default function Home() {
       <section className="hero" style={{ marginTop: -64, paddingTop: "calc(64px + clamp(56px, 9vw, 112px))" }}>
         <div className="wrap hero-grid">
           <div>
+            <div style={{ marginBottom: 28 }}><BrandLogo width={300} /></div>
             <p className="eyebrow">Free First Look · for Indian D2C brands</p>
             <h1 style={{ marginTop: 18 }}>See your store the way a first-time buyer does.</h1>
             <p className="lede">

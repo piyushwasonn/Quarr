@@ -33,8 +33,10 @@
   --unseen-bg: #eef2f7;
   --danger: #8f2d2d;
 
-  --sans: "Inter Variable", Inter, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-  --serif: var(--sans); /* the guidelines' type is sans throughout */
+  /* Font guide: Manrope for headings (600/700), Inter for body. Fallback system-ui, Arial. */
+  --sans: "Inter Variable", Inter, system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  --display: "Manrope Variable", Manrope, system-ui, Arial, sans-serif;
+  --serif: var(--display);
 
   --radius: 10px;
   --radius-lg: 14px;
@@ -59,7 +61,7 @@ body {
 img { max-width: 100%; display: block; }
 a { color: var(--navy-700); text-underline-offset: 3px; text-decoration-thickness: 1px; }
 a:hover { color: var(--navy-900); }
-h1, h2, h3 { font-family: var(--sans); font-weight: 650; color: var(--navy-900); letter-spacing: -0.02em; line-height: 1.2; margin: 0; }
+h1, h2, h3 { font-family: var(--display); font-weight: 700; color: var(--navy-900); letter-spacing: -0.02em; line-height: 1.2; margin: 0; }
 h1 { font-size: clamp(30px, 4.2vw, 44px); }
 h2 { font-size: clamp(24px, 3vw, 30px); }
 h3 { font-size: 20px; }
@@ -84,9 +86,7 @@ p { margin: 0; }
 .site-header { position: sticky; top: 0; z-index: 20; background: rgba(245, 246, 248, 0.86); backdrop-filter: saturate(140%) blur(10px); border-bottom: 1px solid var(--line-2); }
 .site-header.dark { background: rgba(12, 22, 38, 0.82); border-bottom-color: rgba(255,255,255,0.06); }
 .site-header .wrap { display: flex; align-items: center; justify-content: space-between; height: 64px; }
-/* Text stand-in until the master logo SVGs are added (public/brand/). */
-.wordmark { font-family: var(--sans); font-weight: 600; font-size: 19px; letter-spacing: 0.22em; color: #111111; text-decoration: none; display: inline-flex; align-items: center; gap: 10px; }
-.site-header.dark .wordmark { color: #fff; }
+.wordmark { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink); }
 .nav { display: flex; gap: 22px; align-items: center; font-size: 14px; }
 .nav a { color: var(--ink-2); text-decoration: none; }
 .site-header.dark .nav a { color: rgba(255,255,255,0.78); }
@@ -242,12 +242,12 @@ p { margin: 0; }
 
 /* ── Bench (internal) ───────────────────────── */
 .bench { background: #eef0f3; min-height: 100vh; }
-.bench-top { background: var(--navy-950); color: #fff; }
+.bench-top { background: var(--surface); border-bottom: 1px solid var(--line); color: var(--ink); }
 .bench-top .wrap { max-width: 1440px; display: flex; align-items: center; justify-content: space-between; height: 56px; gap: 16px; }
-.bench-top .wordmark { color: #fff; font-size: 17px; }
+.bench-top .wordmark { font-size: 14px; font-weight: 600; color: var(--muted); }
 .bench-top nav { display: flex; gap: 4px; font-size: 14px; flex-wrap: wrap; }
-.bench-top nav a { color: rgba(255,255,255,0.75); text-decoration: none; padding: 6px 10px; border-radius: 6px; }
-.bench-top nav a:hover { color: #fff; background: rgba(255,255,255,0.08); }
+.bench-top nav a { color: var(--ink-2); text-decoration: none; padding: 6px 10px; border-radius: 6px; }
+.bench-top nav a:hover { color: var(--navy-900); background: var(--navy-50); }
 .bench-main { max-width: 1440px; margin: 0 auto; padding: 24px var(--gutter) 64px; }
 .bench h1 { font-size: 26px; }
 .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }

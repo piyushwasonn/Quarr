@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { SiteFooter, SiteHeader } from "@/components/chrome";
+import { BrandLogo, SiteFooter, SiteHeader } from "@/components/chrome";
 
 export const metadata = { title: "Our approach", description: "Question · Understand · Anticipate · Refine · Remember. How QUARR helps founders see what the customer will see." };
 
@@ -18,7 +18,8 @@ export default function Approach() {
       <SiteHeader />
       <main className="wrap" style={{ paddingTop: 56 }}>
         <div className="section-head">
-          <p className="eyebrow brass">Our approach</p>
+          <BrandLogo width={260} />
+          <p className="eyebrow brass" style={{ marginTop: 12 }}>Our approach</p>
           <h1>Every founder has blind spots.</h1>
           <p className="lede">QUARR helps you find them before your customers do. The QUARR framework is how we deliver that promise.</p>
         </div>

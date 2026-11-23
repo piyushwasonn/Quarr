@@ -26,17 +26,18 @@ export async function publishRun(runId: string) {
     "Every report is reviewed by a QUARR Expert before it's sent.",
     "QUARR",
   ].join("\n");
-  const html = `<!doctype html><html><body style="margin:0;background:#F5F6F8;font-family:-apple-system,Segoe UI,Inter,Arial,sans-serif;color:#1F2933">
+  const html = `<!doctype html><html><body style="margin:0;background:#F7F9FC;font-family:-apple-system,Segoe UI,Inter,Arial,sans-serif;color:#1F2933">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding:32px 16px">
   <table role="presentation" width="100%" style="max-width:560px;background:#fff;border:1px solid #DDE2E8;border-radius:12px" cellpadding="0" cellspacing="0">
-  <tr><td style="padding:28px 28px 8px;font-size:13px;letter-spacing:.14em;color:#5B6675">QUARR · FIRST LOOK</td></tr>
-  <tr><td style="padding:0 28px;font-family:Georgia,serif;font-size:24px;line-height:1.3;color:#14243B">We walked ${esc(run.domain)} as a first-time buyer.</td></tr>
+  <tr><td style="padding:28px 28px 4px"><img src="${appUrl("/brand/quarr-logo-on-white.png")}" width="168" alt="QUARR" style="display:block;border:0;width:168px;height:auto"></td></tr>
+  <tr><td style="padding:12px 28px 8px;font-size:12px;letter-spacing:.14em;color:#4F6275">FIRST LOOK</td></tr>
+  <tr><td style="padding:0 28px;font-family:Manrope,Inter,Arial,sans-serif;font-weight:700;font-size:22px;line-height:1.3;color:#0B1F44">We walked ${esc(run.domain)} as a first-time buyer.</td></tr>
   <tr><td style="padding:16px 28px 0;font-size:15px;line-height:1.6">${
     items.length
       ? `Here's what stood out:<ol style="padding-left:20px;margin:8px 0">${run.findings.map((f) => `<li style="margin:6px 0">${esc(f.title)}</li>`).join("")}</ol>`
       : "We found nothing serious enough to lead with, which is a good result."
   }</td></tr>
-  <tr><td style="padding:20px 28px"><a href="${link}" style="display:inline-block;background:#1C3354;color:#fff;text-decoration:none;padding:12px 20px;border-radius:8px;font-weight:600">Read your First Look</a></td></tr>
+  <tr><td style="padding:20px 28px"><a href="${link}" style="display:inline-block;background:#0B1F44;color:#fff;text-decoration:none;padding:12px 20px;border-radius:8px;font-weight:600">Read your First Look</a></td></tr>
   <tr><td style="padding:0 28px 28px;font-size:13px;color:#5B6675;line-height:1.5">Every finding links to the screenshot it came from. Every report is reviewed by a QUARR Expert before it's sent.</td></tr>
   </table></td></tr></table></body></html>`;
 
@@ -76,6 +77,6 @@ export async function sendRecheckEmail(runId: string) {
   const html = `<div style="font-family:-apple-system,Segoe UI,Inter,Arial,sans-serif;font-size:15px;line-height:1.6;color:#1F2933;max-width:520px">
   <p>We walked <strong>${esc(run.domain)}</strong> again and compared it with your last First Look.</p>
   <p style="font-size:18px;color:#14243B"><strong>${line}</strong></p>
-  <p><a href="${link}" style="display:inline-block;background:#1C3354;color:#fff;text-decoration:none;padding:12px 20px;border-radius:8px;font-weight:600">See what changed</a></p></div>`;
+  <p><a href="${link}" style="display:inline-block;background:#0B1F44;color:#fff;text-decoration:none;padding:12px 20px;border-radius:8px;font-weight:600">See what changed</a></p></div>`;
   await sendEmail(run.email, `Your QUARR re-check for ${run.domain}: ${fixed} fixed`, html, text);
 }

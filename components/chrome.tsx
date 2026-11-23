@@ -1,16 +1,28 @@
 import Link from "next/link";
 
-export function Wordmark() {
+/* Brand artwork from the QUARR Logo, Icon and Font Guide (public/brand/, docs/brand/).
+   Never retype "QUARR" to stand in for the logo. The full logo carries the strapline,
+   so small placements use the icon. Black artwork: light surfaces only. */
+
+// eslint-disable-next-line @next/next/no-img-element
+export const BrandIcon = ({ size = 30 }: { size?: number }) => <img src="/brand/quarr-icon.svg" alt="" width={Math.round((size * 139) / 131)} height={size} style={{ display: "block" }} />;
+
+export function BrandLogo({ width = 220, alt = "QUARR — See what the customer will see" }: { width?: number; alt?: string }) {
+  // eslint-disable-next-line @next/next/no-img-element
+  return <img src="/brand/quarr-logo.svg" alt={alt} width={width} height={Math.round((width * 280) / 920)} style={{ display: "block", maxWidth: "100%", height: "auto" }} />;
+}
+
+export function Wordmark({ href = "/" }: { href?: string }) {
   return (
-    <Link href="/" className="wordmark" aria-label="QUARR home">
-      QUARR
+    <Link href={href} className="wordmark" aria-label="QUARR home">
+      <BrandIcon />
     </Link>
   );
 }
 
-export function SiteHeader({ dark = false }: { dark?: boolean }) {
+export function SiteHeader() {
   return (
-    <header className={`site-header${dark ? " dark" : ""}`}>
+    <header className="site-header">
       <div className="wrap">
         <Wordmark />
         <nav className="nav" aria-label="Main">
@@ -18,7 +30,7 @@ export function SiteHeader({ dark = false }: { dark?: boolean }) {
           <Link href="/#sample" className="hide-sm">Sample</Link>
           <Link href="/#pricing" className="hide-sm">Pricing</Link>
           <Link href="/account">Sign in</Link>
-          <Link href="/#start" className="btn btn-sm btn-primary" style={dark ? { background: "#fff", color: "var(--navy-900)" } : undefined}>
+          <Link href="/#start" className="btn btn-sm btn-primary">
             Scan my store
           </Link>
         </nav>
@@ -32,8 +44,7 @@ export function SiteFooter() {
     <footer className="site-footer">
       <div className="wrap footer-grid">
         <div className="stack" style={{ ["--stack" as string]: "14px" }}>
-          <Wordmark />
-          <p className="tagline">See what the customer will see.</p>
+          <Link href="/" aria-label="QUARR home"><BrandLogo width={200} /></Link>
           <p style={{ maxWidth: 340 }}>Every founder has blind spots. QUARR helps you find them before your customers do.</p>
         </div>
         <div>

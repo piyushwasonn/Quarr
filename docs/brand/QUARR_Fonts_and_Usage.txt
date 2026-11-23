@@ -1,0 +1,20 @@
+QUARR | Typography and Asset Guide
+Brand: QUARR
+Tagline: See what the customer will see.
+Acronym: Question · Understand · Anticipate · Refine · Remember
+
+Logo and icon: These are generated from the uploaded original Logo.svg and Icon.svg.
+All original path geometry, placement and proportions are unchanged.
+Only the original black and gold fills have been changed to uniform #111111.
+Use the SVG for Figma, web and professional print; use transparent 4x PNG for general placement.
+The Logo asset includes its original small strapline. For small applications use the icon instead.
+
+Recommended fonts (not yet founder-approved):
+Website and web app: Manrope (headings 600/700), Inter (body 400/500/600).
+Reports: Inter throughout (headings 600/700, body 400, tables 500).
+Fallback: system-ui, Arial, sans-serif.
+These fonts are suggestions, not exact matches to the custom master wordmark.
+Never retype QUARR in a font to recreate the logo; always use the supplied artwork.
+
+Colours: logo #111111; navy #0B1F44; slate blue #71869B; cool grey #D9DFE6; soft white #F7F9FC.
+Navy/slate/grey/white remain proposed brand colours pending final approval.
