@@ -109,7 +109,7 @@ export default function Home() {
         </div>
         <div className="steps">
           {[
-            ["Free", "First Look", "A one-minute scan, then the full walk and an Expert-reviewed report when you sign up.", "Scan my store", "/#start"],
+            ["Free", "First Look", "Start with a free store check: a one-minute scan, then the full walk and an Expert-reviewed First Look when you sign up.", "Get your free store check", "/#start"],
             [`${rupees(priceOf("RECHECK").basePaise)} + GST`, "Re-check", "Walk your store again after fixes and see, check by check, what's fixed, still open or new.", "Start with a free scan", "/#start"],
             [`${rupees(priceOf("JOURNEY").basePaise)} + GST`, "First-purchase journey", "A QUARR Expert walks your whole path to a first order and gives you a prioritised action guide. Full refund if the scope doesn't fit.", "What's included", "/journey"],
           ].map(([price, name, desc, cta, href]) => (
