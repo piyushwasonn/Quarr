@@ -99,12 +99,12 @@ export async function processRun(runId: string) {
     if (row) await db.checkResult.update({ where: { id: row.id }, data: { ai: verdict as unknown as Prisma.InputJsonValue } });
   }
   const aiLine = aiSummaryLine(ai.report);
-  const before = await db.run.findUnique({ where: { id: run.id }, select: { notes: true } });
   const shadowRecord = shadowRun ? toShadow(shadowRun) : null;
   const shadowLine = shadowRecord ? `Shadow ${aiSummaryLine(shadowRecord.report)}` : null;
   await db.run.update({
     where: { id: run.id },
-    data: { ai: { ...ai.report, ...(shadowRecord ? { shadow: shadowRecord } : {}) } as unknown as Prisma.InputJsonValue, notes: [before?.notes, aiLine, shadowLine].filter(Boolean).join(" · ").slice(0, 1200) },
+    // The AI's summary lives on Run.ai (shown as its own card on the Bench), not in the notes.
+    data: { ai: { ...ai.report, ...(shadowRecord ? { shadow: shadowRecord } : {}) } as unknown as Prisma.InputJsonValue },
   });
   log(aiLine);
   if (shadowLine) log(shadowLine);

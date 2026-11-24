@@ -80,6 +80,28 @@ describe("verifier: a second reading of every failed rule", () => {
   });
 });
 
+describe("verifier: a buyer-path finding can't be overturned from a policy page", () => {
+  it("keeps the finding (UNSURE) when the only counter-quote is on the terms, as with PRIC-03 on weobserve.in", async () => {
+    const withTerms = { ...pages, TERMS: page("TERMS", "Prices are in Indian rupees and include applicable taxes.") };
+    setModelForTests(
+      mock(() => ({
+        verdicts: [
+          { checkId: "PRIC-03", verdict: "REFUTED", reason: "The Terms state prices include taxes.", quotes: [{ page: "TERMS", text: "include applicable taxes" }] },
+          { checkId: "CLAR-03", verdict: "REFUTED", reason: "Size guide is on the product page.", quotes: [{ page: "PRODUCT_1", text: "Size guide: S M L XL" }] },
+        ],
+      })),
+    );
+    const fails = [
+      { id: "a", checkId: "PRIC-03", citation: { pageKind: "PRODUCT_1", url: "u", snippet: "s", viewport: "mobile" }, detail: {} },
+      { id: "b", checkId: "CLAR-03", citation: { pageKind: "PRODUCT_1", url: "u", snippet: "s", viewport: "mobile" }, detail: {} },
+    ];
+    const out = await verifyFails(buildEvidence(withTerms), withTerms, fails);
+    expect(out.verdicts.get("PRIC-03")?.verdict).toBe("UNSURE");
+    expect(out.verdicts.get("PRIC-03")?.reason).toMatch(/page buyers rarely read/);
+    expect(out.verdicts.get("CLAR-03")?.verdict).toBe("REFUTED"); // same page: a real refutation
+  });
+});
+
 describe("AI-judged checks", () => {
   const answer = (over: Record<string, unknown>) => ({ reason: "r", quotes: [], title: "", observed: "", likelyEffect: "", notYetProven: "", ...over });
   it("fails a contradiction only with both sides quoted from the page", async () => {

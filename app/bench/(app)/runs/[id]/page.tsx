@@ -2,12 +2,55 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { markFunnel, rejectRun, requeueRun } from "@/app/bench/actions";
 import { ReviewWorkspace, type WFinding } from "@/components/bench/ReviewWorkspace";
+import { aiSummaryLine, type AiReport } from "@/engine/ai/analyse";
+import { costUsd } from "@/engine/ai/compare";
 import { CHECKS_BY_ID } from "@/engine/checks";
 import { coverage } from "@/engine/framework";
 import { checkModes } from "@/engine/promotion";
 import type { Citation } from "@/engine/types";
 import { appUrl } from "@/lib/email";
 import { db } from "@/lib/db";
+
+type RunAi = AiReport & { shadow?: { report: AiReport } };
+
+// What QUARR's AI did on this run, as a status card rather than an alert.
+function AiCard({ report }: { report: RunAi }) {
+  const on = report.status !== "off";
+  const cost = costUsd(report.model, report.usage);
+  const inr = Number(process.env.INR_PER_USD ?? 90);
+  const costText = cost !== null ? `, about $${cost.toFixed(3)} (₹${Math.round(cost * inr)})` : "";
+  const quotesText = report.quotesRejected ? ` ${report.quotesRejected} quote(s) didn't match the page and were ignored.` : "";
+  const sh = report.shadow?.report;
+  const label = report.status === "on" ? "ran" : report.status === "partial" ? "partly ran" : "off";
+  const tone = report.status === "on" ? "pass" : report.status === "partial" ? "unseen" : "fail";
+  return (
+    <div className="card card-pad stack" style={{ ["--stack" as string]: "6px", boxShadow: "none" }}>
+      <div className="row" style={{ gap: 8 }}>
+        <span className={`chip status ${tone}`}>QUARR AI {label}</span>
+        <span className="small">{report.provider ?? "no provider"} · {report.model}</span>
+      </div>
+      {on ? (
+        <p className="small">
+          Rule findings: <strong>{report.verified.confirmed}</strong> confirmed, <strong>{report.verified.refuted}</strong> overturned, <strong>{report.verified.unsure}</strong> unsure. AI checks: <strong>{report.judged.fail}</strong> with a problem, {report.judged.pass} passed, {report.judged.unknown} couldn&apos;t tell.{quotesText} Took {Math.round(report.ms / 1000)} s{costText}.{report.reason ? ` Problem: ${report.reason}` : ""}
+        </p>
+      ) : (
+        <p className="small">Off: {report.reason ?? "unknown reason"}. Nothing from this run was shown to the founder without your review.</p>
+      )}
+      {sh ? <p className="mini muted">Comparison model ({sh.provider}): {sh.status === "off" ? `not running (${sh.reason ?? "unknown reason"})` : "ran; see Bench → AI"}.</p> : null}
+    </div>
+  );
+}
+
+// Older runs wrote the AI summary into their notes; leave those lines out now that the card shows it.
+function notesWithoutAi(notes: string | null, report: RunAi | null) {
+  let out = notes ?? "";
+  if (report) {
+    const lines = [aiSummaryLine(report), report.shadow ? `Shadow ${aiSummaryLine(report.shadow.report)}` : ""];
+    for (const line of lines) if (line) out = out.replace(line, "");
+    out = out.split(" · ").map((s) => s.trim()).filter(Boolean).join(" · ");
+  }
+  return out;
+}
 
 type Q = { page: string; text: string };
 type ShadowView = { report?: { provider?: string; model?: string }; verdicts?: Record<string, { verdict: string; reason: string }>; judged?: Record<string, { outcome: string; reason: string }> } | undefined;
@@ -95,7 +138,8 @@ export default async function RunReview({ params }: { params: Promise<{ id: stri
       {run.status === "CRAWL_FAILED" ? (
         <p className="alert">Crawl failed: <strong>{run.failureCode}</strong>, {run.failureDetail}. {run.source === "PUBLIC" ? "The founder was emailed and offered a manual First Look." : ""}</p>
       ) : null}
-      {run.notes ? <p className="alert">{run.notes}</p> : null}
+      {run.ai ? <AiCard report={run.ai as unknown as RunAi} /> : null}
+      {notesWithoutAi(run.notes, run.ai as unknown as RunAi | null) ? <p className="alert">{notesWithoutAi(run.notes, run.ai as unknown as RunAi | null)}</p> : null}
       <details className="card card-pad">
         <summary className="small"><strong>Framework coverage</strong>: what this walk could and couldn&apos;t answer</summary>
         <ul className="list-clean small" style={{ marginTop: 8 }}>
@@ -111,12 +155,13 @@ export default async function RunReview({ params }: { params: Promise<{ id: stri
         <div className="card card-pad stack" style={{ boxShadow: "none" }}>
           <p className="mini">Report link{run.source === "BENCH" ? " (send this in your outreach message)" : ""}</p>
           <code style={{ overflowWrap: "anywhere", fontSize: 14 }}>{reportLink}</code>
+          <p className="mini muted">Outreach tracking: mark when you&apos;ve sent this link to the store&apos;s founder, when they reply, and when they pay. It feeds the funnel numbers on the queue.</p>
           <div className="row">
             {run.source === "BENCH" && run.status !== "DELIVERED" ? (
               <form action={markFunnel}><input type="hidden" name="runId" value={run.id} /><input type="hidden" name="field" value="delivered" /><button className="btn btn-ghost btn-sm">Mark as sent</button></form>
             ) : null}
-            <form action={markFunnel}><input type="hidden" name="runId" value={run.id} /><input type="hidden" name="field" value="replied" /><button className="btn btn-ghost btn-sm" disabled={!!run.repliedAt}>{run.repliedAt ? "Replied ✓" : "Owner replied"}</button></form>
-            <form action={markFunnel}><input type="hidden" name="runId" value={run.id} /><input type="hidden" name="field" value="paid" /><button className="btn btn-ghost btn-sm" disabled={!!run.paidAt}>{run.paidAt ? "Paid ✓" : "Owner paid"}</button></form>
+            <form action={markFunnel}><input type="hidden" name="runId" value={run.id} /><input type="hidden" name="field" value="replied" /><button className="btn btn-ghost btn-sm" disabled={!!run.repliedAt}>{run.repliedAt ? "Founder replied ✓" : "Founder replied"}</button></form>
+            <form action={markFunnel}><input type="hidden" name="runId" value={run.id} /><input type="hidden" name="field" value="paid" /><button className="btn btn-ghost btn-sm" disabled={!!run.paidAt}>{run.paidAt ? "Founder paid ✓" : "Founder paid"}</button></form>
           </div>
         </div>
       ) : null}

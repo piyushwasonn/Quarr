@@ -88,7 +88,7 @@ export function ReviewWorkspace({ runId, canPublish, pages, shown, others, passe
       if (e.key === "j" || e.key === "ArrowDown") { setActiveId(all[Math.min(all.length - 1, i + 1)]?.id ?? null); setMode(null); e.preventDefault(); }
       else if (e.key === "k" || e.key === "ArrowUp") { setActiveId(all[Math.max(0, i - 1)]?.id ?? null); setMode(null); e.preventDefault(); }
       else if (!active) return;
-      else if (e.key === "a" && active.selected) { start(() => approveFinding(fd({ id: active.id }))); advance(active.id); }
+      else if (e.key === "a" && active.selected && active.state === "DRAFT") { start(() => approveFinding(fd({ id: active.id }))); advance(active.id); }
       else if (e.key === "e" && active.selected) { setMode("edit"); e.preventDefault(); }
       else if (e.key === "d") { setMode("drop"); e.preventDefault(); }
       else if (e.key === "p" && !active.selected) start(() => promoteFinding(fd({ id: active.id })));
@@ -253,7 +253,11 @@ function FindingEditor({ f, index, count, active, onFocus, mode, setMode, pendin
 
       {mode === null ? (
         <div className="row" style={{ gap: 6 }} onClick={(e) => e.stopPropagation()}>
-          <button className="btn btn-primary btn-sm" disabled={pending} onClick={() => { start(() => approveFinding(fd({ id: f.id }))); onDecided(); }}>Approve</button>
+          {f.state === "APPROVED" || f.state === "EDITED" ? (
+            <button className="btn btn-ghost btn-sm" disabled title="Already decided. Edit or drop to change it.">{f.state === "EDITED" ? "Edited ✓" : "Approved ✓"}</button>
+          ) : (
+            <button className="btn btn-primary btn-sm" disabled={pending} onClick={() => { start(() => approveFinding(fd({ id: f.id }))); onDecided(); }}>Approve</button>
+          )}
           <button className="btn btn-ghost btn-sm" onClick={() => { onFocus(); setMode("edit"); }}>Edit</button>
           <button className="btn btn-ghost btn-sm" onClick={() => { onFocus(); setMode("drop"); }}>Drop</button>
           <span style={{ flex: 1 }} />

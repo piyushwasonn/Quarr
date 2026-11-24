@@ -20,6 +20,9 @@ export type AiVerdict = {
 
 export type FailRow = { id: string; checkId: string; citation: unknown; detail: unknown };
 
+// Pages a buyer passes through on the way to paying.
+const BUYER_PATH = new Set<PageKind>(["HOME", "PRODUCT_1", "PRODUCT_2", "CART", "CHECKOUT"]);
+
 const Out = z.object({
   verdicts: z.array(
     z.object({
@@ -36,6 +39,8 @@ const TASK = (items: unknown[]) => `Below are findings that QUARR's automatic ru
 - CONFIRMED: the pages support the finding. A careful person reading these pages would agree with what it says. For a finding that says something is missing, confirm only if you also cannot find it anywhere in the captured pages, including collapsed sections and links.
 - REFUTED: the pages contain text that shows the finding is wrong, for example the "missing" information is there under another name, in a collapsed section, on another captured page, or the rule misread the page. You must quote that text exactly, with its page kind. A refutation without a quote is not accepted.
 - UNSURE: anything else, including when the answer depends on something not captured (images, pages not visited, checkout, behaviour after ordering), or when the finding is a matter of degree you can't settle from the text.
+
+Judge each finding where the buyer meets it. A finding about the homepage, a product page, the cart or checkout is about what a buyer sees there while deciding to buy. Text on a page buyers rarely read before buying (terms, privacy, shipping or returns policy, about, contact) does not refute it: CONFIRM it and mention that text in your reason, so the founder can move it to where buyers look. Refute with text from another page only when the finding says something is missing from the whole site.
 
 Never refute on opinion ("this is normal for the category", "buyers won't mind"). Refute only on what the pages say. Give a one-sentence reason a founder could read. Return one verdict for every checkId listed.
 
@@ -77,6 +82,14 @@ export async function verifyFails(evidence: Evidence, pages: Partial<Record<Page
     if (verdict === "REFUTED" && !valid.length) {
       verdict = "UNSURE";
       reason = `${reason} (Not accepted as a refutation: the quoted text was not found on the captured pages.)`;
+    }
+    // ...and evidence from where the buyer meets the problem. A finding about the product page
+    // or cart isn't wrong because the terms page says otherwise: buyers don't read it there
+    // (weobserve.in, PRIC-03, 24 Nov 2026). Kept in front of the reviewer instead of hidden.
+    const cited = (r.citation as Citation | null)?.pageKind;
+    if (verdict === "REFUTED" && cited && BUYER_PATH.has(cited) && valid.every((q) => !BUYER_PATH.has(q.page as PageKind))) {
+      verdict = "UNSURE";
+      reason = `${reason} (Not accepted as a refutation: that text is on a page buyers rarely read before buying, not where this finding is.)`;
     }
     verdicts.set(r.checkId, { verdict, reason: reason.slice(0, 400), quotes: valid, rejectedQuotes: rejected });
   }
