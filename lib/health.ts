@@ -69,15 +69,17 @@ export async function runHealthChecks(requestHost: string | null): Promise<Check
     }
   }
   try {
-    const [stuck, last] = await Promise.all([
+    const [stuck, last, waiting] = await Promise.all([
       db.run.findFirst({ where: { status: "QUEUED" }, orderBy: { createdAt: "asc" } }),
       db.run.findFirst({ where: { crawledAt: { not: null } }, orderBy: { crawledAt: "desc" } }),
+      db.run.count({ where: { status: "QUEUED" } }),
     ]);
+    const queueNote = waiting ? ` ${waiting} ${waiting === 1 ? "store is" : "stores are"} waiting to be walked.` : " Nothing is waiting: Wake the crawler only walks stores already queued.";
     const waitMin = stuck ? Math.round((Date.now() - stuck.createdAt.getTime()) / 60000) : 0;
     out.push({
       name: "Crawler (GitHub Actions)",
       ok: stuck && waitMin > 10 ? false : last ? true : null,
-      detail: stuck && waitMin > 10 ? `A run for ${stuck.domain} has waited ${waitMin} minutes. The crawler isn't picking up work.` : last ? `Last store walked: ${last.domain}, ${last.crawledAt!.toLocaleString("en-IN")}.` : "No store has been walked yet. Scan a store to test it.",
+      detail: stuck && waitMin > 10 ? `A run for ${stuck.domain} has waited ${waitMin} minutes. The crawler isn't picking up work.` : last ? `Last store walked: ${last.domain}, ${last.crawledAt!.toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })} IST.${queueNote}` : `No store has been walked yet. Scan a store to test it.${queueNote}`,
       fix: stuck && waitMin > 10 ? "GitHub → Actions → Crawl queued stores: open the latest run. If it says the secrets are missing, add DATABASE_URL, APP_URL, BLOBS_SITE_ID, BLOBS_TOKEN, SMTP_USER, SMTP_PASS in GitHub → Settings → Secrets → Actions." : undefined,
     });
   } catch {
@@ -102,8 +104,15 @@ export async function runHealthChecks(requestHost: string | null): Promise<Check
         ? "No store walked in the last 14 days, so nothing to judge."
         : last?.ai?.status === "on"
           ? `${last.ai.provider ?? "AI"} (${last.ai.model}) active on ${on} of the last ${reports.length} walks. It double-checked ${checked} findings and caught ${refuted} the rules got wrong.${last.ai.shadow?.report ? ` Shadow: ${last.ai.shadow.report.provider} (${last.ai.shadow.report.model}) is ${last.ai.shadow.report.status}${last.ai.shadow.report.reason ? `: ${last.ai.shadow.report.reason}` : ""}; compare at Bench → AI.` : ""}${lastProblem ? ` Last problem (${lastProblem.domain}): ${lastProblem.ai?.reason ?? lastProblem.ai?.status}.` : ""}`
-          : `Not active on the last walk (${last?.domain}): ${last?.ai?.reason ?? "this walk ran before AI was added"}. Until it runs, nothing is shown to a founder without your review and nothing publishes on its own.`,
-      fix: last?.ai?.status === "on" ? undefined : "docs/DEPLOY.md step 7: add ANTHROPIC_API_KEY, or OPENAI_API_KEY plus the OPENAI_MODEL variable, in GitHub → Settings → Secrets and variables → Actions. Then Wake the crawler.",
+          : !last?.ai
+            ? `No store has been walked since QUARR's AI was added (last walk: ${last?.domain}, before it). This card can only change after a walk. Until the AI runs, nothing is shown to a founder without your review and nothing publishes on its own.`
+            : `Not active on the last walk (${last.domain}): ${last.ai.reason ?? last.ai.status}. Until it runs, nothing is shown to a founder without your review and nothing publishes on its own.`,
+      fix:
+        last?.ai?.status === "on"
+          ? undefined
+          : !last?.ai
+            ? "Queue a store at Bench → New runs, or scan one from the homepage: either wakes the crawler by itself. Waking the crawler with nothing queued walks nothing. (Keys: docs/DEPLOY.md step 7.)"
+            : "docs/DEPLOY.md step 7: add ANTHROPIC_API_KEY, or OPENAI_API_KEY plus OPENAI_MODEL, in GitHub → Settings → Secrets and variables → Actions. Then queue a store at Bench → New runs.",
     });
   } catch {
     // Database check above already reports this.
