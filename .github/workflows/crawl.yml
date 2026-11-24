@@ -38,28 +38,35 @@ jobs:
       - name: Check configuration
         id: config
         run: |
+          if [ -z "$DATABASE_URL" ]; then
+            echo "::notice::DATABASE_URL is not set yet (see docs/DEPLOY.md). Skipping."
+            echo "db=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "db=true" >> "$GITHUB_OUTPUT"
+          fi
           if [ -z "$DATABASE_URL" ] || [ -z "$BLOBS_SITE_ID" ] || [ -z "$BLOBS_TOKEN" ]; then
-            echo "::notice::Crawler secrets are not set yet (see docs/DEPLOY.md). Skipping."
+            echo "::notice::Crawler secrets (BLOBS_SITE_ID, BLOBS_TOKEN) are not set yet, so stores won't be walked. Tables are still created."
             echo "ready=false" >> "$GITHUB_OUTPUT"
           else
             echo "ready=true" >> "$GITHUB_OUTPUT"
           fi
 
       - uses: actions/checkout@v4
-        if: steps.config.outputs.ready == 'true'
+        if: steps.config.outputs.db == 'true'
 
       - uses: actions/cache@v4
-        if: steps.config.outputs.ready == 'true'
+        if: steps.config.outputs.db == 'true'
         with:
           path: ~/.npm
           key: npm-${{ hashFiles('package-lock.json') }}
 
       - name: Install
-        if: steps.config.outputs.ready == 'true'
+        if: steps.config.outputs.db == 'true'
         run: npm ci --no-audit --no-fund
 
+      # Creates or updates QUARR's tables. Needs only DATABASE_URL.
       - name: Sync database schema
-        if: steps.config.outputs.ready == 'true'
+        if: steps.config.outputs.db == 'true'
         run: npx prisma db push --skip-generate
 
       - name: Walk queued stores
