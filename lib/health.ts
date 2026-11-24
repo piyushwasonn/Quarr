@@ -19,7 +19,7 @@ export async function runHealthChecks(requestHost: string | null): Promise<Check
     name: "Site address (APP_URL)",
     ok: !!app && (!requestHost || appHost === requestHost),
     detail: !app ? "Not set." : requestHost && appHost !== requestHost ? `Set to ${app}, but you're visiting ${requestHost}. Links in emails and sign-in will point to the wrong place.` : app,
-    fix: "Netlify → Environment variables → APP_URL = your site address, e.g. https://qurr.netlify.app",
+    fix: "Netlify → Environment variables → APP_URL = https://quarr.in",
   });
   out.push({ name: "Session secret", ok: (process.env.SESSION_SECRET ?? "").length >= 32, detail: (process.env.SESSION_SECRET ?? "").length >= 32 ? "Set." : "Missing or shorter than 32 characters.", fix: "Netlify → SESSION_SECRET = a random string of 40+ characters" });
 
@@ -53,7 +53,7 @@ export async function runHealthChecks(requestHost: string | null): Promise<Check
 
   // Email
   const mail = await withTimeout(verifyEmailTransport(), 12000).catch((e) => ({ ok: false, detail: msg(e) }));
-  out.push({ name: "Email", ...mail, fix: mail.ok === false ? "Netlify → SMTP_USER (the Gmail) and SMTP_PASS (its 16-character app password)" : undefined });
+  out.push({ name: "Email", ...mail, fix: mail.ok === false ? "Resend: verify quarr.in (resend.com → Domains), then Netlify → RESEND_API_KEY and EMAIL_FROM = QUARR <firstlook@quarr.in>. See docs/DEPLOY.md." : undefined });
 
   // Crawler (GitHub Actions)
   const token = process.env.GITHUB_DISPATCH_TOKEN;

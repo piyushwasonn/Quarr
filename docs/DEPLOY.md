@@ -6,13 +6,14 @@
 | Database | **Neon** | sign in with Google |
 | Screenshots | **Netlify Blobs** (part of your Netlify site) | — |
 | Crawler (walks the stores) | **GitHub Actions** in this repo | your GitHub account |
-| Email (codes, reports) | **Gmail** | a Gmail account for QUARR |
+| Domain and business email | **Hostinger** | `quarr.in`, mailbox `piyush@quarr.in` |
+| Email QUARR sends (codes, reports) | **Resend**, from `firstlook@quarr.in` | sign in with Google |
 | Sign in with Google | **Google Cloud** | your Google account |
 | Payments | **Razorpay** | your Razorpay account |
 
 It takes about an hour. Do the steps in order, because later steps need values from earlier ones. Put keys only where this guide says: Netlify environment variables or GitHub secrets. Never put them in chat or code.
 
-Your site is live at **`https://qurr.netlify.app`**. This guide calls it **SITE**. Note the spelling (`qurr`): use exactly this address everywhere below.
+QUARR's address is **`https://quarr.in`**. This guide calls it **SITE**. The Netlify address `https://qurr.netlify.app` (note `qurr`) keeps working and redirects to it once step 2 is done.
 
 ---
 
@@ -30,31 +31,52 @@ A private repo gets ~2,000 free GitHub Actions minutes a month, about 600 store 
    - **Region:** **AWS US East 2 (Ohio)**, the same region as Netlify's functions and GitHub's runners, so every query is fast.
 3. Click **Connect**, turn **Connection pooling off**, and copy the connection string (`postgresql://…neon.tech/neondb?sslmode=require`). That is your **DATABASE_URL**. The crawler creates the tables on its first run.
 
-## 2. Gmail: the sender
+## 2. Domain and email: quarr.in (Hostinger)
 
-1. Create a Gmail account for QUARR, e.g. `quarr.firstlook@gmail.com`. Any Gmail works.
-2. In that account, go to **myaccount.google.com** → **Security** and turn on **2-Step Verification**.
-3. Open **myaccount.google.com/apppasswords**, create an app password named `QUARR`, and copy the 16 characters.
-4. **SMTP_USER** = the Gmail address. **SMTP_PASS** = the app password (not the Gmail password).
+Keep DNS at Hostinger and **add** records there. Don't move the nameservers to Netlify: your business email's records live at Hostinger, and moving would take `piyush@quarr.in` offline until they're recreated. In the Hostinger DNS editor, type only the part before `.quarr.in` in the **Name** field (Hostinger adds `.quarr.in` itself). Use `@` for `quarr.in` itself.
 
-Gmail sends up to about 500 emails a day. Founders will see "QUARR <quarr.firstlook@gmail.com>". Once you own a domain, add `RESEND_API_KEY` and email switches over automatically.
+**A. Aliases** (free, they land in `piyush@quarr.in`). In hPanel, go to **Emails** → `quarr.in` → open the `piyush@quarr.in` account, find its aliases (or forwarders) setting, and add:
+- `hello@quarr.in`: public contact (website, Razorpay, Google)
+- `firstlook@quarr.in`: the sender of QUARR's automated emails, so founders' replies reach you
+
+**B. Point quarr.in at the website:**
+1. In Netlify, go to **Domain management** → **Add a domain** → `quarr.in`. Choose to keep DNS with your current provider, and make `quarr.in` the **primary** domain.
+2. In Hostinger's **DNS / Nameservers** page for `quarr.in`, **delete** the existing `A` record for `@` and any `CNAME` or `A` record for `www` (Hostinger's parking page). Leave every `MX` record and the `TXT` records alone, because those run your email.
+3. Add:
+
+| Type | Name | Points to | TTL |
+|---|---|---|---|
+| `A` | `@` | `75.2.60.5` (Netlify's load balancer) | 3600 |
+| `CNAME` | `www` | `qurr.netlify.app` | 3600 |
+
+4. Back in Netlify, wait until the domain shows as verified, then under **HTTPS** click **Verify DNS configuration** / **Provision certificate**. That can take from a few minutes to a few hours. If Netlify shows different values in its instructions, use Netlify's.
+
+**C. Resend: the email QUARR sends** (sign-in codes, reports, re-checks):
+1. Go to **resend.com** and sign up (Google works). Go to **Domains** → **Add domain** → `quarr.in`.
+2. Resend shows about three records, on the `send` and `resend._domainkey` names. Add each one in Hostinger exactly as shown, with Name = the part before `.quarr.in`. They sit on their own sub-names, so they don't touch your business email's records.
+3. If Resend suggests a DMARC record (`_dmarc`), only add it if Hostinger doesn't already have one. You can't have two.
+4. Click **Verify** in Resend and wait until `quarr.in` shows **Verified**.
+5. Go to **API Keys** → **Create API key** with **Sending access** and copy it: that's `RESEND_API_KEY`. `EMAIL_FROM` is `QUARR <firstlook@quarr.in>`.
+
+With Resend set up, you can skip Gmail entirely. If you've already added `SMTP_USER` and `SMTP_PASS`, leave them: Resend takes priority.
 
 ## 3. Netlify: the website
 
 1. In Netlify, go to **Add new project** → **Import an existing project** → **GitHub**, and pick **piyushwasonn/Quarr**. The build settings come from `netlify.toml`; don't change them.
-2. Your project name is `qurr`, so SITE is `https://qurr.netlify.app`. If you later rename the project or add a domain, update `APP_URL`, the Google redirect URI and the Razorpay webhook to match.
+2. Your project name is `qurr`. Once step 2B is done, SITE is `https://quarr.in`. If the address ever changes again, update `APP_URL`, the Google redirect URI and the Razorpay webhook to match.
 3. Go to **Project configuration** → **Environment variables** and add:
 
 | Variable | Value |
 |---|---|
 | `DATABASE_URL` | from Neon (step 1) |
-| `APP_URL` | SITE, e.g. `https://qurr.netlify.app` |
+| `APP_URL` | `https://quarr.in` |
 | `SESSION_SECRET` | a random string of 40+ characters (password manager → generate) |
 | `BENCH_PASSWORD` | a long password only you know, used for `/bench` |
 | `STORAGE_DRIVER` | `netlify` |
-| `SMTP_USER`, `SMTP_PASS` | from step 2 |
+| `RESEND_API_KEY` | from step 2C |
+| `EMAIL_FROM` | `QUARR <firstlook@quarr.in>` |
 | `ADMIN_EMAIL` | your own email: you're told here when a journey is paid |
-| `CONTACT_EMAIL` | the QUARR Gmail from step 2 |
+| `CONTACT_EMAIL` | `hello@quarr.in` |
 | `CONTACT_PHONE` | public phone or WhatsApp number (Razorpay wants one) |
 | `BUSINESS_NAME` | your name or business name, exactly as on Razorpay |
 | `BUSINESS_ADDRESS` | your address, as on Razorpay |
@@ -77,7 +99,7 @@ Gmail sends up to about 500 emails a day. Founders will see "QUARR <quarr.firstl
 | `APP_URL` | same as Netlify |
 | `BLOBS_SITE_ID` | the Netlify Project ID (A.1) |
 | `BLOBS_TOKEN` | the Netlify access token (A.2) |
-| `SMTP_USER`, `SMTP_PASS` | same as Netlify |
+| `RESEND_API_KEY`, `EMAIL_FROM` | same as Netlify |
 
 **C. Let the website wake the crawler:**
 1. On GitHub, go to your avatar → **Settings** → **Developer settings** → **Personal access tokens** → **Fine-grained tokens** → **Generate new token**.
@@ -100,7 +122,7 @@ Gmail sends up to about 500 emails a day. Founders will see "QUARR <quarr.firstl
    - **Authorised JavaScript origins:** SITE
    - **Authorised redirect URIs:** SITE + `/auth/google/callback`
 
-   If Google asks for an authorised domain, enter your Netlify address without `https://` (e.g. `qurr.netlify.app`).
+   If Google asks for an authorised domain, enter your Netlify address without `https://` (`quarr.in`).
 4. Add **Client ID** → `GOOGLE_CLIENT_ID` and **Client secret** → `GOOGLE_CLIENT_SECRET` in Netlify, then redeploy.
 5. Go to **Audience** → **Publish app**. QUARR asks only for name and email, so Google doesn't need to review it.
 
@@ -150,7 +172,8 @@ The crawler runs from the US. A few Indian stores show other currencies or block
 
 ## Costs
 
-- **Netlify, Neon, Gmail, Google sign-in:** free tiers are enough to start.
+- **Netlify, Neon, Resend, Google sign-in:** free tiers are enough to start.
+- **Hostinger:** your domain and business email.
 - **GitHub Actions:** free (about 600 walks a month on a private repo).
 - **Razorpay:** its standard fee per payment.
 - **Claude wording (optional):** only if you add `ANTHROPIC_API_KEY` to the GitHub secrets.

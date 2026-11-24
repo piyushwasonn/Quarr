@@ -30,6 +30,8 @@ jobs:
       STORAGE_DRIVER: netlify
       BLOBS_SITE_ID: ${{ secrets.BLOBS_SITE_ID }}
       BLOBS_TOKEN: ${{ secrets.BLOBS_TOKEN }}
+      RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+      EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
       SMTP_USER: ${{ secrets.SMTP_USER }}
       SMTP_PASS: ${{ secrets.SMTP_PASS }}
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
