@@ -63,7 +63,7 @@ const fd = (obj: Record<string, string>) => {
   return f;
 };
 
-export function ReviewWorkspace({ runId, canPublish, pages, shown, others, passes, unseen }: { runId: string; canPublish: boolean; pages: WPage[]; shown: WFinding[]; others: WFinding[]; passes: string[]; unseen: { id: string; name: string; why: string }[] }) {
+export function ReviewWorkspace({ runId, canPublish, emailsFounder, pages, shown, others, passes, unseen }: { runId: string; canPublish: boolean; emailsFounder: boolean; pages: WPage[]; shown: WFinding[]; others: WFinding[]; passes: string[]; unseen: { id: string; name: string; why: string }[] }) {
   const all = useMemo(() => [...shown, ...others.filter((o) => o.state !== "DROPPED")], [shown, others]);
   const [activeId, setActiveId] = useState<string | null>(all[0]?.id ?? null);
   const [mode, setMode] = useState<null | "edit" | "drop">(null);
@@ -117,7 +117,7 @@ export function ReviewWorkspace({ runId, canPublish, pages, shown, others, passe
           <p className="mini">
             <span className="kbd">j</span>/<span className="kbd">k</span> move · <span className="kbd">a</span> approve · <span className="kbd">e</span> edit · <span className="kbd">d</span> drop · <span className="kbd">p</span> promote
           </p>
-          {canPublish ? <PublishForm runId={runId} undecided={undecided} /> : null}
+          {canPublish ? <PublishForm runId={runId} undecided={undecided} emailsFounder={emailsFounder} /> : null}
         </div>
 
         <h3 style={{ fontSize: 16 }}>Shown to the founder ({shown.length}/3)</h3>
@@ -284,14 +284,16 @@ function ReasonFields({ drop = false }: { drop?: boolean }) {
   );
 }
 
-function PublishForm({ runId, undecided }: { runId: string; undecided: number }) {
+// Founder-requested First Looks are emailed on publish. Runs you queued yourself (outreach)
+// only go live at their link: you send it, so the button doesn't promise an email.
+function PublishForm({ runId, undecided, emailsFounder }: { runId: string; undecided: number; emailsFounder: boolean }) {
   const [state, action, pending] = useActionState(publish, {} as { error?: string });
   return (
     <form action={action} className="row">
       <input type="hidden" name="runId" value={runId} />
       {state.error ? <span className="mini" style={{ color: "var(--danger)" }}>{state.error}</span> : null}
-      <button className="btn btn-primary btn-sm" disabled={pending || undecided > 0} title={undecided ? "Decide on every shown finding first" : "Publish and email"}>
-        {pending ? "Publishing…" : undecided ? `${undecided} to decide` : "Publish & send"}
+      <button className="btn btn-primary btn-sm" disabled={pending || undecided > 0} title={undecided ? "Decide on every shown finding first" : emailsFounder ? "Publish the report and email it to the founder who asked for it" : "Publish the report at its link. Nothing is emailed: you send the link yourself."}>
+        {pending ? "Publishing…" : undecided ? `${undecided} to decide` : emailsFounder ? "Publish & email founder" : "Publish"}
       </button>
     </form>
   );

@@ -2,6 +2,9 @@
 
 Next.js 15 app on Netlify + Playwright crawl worker on GitHub Actions + Neon Postgres (Prisma) + Netlify Blobs. See README.md and docs/DEPLOY.md.
 
+## Deploying: only when Piyush says "Merge"
+`main` is production: every push to it builds and deploys on Netlify (paid credits) and changes what the crawler runs. Work on the branch `claude/pending` and push only there. Don't open pull requests (they create paid Deploy Previews). Merge `claude/pending` into `main` and push `main` only when Piyush says "Merge", and batch changes into as few merges as possible.
+
 ## Source of truth
 Product decisions live in Notion, "QUARR: Source of Truth" (pages 01–07 and the 04 Decision Log). Any change to a name, price, promise, check rule or scope gets a row in 04.
 

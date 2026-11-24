@@ -170,6 +170,7 @@ export default async function RunReview({ params }: { params: Promise<{ id: stri
         <ReviewWorkspace
           runId={run.id}
           canPublish={["IN_REVIEW", "DRAFTED", "APPROVED"].includes(run.status)}
+          emailsFounder={run.source === "PUBLIC" && !!run.email}
           pages={run.pages.map((p) => ({ kind: p.kind, url: p.finalUrl ?? p.url, httpStatus: p.httpStatus, mobileShot: p.mobileShot, desktopShot: p.desktopShot, mobileHeight: p.mobileHeight, desktopHeight: p.desktopHeight }))}
           shown={shown}
           others={others}
