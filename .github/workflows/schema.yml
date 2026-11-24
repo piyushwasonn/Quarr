@@ -1,0 +1,41 @@
+# Keeps the production database in step with the code. Netlify deploys new code as soon as
+# main changes; if that code expects a new column, the database must have it too, or every
+# page that reads that table fails. This runs on any push that changes the schema.
+# (The crawler workflow also syncs the schema before each walk.)
+name: Sync database schema
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - prisma/schema.prisma
+      - .github/workflows/schema.yml
+  workflow_dispatch:
+
+concurrency:
+  group: schema
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install
+        run: npm ci --no-audit --no-fund
+      # Adds new tables and columns. Prisma refuses anything that would lose data, so a
+      # destructive change fails here instead of silently dropping columns.
+      - name: Push schema
+        run: |
+          if [ -z "$DATABASE_URL" ]; then echo "::error::DATABASE_URL secret is not set"; exit 1; fi
+          npx prisma db push --skip-generate
