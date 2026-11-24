@@ -136,7 +136,7 @@ Start in **Test mode** (the toggle at the top of the dashboard).
    - **Secret:** a long random string. Put the same value in Netlify as `RAZORPAY_WEBHOOK_SECRET`.
    - **Events:** `payment.captured`, `order.paid`
 3. Redeploy. Then sign in on SITE, open a First Look and buy a re-check with test UPI `success@razorpay`. The credit should appear right away, and the payment should show in `/bench/orders`.
-4. **Going live:** Razorpay reviews the website first. It looks for the Contact, Terms, Privacy, and Cancellation & Refund pages, which the site has at `/contact`, `/terms`, `/privacy` and `/refunds`. Make sure `/contact` shows your real name, address and phone. Razorpay may ask for a custom domain rather than a `netlify.app` address. If it does, that's the moment to buy one. Then switch to the Live keys and add a Live webhook.
+4. **Going live:** Razorpay reviews the website first. It looks for the Contact, Terms, Privacy, and Cancellation & Refund pages, which the site has at `/contact`, `/terms`, `/privacy` and `/refunds`. Make sure `/contact` shows your real name, address and phone. Submit `https://quarr.in` as the website, not the `netlify.app` address. Then switch to the Live keys and add a Live webhook.
 
 ## 7. AI wording (Claude)
 
