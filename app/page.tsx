@@ -78,7 +78,7 @@ export default function Home() {
             <p className="eyebrow brass">Built on a framework, not a prompt</p>
             <h3>Why this isn&apos;t a chatbot&apos;s opinion</h3>
             <p className="muted">
-              A finding only exists when one of QUARR&apos;s checks fires against your live store, and every check must point at a screenshot. AI helps us word a finding clearly, but it can&apos;t create one, and it can&apos;t add a number that isn&apos;t in the evidence.
+              A finding only exists when one of QUARR&apos;s checks fires against your live store, and every finding must point at a screenshot and the exact words on your page. QUARR&apos;s AI reads your pages the way a careful buyer would: it answers the questions a simple rule can&apos;t, and double-checks every finding before you see it. It can only point at words that are really on your page, and it can&apos;t add a number that isn&apos;t there.
             </p>
             <div className="row" style={{ gap: 8 }}>
               {Object.values(LENS_NAMES).map((l) => (

@@ -84,24 +84,25 @@ export async function runHealthChecks(requestHost: string | null): Promise<Check
     // Database check above already reports this.
   }
 
-  // AI wording (runs in the crawler, so its key lives in GitHub, not Netlify)
+  // QUARR's AI (runs in the crawler, so its key lives in GitHub, not Netlify)
   try {
     const since = new Date(Date.now() - 14 * 24 * 3600 * 1000);
-    const [ai, tmpl, issue] = await Promise.all([
-      db.finding.count({ where: { selected: true, draftedBy: "claude", createdAt: { gte: since } } }),
-      db.finding.count({ where: { selected: true, draftedBy: "template", createdAt: { gte: since } } }),
-      db.run.findFirst({ where: { notes: { contains: "AI wording:" }, createdAt: { gte: since } }, orderBy: { createdAt: "desc" }, select: { notes: true, domain: true } }),
-    ]);
+    const runs = await db.run.findMany({ where: { crawledAt: { gte: since } }, orderBy: { crawledAt: "desc" }, take: 20, select: { domain: true, ai: true } });
+    const reports = runs.map((r) => ({ domain: r.domain, ai: r.ai as { status?: string; reason?: string; verified?: { confirmed: number; refuted: number; unsure: number }; usage?: { input: number; output: number; cacheRead: number } } | null }));
+    const on = reports.filter((r) => r.ai?.status === "on").length;
+    const last = reports[0];
+    const lastProblem = reports.find((r) => r.ai && r.ai.status !== "on");
+    const refuted = reports.reduce((n, r) => n + (r.ai?.verified?.refuted ?? 0), 0);
+    const checked = reports.reduce((n, r) => n + (r.ai?.verified ? r.ai.verified.confirmed + r.ai.verified.refuted + r.ai.verified.unsure : 0), 0);
     out.push({
-      name: "AI wording (Claude)",
-      ok: ai > 0 ? true : tmpl > 0 ? false : null,
-      detail:
-        ai > 0
-          ? `Active: ${ai} of the last ${ai + tmpl} shown findings were worded by Claude.${tmpl ? ` ${tmpl} fell back to templates (no key at the time, or a draft added a number not in the evidence).` : ""}`
-          : tmpl > 0
-            ? `Not active: the last ${tmpl} findings used QUARR's templates.${issue ? ` Last problem (${issue.domain}): ${issue.notes!.slice(issue.notes!.indexOf("AI wording:") + 12)}` : ""}`
-            : "No First Looks drafted yet, so nothing to judge.",
-      fix: ai > 0 ? undefined : "console.anthropic.com → API keys → create a key → GitHub → Settings → Secrets → Actions → ANTHROPIC_API_KEY",
+      name: "QUARR AI (Claude)",
+      ok: !reports.length ? null : last?.ai?.status === "on" ? true : false,
+      detail: !reports.length
+        ? "No store walked in the last 14 days, so nothing to judge."
+        : last?.ai?.status === "on"
+          ? `Active on ${on} of the last ${reports.length} walks. It double-checked ${checked} findings and caught ${refuted} the rules got wrong.${lastProblem ? ` Last problem (${lastProblem.domain}): ${lastProblem.ai?.reason ?? lastProblem.ai?.status}.` : ""}`
+          : `Not active on the last walk (${last?.domain}): ${last?.ai?.reason ?? "this walk ran before AI was added"}. Until it runs, nothing is shown to a founder without your review and nothing publishes on its own.`,
+      fix: last?.ai?.status === "on" ? undefined : "console.anthropic.com → API keys → create a key → GitHub → Settings → Secrets → Actions → ANTHROPIC_API_KEY. Then Wake the crawler.",
     });
   } catch {
     // Database check above already reports this.

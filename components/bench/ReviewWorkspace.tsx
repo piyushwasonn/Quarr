@@ -21,7 +21,26 @@ export type WFinding = {
   selected: boolean;
   mode: string;
   citation: Citation | null;
+  // QUARR's AI: its second reading of a rule, or the reasoning behind an AI-judged check.
+  ai: { kind: "verified" | "judged"; verdict: string; reason: string; quotes: { page: string; text: string }[] } | null;
 };
+
+const AI_CHIP: Record<string, string> = { CONFIRMED: "pass", REFUTED: "fail", UNSURE: "unseen", JUDGED: "brass" };
+
+function AiNote({ ai, full }: { ai: WFinding["ai"]; full: boolean }) {
+  if (!ai) return <p className="mini muted">AI did not read this one (off or failed for this run). It cannot be shown without your review.</p>;
+  const label = ai.kind === "judged" ? "AI-judged check" : ai.verdict === "CONFIRMED" ? "AI agrees" : ai.verdict === "REFUTED" ? "AI disagrees" : "AI unsure";
+  return (
+    <div className="small" style={{ borderLeft: "3px solid var(--line)", paddingLeft: 10 }}>
+      <span className={`chip ${AI_CHIP[ai.kind === "judged" ? "JUDGED" : ai.verdict] ?? "unseen"}`}>{label}</span> {ai.reason}
+      {full && ai.quotes.length ? (
+        <ul className="list-clean mini" style={{ marginTop: 4 }}>
+          {ai.quotes.map((q, i) => <li key={i}>{pageLabel(q.page)}: &quot;{q.text}&quot;</li>)}
+        </ul>
+      ) : null}
+    </div>
+  );
+}
 
 type WPage = { kind: string; url: string; httpStatus: number | null; mobileShot: string | null; desktopShot: string | null; mobileHeight: number | null; desktopHeight: number | null };
 
@@ -106,13 +125,14 @@ export function ReviewWorkspace({ runId, canPublish, pages, shown, others, passe
         {others.map((f) => (
           <div key={f.id} className={`fcard${f.id === activeId ? " active" : ""}${f.state === "DROPPED" ? " dropped" : ""}`} onClick={() => setActiveId(f.id)}>
             <div className="spread">
-              <span className="mini"><strong>{f.checkId}</strong> · {LENS_NAMES[f.lens as Lens]} · score {f.score}</span>
+              <span className="mini"><strong>{f.checkId}</strong> · {LENS_NAMES[f.lens as Lens]} · score {f.score}{f.ai?.verdict === "REFUTED" ? " · AI disagrees" : ""}</span>
               {f.state === "DROPPED" ? <span className="state DROPPED">dropped · {f.editReason?.toLowerCase().replace("_", " ")}</span> : (
                 <button className="btn btn-ghost btn-sm" disabled={pending || shown.length >= 3} onClick={(e) => { e.stopPropagation(); start(() => promoteFinding(fd({ id: f.id }))); }}>Promote</button>
               )}
             </div>
             <strong style={{ fontSize: 15 }}>{f.title}</strong>
             {f.id === activeId && f.citation ? <p className="snippet">{f.citation.snippet}</p> : null}
+            {f.id === activeId ? <AiNote ai={f.ai} full /> : null}
           </div>
         ))}
 
@@ -213,6 +233,7 @@ function FindingEditor({ f, index, count, active, onFocus, mode, setMode, pendin
           <div className="facet"><span className="label">Likely effect</span><p>{f.likelyEffect}</p></div>
           <div className="facet"><span className="label">Not yet proven</span><p>{f.notYetProven}</p></div>
           {f.citation ? <p className="snippet"><strong style={{ fontStyle: "normal" }}>{pageLabel(f.citation.pageKind)}:</strong> {f.citation.snippet}</p> : null}
+          <AiNote ai={f.ai} full />
         </>
       )}
 

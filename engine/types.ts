@@ -49,6 +49,8 @@ export type CapturedPage = {
   text: string;
   data: PageData;
   mobileShot?: Buffer;
+  // The first phone screen only, kept in memory for the AI reader (not stored).
+  firstScreen?: Buffer;
   desktopShot?: Buffer;
   mobileHeight?: number;
   desktopHeight?: number;
@@ -139,4 +141,16 @@ export type CheckDef = {
   group?: string; // checks that describe the same buyer problem; at most one is shown
   run: (ctx: CheckContext) => CheckVerdict;
   copy: (detail: Record<string, unknown>, citation: Citation) => FindingCopy;
+  // Present on checks answered by QUARR's AI reader (engine/ai/judge.ts) instead of a rule.
+  ai?: AiCheckSpec;
+};
+
+export type AiCheckSpec = {
+  question: string;
+  failWhen: string;
+  passWhen: string;
+  // Verified quotes a FAIL needs: 2 for a contradiction (both sides), 1 otherwise.
+  failQuotes: 1 | 2;
+  pages: PageKind[];
+  fullOnly?: boolean;
 };

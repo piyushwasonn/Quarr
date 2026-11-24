@@ -9,6 +9,8 @@ import { candidateFrom, scoreOf, selectFindings } from "./select";
 import { instantSummary, previewSummary, recheckSummary, type ResultRow } from "./summary";
 import type { CheckContext, CheckVerdict, Citation, CrawlSignals, PageData, PageKind, StoredPage } from "./types";
 import { draftFindings, lastWriterIssue } from "./write";
+import { aiSummaryLine, analyseRun } from "./ai/analyse";
+import { aiCleared, aiVerdictOf } from "./summary";
 
 // Writes the crawler's current step for the founder's live screen, in order.
 function progressWriter(runId: string) {
@@ -39,6 +41,7 @@ export async function processRun(runId: string) {
 
   // Evidence first: every finding must be traceable to a stored page.
   const stored: Partial<Record<PageKind, StoredPage>> = {};
+  const firstScreens: Partial<Record<PageKind, Buffer>> = {};
   for (const p of crawl.pages) {
     const base = `runs/${run.id}/${p.kind.toLowerCase()}`;
     const mobileShot = p.mobileShot ? await putFile(`${base}-mobile.jpg`, p.mobileShot) : null;
@@ -60,6 +63,7 @@ export async function processRun(runId: string) {
       },
     });
     stored[p.kind] = { id: row.id, kind: p.kind, url: p.url, finalUrl: p.finalUrl, httpStatus: p.httpStatus, title: p.title, text: p.text, data: p.data };
+    if (p.firstScreen) firstScreens[p.kind] = p.firstScreen;
   }
   await db.run.update({
     where: { id: run.id },
@@ -68,8 +72,39 @@ export async function processRun(runId: string) {
   log(`crawled ${crawl.pages.length} pages (${crawl.signals.platform})`);
 
   progress.set("Running QUARR's checks");
-  const { results, checked } = await runChecks(run.id, { pages: stored, signals: crawl.signals });
-  log(`checks: ${checked.FAIL} fail, ${checked.PASS} pass, ${checked.NOT_OBSERVABLE} not observable`);
+  const first = await runChecks(run.id, { pages: stored, signals: crawl.signals });
+  log(`rules: ${first.checked.FAIL} fail, ${first.checked.PASS} pass, ${first.checked.NOT_OBSERVABLE} not observable`);
+
+  // QUARR's AI reads the pages: answers the AI-judged checks and double-checks every failed rule.
+  const ai = await analyseRun({
+    judge: run.kind !== "PREVIEW",
+    pages: stored,
+    firstScreens,
+    storeName: crawl.signals.storeName,
+    fails: first.results.filter((r) => r.outcome === "FAIL"),
+    onProgress: progress.set,
+  });
+  for (const v of ai.judged) {
+    const row = first.results.find((r) => r.checkId === v.checkId);
+    if (!row) continue;
+    const citation = v.citation ? { ...v.citation, pageId: stored[v.citation.pageKind]?.id ?? null } : undefined;
+    await db.checkResult.update({
+      where: { id: row.id },
+      data: { outcome: v.outcome, evidenceStrength: v.outcome === "FAIL" ? (v.evidenceStrength ?? 0.65) : v.outcome === "PASS" ? 1 : 0, citation: citation as Prisma.InputJsonValue | undefined, detail: (v.detail ?? undefined) as Prisma.InputJsonValue | undefined },
+    });
+  }
+  for (const [checkId, verdict] of ai.verdicts) {
+    const row = first.results.find((r) => r.checkId === checkId);
+    if (row) await db.checkResult.update({ where: { id: row.id }, data: { ai: verdict as unknown as Prisma.InputJsonValue } });
+  }
+  const aiLine = aiSummaryLine(ai.report);
+  const before = await db.run.findUnique({ where: { id: run.id }, select: { notes: true } });
+  await db.run.update({ where: { id: run.id }, data: { ai: ai.report as unknown as Prisma.InputJsonValue, notes: [before?.notes, aiLine].filter(Boolean).join(" · ").slice(0, 900) } });
+  log(aiLine);
+
+  const results = await db.checkResult.findMany({ where: { runId: run.id } });
+  const checked = { PASS: 0, FAIL: 0, NOT_OBSERVABLE: 0 };
+  for (const r of results) checked[r.outcome === "FAIL" && aiVerdictOf(r) === "REFUTED" ? "NOT_OBSERVABLE" : r.outcome]++;
 
   const modes = await checkModes();
   const auto = new Set([...modes].filter(([, m]) => m === "AUTO").map(([id]) => id));
@@ -92,11 +127,14 @@ export async function processRun(runId: string) {
     if (run.email) await sendRecheckEmail(run.id).catch((e) => log(`re-check email error: ${e}`));
     return;
   }
+  // Every failed check gets a finding row (the Bench sees all of them, with the AI's verdict),
+  // but one the AI refuted with a verified quote is never picked to lead.
   const candidates = results
     .filter((r) => r.outcome === "FAIL" && modes.get(r.checkId) !== "SUSPENDED")
     .map(candidateFrom)
     .filter((c): c is NonNullable<typeof c> => !!c);
-  const { selected, otherIssues, otherLenses } = selectFindings(candidates);
+  const refuted = new Set(results.filter((r) => aiVerdictOf(r) === "REFUTED").map((r) => r.id));
+  const { selected, otherIssues, otherLenses } = selectFindings(candidates.filter((c) => !refuted.has(c.resultId)));
   const selectedIds = new Set(selected.map((s) => s.resultId));
 
   const drafts = await draftFindings(
@@ -140,7 +178,11 @@ export async function processRun(runId: string) {
     });
   }
 
-  const autoEligible = selected.length > 0 && selected.every((s) => modes.get(s.checkId) === "AUTO");
+  // Publishing without a person needs AI to have run fully and cleared every finding shown.
+  const autoEligible =
+    ai.report.status === "on" &&
+    selected.length > 0 &&
+    selected.every((s) => modes.get(s.checkId) === "AUTO" && aiCleared(results.find((r) => r.id === s.resultId)!));
   await db.run.update({
     where: { id: run.id },
     data: {

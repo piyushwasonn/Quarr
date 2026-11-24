@@ -18,7 +18,23 @@ export function isInstantSafe(checkId: string, detail: Record<string, unknown> |
   return checkId === "PRIC-02" && detail?.deferred === true;
 }
 
-export type ResultRow = { id: string; checkId: string; lens: string; outcome: Outcome; evidenceStrength: number; citation: unknown; detail: unknown };
+export type ResultRow = { id: string; checkId: string; lens: string; outcome: Outcome; evidenceStrength: number; citation: unknown; detail: unknown; ai?: unknown };
+
+// The AI's second reading of a failed rule (engine/ai/verify.ts), if it ran.
+export const aiVerdictOf = (r: Pick<ResultRow, "ai">) => ((r.ai ?? null) as { verdict?: string } | null)?.verdict ?? null;
+
+// Cleared by AI: a rule the verifier confirmed, or an AI-judged check (which already had to
+// quote the page). Nothing reaches a founder unreviewed without this (CLAUDE.md).
+export function aiCleared(r: Pick<ResultRow, "checkId" | "ai" | "detail">) {
+  if (r.checkId.startsWith("AI-")) return (r.detail as { judgedBy?: string } | null)?.judgedBy === "claude";
+  return aiVerdictOf(r) === "CONFIRMED";
+}
+
+// A failed rule the AI showed to be wrong (with a quote QUARR verified) is not a problem
+// with the store. It is treated as unobserved: never counted, never named, never "fixed".
+export function effective(rows: ResultRow[]): ResultRow[] {
+  return rows.map((r) => (r.outcome === "FAIL" && aiVerdictOf(r) === "REFUTED" ? { ...r, outcome: "NOT_OBSERVABLE" as const } : r));
+}
 
 export type ShownFinding = FindingCopy & { checkId: string; lens: string; citation: Citation | null };
 
@@ -42,7 +58,7 @@ function countsByLens(fails: ResultRow[]) {
 }
 
 function pickSafe(results: ResultRow[], autoChecks: Set<string>, max: number) {
-  const safe = results.filter((r) => r.outcome === "FAIL" && isInstantSafe(r.checkId, r.detail as Record<string, unknown>, autoChecks));
+  const safe = results.filter((r) => r.outcome === "FAIL" && aiCleared(r) && isInstantSafe(r.checkId, r.detail as Record<string, unknown>, autoChecks));
   const cands = safe.map(candidateFrom).filter((c): c is NonNullable<typeof c> => !!c);
   return selectFindings(cands).selected.slice(0, max).map((c) => shown(results.find((r) => r.id === c.resultId)!));
 }
@@ -57,7 +73,8 @@ export type PreviewSummary = {
   teaser: ShownFinding | null;
 };
 
-export function previewSummary(results: ResultRow[], autoChecks: Set<string> = new Set()): PreviewSummary {
+export function previewSummary(all: ResultRow[], autoChecks: Set<string> = new Set()): PreviewSummary {
+  const results = effective(all);
   const fails = results.filter((r) => r.outcome === "FAIL");
   const byLens = countsByLens(fails);
   return {
@@ -80,7 +97,8 @@ export type InstantSummary = {
   heldForReview: number;
 };
 
-export function instantSummary(results: ResultRow[], autoChecks: Set<string> = new Set()): InstantSummary {
+export function instantSummary(all: ResultRow[], autoChecks: Set<string> = new Set()): InstantSummary {
+  const results = effective(all);
   const fails = results.filter((r) => r.outcome === "FAIL");
   const findings = pickSafe(results, autoChecks, 3);
   return {
@@ -109,10 +127,12 @@ export type RecheckSummary = {
 // "Fixed" means a check that failed before now passes. Nothing is inferred beyond that.
 // `visible` holds the checks already shown to the founder (instant or Expert-reviewed);
 // anything else is named only if it is safe to show without review.
-export function recheckSummary(before: ResultRow[], after: ResultRow[], visible: Set<string> = new Set(), autoChecks: Set<string> = new Set()): RecheckSummary {
+export function recheckSummary(beforeAll: ResultRow[], afterAll: ResultRow[], visible: Set<string> = new Set(), autoChecks: Set<string> = new Set()): RecheckSummary {
+  const before = effective(beforeAll);
+  const after = effective(afterAll);
   const prev = new Map(before.map((r) => [r.checkId, r]));
   const out: RecheckSummary = { type: "recheck", fixed: [], stillOpen: [], appeared: [], unverified: [], hidden: { fixed: 0, stillOpen: 0, appeared: 0, unverified: 0 }, visible: [] };
-  const named = (row: ResultRow) => visible.has(row.checkId) || isInstantSafe(row.checkId, row.detail as Record<string, unknown>, autoChecks);
+  const named = (row: ResultRow) => visible.has(row.checkId) || (aiCleared(row) && isInstantSafe(row.checkId, row.detail as Record<string, unknown>, autoChecks));
   const add = (bucket: "fixed" | "stillOpen" | "appeared" | "unverified", row: ResultRow, item: RecheckItem) => {
     if (named(row)) {
       out[bucket].push(item);

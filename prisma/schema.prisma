@@ -98,6 +98,7 @@ model Run {
   repliedAt      DateTime?
   paidAt         DateTime?
   notes          String?
+  ai             Json? // AiReport (engine/ai/analyse.ts): what QUARR's AI did on this run
 
   pages    Page[]
   results  CheckResult[]
@@ -141,6 +142,7 @@ model CheckResult {
   evidenceStrength Float
   citation         Json?
   detail           Json?
+  ai               Json? // AiVerdict (engine/ai/verify.ts): the AI's second reading of a FAIL
   createdAt        DateTime @default(now())
   finding          Finding?
 

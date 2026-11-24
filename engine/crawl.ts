@@ -256,6 +256,8 @@ async function guardPrivateHosts(ctx: BrowserContext) {
   });
 }
 
+const FIRST_SCREEN_KINDS: PageKind[] = ["HOME", "PRODUCT_1", "PRODUCT_2", "CART"];
+
 async function capture(page: Page, desk: Page | null, kind: PageKind, url: string): Promise<CapturedPage | null> {
   const mixed: string[] = [];
   const onRequest = (req: { url: () => string }) => {
@@ -281,6 +283,8 @@ async function capture(page: Page, desk: Page | null, kind: PageKind, url: strin
     const finalUrl = page.url();
     if (finalUrl.startsWith("https://")) extracted.data.mixedContent = mixed.slice(0, 20);
 
+    // What a buyer sees before scrolling, for the AI reader. Not stored.
+    const firstScreen = FIRST_SCREEN_KINDS.includes(kind) ? await page.screenshot({ type: "jpeg", quality: 60 }).catch(() => undefined) : undefined;
     const mobileShot = await screenshot(page, MAX_SHOT_HEIGHT.mobile);
     let desktopShot: Buffer | undefined;
     let desktopHeight: number | undefined;
@@ -309,6 +313,7 @@ async function capture(page: Page, desk: Page | null, kind: PageKind, url: strin
       data: extracted.data,
       mobileShot: mobileShot.buffer,
       mobileHeight: mobileShot.height,
+      firstScreen,
       desktopShot,
       desktopHeight,
     };

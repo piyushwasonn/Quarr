@@ -97,7 +97,9 @@ export type LensCoverage = {
   status: "checked" | "partly" | "unknown";
 };
 
-export function coverage(results: { checkId: string; outcome: Outcome | string }[]): LensCoverage[] {
+export function coverage(rows: { checkId: string; outcome: Outcome | string; ai?: unknown }[]): LensCoverage[] {
+  // A failed rule the AI refuted with a verified quote is not a problem with the store.
+  const results = rows.map((r) => (r.outcome === "FAIL" && (r.ai as { verdict?: string } | null | undefined)?.verdict === "REFUTED" ? { ...r, outcome: "NOT_OBSERVABLE" } : r));
   return FRAMEWORK_LENSES.map((lens) => {
     const mine = results.filter((r) => CHECK_LENS[r.checkId] === lens.id);
     const passed = mine.filter((r) => r.outcome === "PASS").length;

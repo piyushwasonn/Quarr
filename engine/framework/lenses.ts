@@ -208,6 +208,13 @@ export const CHECK_LENS: Record<string, FrameworkLensId> = {
   "CLAR-02": "UNDERSTAND",
   "CLAR-03": "UNDERSTAND",
   "CLAR-04": "UNDERSTAND",
+  // Answered by the AI reader (engine/checks/ai.ts)
+  "AI-COST-01": "COST",
+  "AI-PROM-01": "PROMISE",
+  "AI-EXIT-01": "EXIT",
+  "AI-COMMIT-01": "COMMIT",
+  "AI-UND-01": "UNDERSTAND",
+  "AI-TRUST-01": "TRUST",
 };
 
 // Free-text corpus labels ("Delivery Promise, Cancellation, Refund and Service Recovery Lens")

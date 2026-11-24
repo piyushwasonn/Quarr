@@ -18,7 +18,7 @@ export default async function Report({ params }: { params: Promise<{ token: stri
     include: {
       findings: { where: { selected: true, state: { not: "DROPPED" } }, orderBy: { position: "asc" }, include: { checkResult: true } },
       pages: { select: { id: true, kind: true, url: true, finalUrl: true, mobileShot: true, desktopShot: true, mobileHeight: true, desktopHeight: true } },
-      results: { select: { checkId: true, outcome: true } },
+      results: { select: { checkId: true, outcome: true, ai: true } },
     },
   });
   if (!run) notFound();

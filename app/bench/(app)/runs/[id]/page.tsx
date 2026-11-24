@@ -9,13 +9,23 @@ import type { Citation } from "@/engine/types";
 import { appUrl } from "@/lib/email";
 import { db } from "@/lib/db";
 
+type Q = { page: string; text: string };
+function aiView(checkId: string, ai: unknown, detail: unknown): WFinding["ai"] {
+  if (checkId.startsWith("AI-")) {
+    const d = (detail ?? {}) as { reason?: string; quotes?: Q[] };
+    return { kind: "judged", verdict: "JUDGED", reason: d.reason ?? "", quotes: d.quotes ?? [] };
+  }
+  const v = ai as { verdict?: string; reason?: string; quotes?: Q[] } | null;
+  return v?.verdict ? { kind: "verified", verdict: v.verdict, reason: v.reason ?? "", quotes: v.quotes ?? [] } : null;
+}
+
 export default async function RunReview({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   let run = await db.run.findUnique({
     where: { id },
     include: {
       pages: { select: { id: true, kind: true, url: true, finalUrl: true, httpStatus: true, mobileShot: true, desktopShot: true, mobileHeight: true, desktopHeight: true } },
-      findings: { include: { checkResult: { select: { citation: true, detail: true, evidenceStrength: true } } }, orderBy: [{ selected: "desc" }, { position: "asc" }, { score: "desc" }] },
+      findings: { include: { checkResult: { select: { citation: true, detail: true, evidenceStrength: true, ai: true } } }, orderBy: [{ selected: "desc" }, { position: "asc" }, { score: "desc" }] },
       results: { select: { checkId: true, outcome: true, detail: true } },
     },
   });
@@ -41,6 +51,7 @@ export default async function RunReview({ params }: { params: Promise<{ id: stri
     selected: f.selected,
     mode: modes.get(f.checkId) ?? "REVIEW",
     citation: f.checkResult.citation as unknown as Citation | null,
+    ai: aiView(f.checkId, f.checkResult.ai, f.checkResult.detail),
   });
   const shown = run.findings.filter((f) => f.selected && f.state !== "DROPPED").map(toW);
   const others = run.findings.filter((f) => !f.selected || f.state === "DROPPED").map(toW);

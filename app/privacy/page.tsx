@@ -17,7 +17,7 @@ export default function Privacy() {
       <h2>What we do with it</h2>
       <p>We use it to prepare and deliver your First Look, to keep the service from being abused, and to improve how QUARR&apos;s checks work. We do not sell it, and we do not add you to marketing emails unless you ask.</p>
       <h2>Who else processes it</h2>
-      <p>Our hosting and database providers, our email delivery provider, and an AI provider that helps us word findings. The AI provider receives only the evidence for a finding (page text and the check result), never your email.</p>
+      <p>Our hosting and database providers, our email delivery provider, and an AI provider (Anthropic) that reads the pages we captured from the store to check and word findings. It receives the store&apos;s public page text and screenshots, never your email.</p>
       <h2>How long we keep it</h2>
       <p>Reports and evidence are kept for 12 months so you can come back to them, then deleted. You can ask us to delete them sooner.</p>
       <h2>Your rights</h2>

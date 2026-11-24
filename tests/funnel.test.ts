@@ -12,7 +12,10 @@ const row = (checkId: string, lens: string, outcome: ResultRow["outcome"], detai
   evidenceStrength: outcome === "FAIL" ? 0.9 : 1,
   citation: outcome === "FAIL" ? { pageKind: "HOME", url: "https://x.in/", snippet: "s", viewport: "mobile" } : null,
   detail,
+  // The AI verifier's second reading; by default it agreed with the rule.
+  ai: outcome === "FAIL" && !checkId.startsWith("AI-") ? { verdict: "CONFIRMED", reason: "r", quotes: [], rejectedQuotes: 0 } : null,
 });
+const withAi = (r: ResultRow, verdict: string | null): ResultRow => ({ ...r, ai: verdict ? { verdict, reason: "r", quotes: [{ page: "HOME", text: "x" }], rejectedQuotes: 0 } : null });
 
 describe("what may be shown without review", () => {
   it("allows precision-safe checks and AUTO checks only", () => {
@@ -33,6 +36,23 @@ describe("what may be shown without review", () => {
     const s = previewSummary([row("CHKT-01", "CHKT", "FAIL"), row("AVAIL-02", "AVAIL", "FAIL", { text: "Gifting", href: "/x", status: 404 }), row("CLAR-01", "CLAR", "PASS")]);
     expect(s.issues).toBe(2);
     expect(s.teaser?.checkId).toBe("AVAIL-02");
+  });
+  it("shows nothing without review when AI didn't run or wasn't sure", () => {
+    expect(previewSummary([withAi(row("TRST-05", "TRST", "FAIL"), null)]).teaser).toBeNull();
+    expect(previewSummary([withAi(row("TRST-05", "TRST", "FAIL"), "UNSURE")]).teaser).toBeNull();
+    expect(previewSummary([withAi(row("TRST-05", "TRST", "FAIL"), "CONFIRMED")]).teaser?.checkId).toBe("TRST-05");
+  });
+  it("drops a finding the AI refuted with a quote: not counted, not named, never 'fixed'", () => {
+    const s = previewSummary([withAi(row("TRST-05", "TRST", "FAIL"), "REFUTED"), row("AVAIL-02", "AVAIL", "FAIL", { status: 404 })]);
+    expect(s.issues).toBe(1);
+    expect(s.teaser?.checkId).toBe("AVAIL-02");
+    const r = recheckSummary([withAi(row("TRST-05", "TRST", "FAIL"), "REFUTED")], [row("TRST-05", "TRST", "PASS")], new Set(["TRST-05"]));
+    expect(r.fixed).toEqual([]);
+  });
+  it("never shows an AI-judged check without review until it earns AUTO", () => {
+    const judged = { ...row("AI-COMMIT-01", "CHKT", "FAIL"), detail: { judgedBy: "claude", quotes: [{ page: "SHIPPING", text: "Prepaid orders only" }] } };
+    expect(previewSummary([judged]).teaser).toBeNull();
+    expect(previewSummary([judged], new Set(["AI-COMMIT-01"])).teaser?.checkId).toBe("AI-COMMIT-01");
   });
   it("shows no teaser when nothing safe fired", () => {
     expect(previewSummary([row("PROM-01", "PROM", "FAIL", { claim: "100% natural", page: "the homepage" })]).teaser).toBeNull();

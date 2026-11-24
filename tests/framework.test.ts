@@ -59,7 +59,8 @@ describe("QUARR framework", () => {
     const cov = Object.fromEntries(coverage(results).map((c) => [c.lens.id, c]));
     expect(cov.COST.status).toBe("checked");
     expect(cov.EXIT.status).toBe("partly");
-    for (const id of ["AFTER", "VALUE", "EVIDENCE", "COMMIT"] as const) expect(cov[id].status).toBe("unknown");
+    expect(cov.COMMIT.status).toBe("partly"); // answered by the AI reader where pages say so
+    for (const id of ["AFTER", "VALUE", "EVIDENCE"] as const) expect(cov[id].status).toBe("unknown");
     const unseen = coverage([{ checkId: "RTRN-01", outcome: "NOT_OBSERVABLE" }]).find((c) => c.lens.id === "EXIT")!;
     expect(unseen.status).toBe("unknown");
   });

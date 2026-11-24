@@ -1,5 +1,6 @@
 import { priceFromJsonLd } from "../parse";
 import type { CheckDef, StoredPage } from "../types";
+import { AI_CHECKS } from "./ai";
 import { absent, cite, fail, findIn, fullText, has, hasProduct, label, pagesOf, pass, PRODUCT_KINDS, snippetAround, unseen } from "./helpers";
 
 // The QUARR First Look check library.
@@ -20,7 +21,7 @@ const short = (s: unknown, n = 140) => {
   return t.length > n ? `${t.slice(0, n - 1)}…` : t;
 };
 
-export const CHECKS: CheckDef[] = [
+const RULE_CHECKS: CheckDef[] = [
   // ───────────── PRICING ─────────────
   {
     id: "PRIC-01",
@@ -629,6 +630,7 @@ export const CHECKS: CheckDef[] = [
     name: "Homepage headline says what you sell",
     severity: 2,
     money: false,
+    group: "headline",
     run: (ctx) => {
       const home = ctx.pages.HOME;
       if (!home) return unseen("No homepage");
@@ -720,6 +722,7 @@ export const CHECKS: CheckDef[] = [
     name: "Strong claims without visible proof",
     severity: 3,
     money: false,
+    group: "claims",
     run: (ctx) => {
       const claim = /\b(100\s?%\s?(natural|organic|pure|safe|effective)|clinically (proven|tested)|dermatologically (tested|approved)|certified organic|#\s?1\b|no\.?\s?1 (brand|choice)|number one|chemical[- ]free|toxin[- ]free|guaranteed results?)/i;
       const proof = /certif\w+ (by|from)|lab (report|tested)|test report|study|trial|fssai|usda|ecocert|india organic|npop|iso \d|see (the )?(results|study|report)|source:|\[\d\]/i;
@@ -873,4 +876,6 @@ function fmt(n: unknown) {
   return Number(n).toLocaleString("en-IN");
 }
 
+// Rules first, then the checks QUARR's AI reader answers (engine/checks/ai.ts).
+export const CHECKS: CheckDef[] = [...RULE_CHECKS, ...AI_CHECKS];
 export const CHECKS_BY_ID = Object.fromEntries(CHECKS.map((c) => [c.id, c]));
