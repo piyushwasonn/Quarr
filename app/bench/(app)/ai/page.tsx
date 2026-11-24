@@ -31,7 +31,7 @@ export default async function AiComparison() {
         </p>
       </div>
       {!scores.length ? (
-        <p className="card card-pad muted">No AI runs in the last 90 days yet. Add a key (docs/DEPLOY.md step 7), walk a few stores and review them.</p>
+        <p className="card card-pad muted">No store has been walked with QUARR&apos;s AI switched on yet (walks before the AI was added don&apos;t count). If you&apos;ve added a key, <Link href="/bench/health">Bench → Health</Link> says why it isn&apos;t running; then walk a store from <Link href="/bench/new">New runs</Link>.</p>
       ) : (
         <div className="card table-wrap" style={{ boxShadow: "none" }}>
           <table className="data">
@@ -65,7 +65,7 @@ export default async function AiComparison() {
         </div>
       )}
       <p className="mini muted">
-        Cost uses list prices: built in for Claude Opus 5.5 and Sonnet 5.5; for any other model add <code>AI_PRICES</code> in Netlify, for example <code>{`{"model-id":[input,output,cacheRead,cacheWrite]}`}</code> in US$ per million tokens, copied from the provider&apos;s pricing page. ₹ at {inr} per US$ (<code>INR_PER_USD</code>). Each run&apos;s own notes show what both providers said: open it from the <Link href="/bench">queue</Link>.
+        Cost uses list prices: built in for Claude Opus 5.5, Claude Sonnet 5.5 and GPT-6.2 Sol; for any other model add <code>AI_PRICES</code> in Netlify, for example <code>{`{"model-id":[input,output,cacheRead,cacheWrite]}`}</code> in US$ per million tokens, copied from the provider&apos;s pricing page. ₹ at {inr} per US$ (<code>INR_PER_USD</code>). Each run&apos;s own notes show what both providers said: open it from the <Link href="/bench">queue</Link>.
       </p>
     </div>
   );
