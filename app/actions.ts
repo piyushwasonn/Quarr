@@ -2,6 +2,7 @@
 
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { ENGINE_VERSION } from "@/engine/version";
 import { wakeCrawler } from "@/lib/crawler";
 import { db } from "@/lib/db";
 import { hashIp, newPublicToken } from "@/lib/tokens";
@@ -27,7 +28,9 @@ export async function startScan(_prev: ScanState, form: FormData): Promise<ScanS
     const since = new Date(Date.now() - DAY);
     // One preview walk per store per day: reuse today's instead of visiting again.
     const recent = await db.run.findFirst({ where: { domain: store.domain, kind: "PREVIEW", createdAt: { gte: since }, status: { not: "CRAWL_FAILED" } }, orderBy: { createdAt: "desc" } });
-    if (recent) {
+    // Reuse today's scan, unless it was made by an older crawler (results may differ).
+    const stale = recent?.status === "READY" && (recent.summary as { engineVersion?: string } | null)?.engineVersion !== ENGINE_VERSION;
+    if (recent && !stale) {
       target = `/scan/${recent.publicToken}`;
     } else {
       const ip = (await headers()).get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";

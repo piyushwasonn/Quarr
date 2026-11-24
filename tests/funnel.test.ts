@@ -20,6 +20,11 @@ describe("what may be shown without review", () => {
     expect(isInstantSafe("PROM-01", {})).toBe(false);
     expect(isInstantSafe("PROM-01", {}, new Set(["PROM-01"]))).toBe(true);
   });
+  it("never shows an absence without review; a broken policy link is fine", () => {
+    expect(isInstantSafe("RTRN-01", { kind: "missing" })).toBe(false);
+    expect(isInstantSafe("DELV-03", { kind: "empty" })).toBe(false);
+    expect(isInstantSafe("RTRN-01", { kind: "broken", status: 404 })).toBe(true);
+  });
   it("shows a hidden shipping charge only when the page says 'calculated at checkout'", () => {
     expect(isInstantSafe("PRIC-02", { deferred: true })).toBe(true);
     expect(isInstantSafe("PRIC-02", {})).toBe(false);

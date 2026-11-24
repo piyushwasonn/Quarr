@@ -39,6 +39,29 @@ const POLICY_PATTERNS: [PageKind, RegExp][] = [
   ["ABOUT", /about|our story/i],
 ];
 
+// Usual addresses for each page, tried only when the homepage links to none.
+const COMMON_POLICY_PATHS: Partial<Record<PageKind, string[]>> = {
+  SHIPPING: ["/shipping", "/shipping-policy", "/delivery", "/delivery-policy", "/pages/shipping-policy", "/pages/shipping", "/policies/shipping-policy"],
+  RETURNS: ["/returns", "/return-policy", "/returns-policy", "/refund-policy", "/refunds", "/pages/return-policy", "/pages/refund-policy", "/policies/refund-policy"],
+  TERMS: ["/terms", "/terms-of-service", "/terms-and-conditions", "/pages/terms-and-conditions", "/policies/terms-of-service"],
+  PRIVACY: ["/privacy", "/privacy-policy", "/pages/privacy-policy", "/policies/privacy-policy"],
+  CONTACT: ["/contact", "/contact-us", "/pages/contact", "/pages/contact-us"],
+  ABOUT: ["/about", "/about-us", "/pages/about", "/pages/about-us", "/our-story"],
+};
+
+async function firstReachable(page: Page, origin: string, paths: string[]) {
+  for (const path of paths.slice(0, 8)) {
+    try {
+      const res = await page.request.get(origin + path, { timeout: 8_000, maxRedirects: 3 });
+      const type = res.headers()["content-type"] ?? "";
+      if (res.ok() && type.includes("html") && new URL(res.url()).origin === origin) return res.url();
+    } catch {
+      // try the next address
+    }
+  }
+  return null;
+}
+
 const SHOPIFY_POLICY_PATHS: Partial<Record<PageKind, string>> = {
   SHIPPING: "/policies/shipping-policy",
   RETURNS: "/policies/refund-policy",
@@ -194,11 +217,21 @@ async function walk(browser: Browser, startUrl: string, deadline: number, allowP
   for (const [kind] of POLICY_PATTERNS) {
     if (preview && kind !== "SHIPPING" && kind !== "RETURNS") continue;
     if (timeLeft() < 15_000) break;
-    let url = policyLinks[kind];
-    if (!url && platform === "shopify" && SHOPIFY_POLICY_PATHS[kind]) url = origin + SHOPIFY_POLICY_PATHS[kind];
-    if (!url) continue;
-    const cap = await capture(page, null, kind, url);
-    if (cap) pages.push(cap);
+    const linked = policyLinks[kind];
+    if (linked) {
+      // A linked page is recorded even if it errors: a broken policy link is a real finding.
+      const cap = await capture(page, null, kind, linked);
+      if (cap) pages.push(cap);
+      continue;
+    }
+    // No link found: quietly try the usual addresses before anyone concludes it's missing.
+    const tries = [...(platform === "shopify" && SHOPIFY_POLICY_PATHS[kind] ? [SHOPIFY_POLICY_PATHS[kind]!] : []), ...(COMMON_POLICY_PATHS[kind] ?? [])];
+    const found = await firstReachable(page, origin, tries);
+    if (!found) continue;
+    const cap = await capture(page, null, kind, found);
+    // Many sites answer any address with a normal page, so it must read like this policy.
+    const re = POLICY_PATTERNS.find(([k]) => k === kind)![1];
+    if (cap && (cap.httpStatus ?? 200) < 400 && re.test(`${cap.title} ${cap.data.h1.join(" ")} ${cap.text.slice(0, 1500)}`)) pages.push(cap);
   }
 
   // 5. Primary navigation health

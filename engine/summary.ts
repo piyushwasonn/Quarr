@@ -1,13 +1,18 @@
 import { CHECKS_BY_ID } from "./checks";
 import { candidateFrom, selectFindings } from "./select";
+import { ENGINE_VERSION } from "./version";
 import { LENS_NAMES, type Citation, type FindingCopy, type Lens, type Outcome } from "./types";
 
 // What QUARR may show without a person reading it first (Notion 07):
-// precision-safe checks, plus any check that has earned AUTO in the Bench.
-const PRECISION_SAFE = new Set(["TRST-05", "AVAIL-02", "PROM-03", "RTRN-01", "DELV-03", "TRST-06"]);
+// directly observed facts only, plus any check that has earned AUTO in the Bench.
+// Never an absence ("we couldn't find X"): a crawler limit can cause that, and a wrong
+// finding costs more trust than a missed one (learned on weobserve.in, 24 Nov 2026).
+const PRECISION_SAFE = new Set(["TRST-05", "AVAIL-02", "PROM-03", "TRST-06"]);
 
 export function isInstantSafe(checkId: string, detail: Record<string, unknown> | null | undefined, autoChecks: Set<string> = new Set()) {
   if (autoChecks.has(checkId) || PRECISION_SAFE.has(checkId)) return true;
+  // A policy page is only safe to name when its link exists and returns an error.
+  if ((checkId === "RTRN-01" || checkId === "DELV-03") && detail?.kind === "broken") return true;
   // A hidden shipping charge is only safe when the page literally says "calculated at checkout".
   return checkId === "PRIC-02" && detail?.deferred === true;
 }
@@ -39,6 +44,7 @@ function pickSafe(results: ResultRow[], autoChecks: Set<string>, max: number) {
 
 export type PreviewSummary = {
   type: "preview";
+  engineVersion?: string;
   issues: number;
   areas: number;
   byLens: { lens: string; name: string; n: number }[];
@@ -51,6 +57,7 @@ export function previewSummary(results: ResultRow[], autoChecks: Set<string> = n
   const byLens = countsByLens(fails);
   return {
     type: "preview",
+    engineVersion: ENGINE_VERSION,
     issues: fails.length,
     areas: byLens.length,
     byLens,
