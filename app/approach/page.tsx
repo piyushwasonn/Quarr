@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { BrandLogo, SiteFooter, SiteHeader } from "@/components/chrome";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata = { title: "Our approach", description: "Question · Understand · Anticipate · Refine · Remember. How QUARR helps founders see what the customer will see." };
+export const metadata = pageMetadata("/approach", "Our approach", "Question, Understand, Anticipate, Refine, Remember: how QUARR helps founders see their store the way a first-time buyer does.");
 
 // Framework wording is from the QUARR Brand Guidelines v1.0 (Notion 08). Keep it verbatim.
 const FRAMEWORK: [string, string, string][] = [

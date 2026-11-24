@@ -1,7 +1,8 @@
 import { ProsePage } from "@/components/Prose";
 import { RemovalForm } from "@/components/RemovalForm";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata = { title: "Remove my data" };
+export const metadata = pageMetadata("/removal", "Remove my store or data", "Ask QUARR to stop reviewing your store and to delete what it holds about it.");
 
 export default function Removal() {
   return (

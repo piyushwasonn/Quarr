@@ -1,6 +1,7 @@
 import { ProsePage } from "@/components/Prose";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata = { title: "Privacy" };
+export const metadata = pageMetadata("/privacy", "Privacy", "What QUARR collects when it checks a store or you sign in, who processes it, how long it is kept, and how to have it deleted.");
 export const dynamic = "force-dynamic";
 
 export default function Privacy() {

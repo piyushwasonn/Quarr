@@ -1,6 +1,7 @@
 import { ProsePage } from "@/components/Prose";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata = { title: "Cancellation and refunds" };
+export const metadata = pageMetadata("/refunds", "Cancellation and refunds", "How cancellations and refunds work for QUARR re-checks and the first-purchase journey.");
 export const dynamic = "force-dynamic";
 
 export default function Refunds() {

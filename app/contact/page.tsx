@@ -1,6 +1,7 @@
 import { ProsePage } from "@/components/Prose";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata = { title: "Contact" };
+export const metadata = pageMetadata("/contact", "Contact", "Write to QUARR about your free store check, a First Look, a re-check or the first-purchase journey.");
 export const dynamic = "force-dynamic";
 
 // Business details come from settings so the page never shows placeholders.

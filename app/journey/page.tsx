@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { SiteFooter, SiteHeader } from "@/components/chrome";
 import { CHECKS } from "@/engine/checks";
+import { priceOf, rupees } from "@/lib/payments";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata = { title: "The first-purchase journey" };
+export const metadata = pageMetadata("/journey", "The first-purchase journey review", `A QUARR Expert walks your whole path to a first order, from discovery to returns, and gives you a prioritised action guide backed by evidence. ${rupees(priceOf("JOURNEY").basePaise)} + GST.`);
 
 export default async function Journey({ searchParams }: { searchParams: Promise<{ from?: string }> }) {
   const { from } = await searchParams;

@@ -1,6 +1,7 @@
 import { ProsePage } from "@/components/Prose";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata = { title: "How our browser behaves" };
+export const metadata = pageMetadata("/crawler", "How our browser behaves", "QUARRBot visits a store like one careful shopper: page views and one add-to-cart, never a purchase. How to recognise it and keep it out of your analytics.");
 
 export default function Crawler() {
   return (

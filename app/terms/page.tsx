@@ -1,6 +1,7 @@
 import { ProsePage } from "@/components/Prose";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata = { title: "Terms" };
+export const metadata = pageMetadata("/terms", "Terms", "Terms for QUARR's free store check, the First Look, re-checks and the first-purchase journey.");
 
 export default function Terms() {
   return (

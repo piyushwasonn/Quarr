@@ -6,12 +6,61 @@ import { SAMPLE_FINDING } from "@/components/sample";
 import { CHECKS } from "@/engine/checks";
 import { LENS_NAMES } from "@/engine/types";
 import { priceOf, rupees } from "@/lib/payments";
+import { jsonLd, pageMetadata, siteUrl } from "@/lib/seo";
 
 const lensCount = new Set(CHECKS.map((c) => c.lens)).size;
+
+export const metadata = pageMetadata(
+  "/",
+  { absolute: "QUARR: Free store check for Indian D2C brands" },
+  "See your online store the way a first-time buyer does. QUARR walks your product pages, cart and policies and shows what costs you orders. Free for Indian D2C brands.",
+);
+
+// Shown on the page and given to search engines as FAQ structured data, so the two never differ.
+const FAQ: [string, string][] = [
+  ["Is it really free?", "Yes. The scan and the First Look are free, with no card and no call. Re-checks and the journey are paid, one at a time. There's no subscription."],
+  ["How fast is it?", "The scan takes about a minute. After you sign up, the first findings appear in minutes. The Expert-reviewed First Look follows by email within 12 hours, usually much sooner."],
+  ["Why do I need to sign up?", "So your reports, re-checks and purchases live in one place you can come back to. Google or a one-time email code: no password."],
+  ["Will this affect my store or my analytics?", "We behave like one careful shopper: a handful of page views, one add-to-cart, no purchase. Our browser identifies itself as QUARRBot, so you can filter it out of analytics."],
+  ["Why only three findings?", "Because three you act on beats thirty you skim. We tell you how many other issues we noticed, and the full journey covers them."],
+  ["What happens to my email?", "We use it to send your First Look and, if you reply, to talk to you. No newsletters unless you ask. You can ask us to delete everything at any time."],
+];
+
+// What search engines read about QUARR: who it is, what it offers at what price, and the FAQ.
+function structuredData() {
+  const site = siteUrl();
+  const org = `${site}/#organization`;
+  const offer = (name: string, paise: number) => ({
+    "@type": "Offer",
+    name,
+    price: (paise / 100).toFixed(2),
+    priceCurrency: "INR",
+    priceSpecification: { "@type": "PriceSpecification", price: (paise / 100).toFixed(2), priceCurrency: "INR", valueAddedTaxIncluded: false },
+  });
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      { "@type": "Organization", "@id": org, name: "QUARR", url: site, logo: siteUrl("/brand/quarr-logo-on-white.png"), email: process.env.CONTACT_EMAIL || "hello@quarr.in", description: "Customer perspective consultancy for Indian D2C brands.", areaServed: { "@type": "Country", name: "India" } },
+      { "@type": "WebSite", "@id": `${site}/#website`, url: site, name: "QUARR", inLanguage: "en-IN", publisher: { "@id": org } },
+      {
+        "@type": "Service",
+        name: "Free store check and First Look",
+        serviceType: "Online store customer experience review",
+        description: "QUARR walks an online store the way a first-time buyer does and shows, with a screenshot behind every finding, what is likely to cost a first order.",
+        provider: { "@id": org },
+        areaServed: { "@type": "Country", name: "India" },
+        audience: { "@type": "BusinessAudience", name: "Indian D2C brands" },
+        offers: [offer("First Look", 0), offer("Re-check", priceOf("RECHECK").basePaise), offer("First-purchase journey", priceOf("JOURNEY").basePaise)],
+      },
+      { "@type": "FAQPage", mainEntity: FAQ.map(([q, a]) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })) },
+    ],
+  };
+}
 
 export default function Home() {
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(structuredData())} />
       <SiteHeader />
       <section className="hero" style={{ marginTop: -64, paddingTop: "calc(64px + clamp(56px, 9vw, 112px))" }}>
         <div className="wrap hero-grid">
@@ -144,14 +193,7 @@ export default function Home() {
           <p className="eyebrow brass">Questions</p>
           <h2>Before you paste your link</h2>
         </div>
-        {[
-          ["Is it really free?", "Yes. The scan and the First Look are free, with no card and no call. Re-checks and the journey are paid, one at a time. There's no subscription."],
-          ["How fast is it?", "The scan takes about a minute. After you sign up, the first findings appear in minutes. The Expert-reviewed First Look follows by email within 12 hours, usually much sooner."],
-          ["Why do I need to sign up?", "So your reports, re-checks and purchases live in one place you can come back to. Google or a one-time email code: no password."],
-          ["Will this affect my store or my analytics?", "We behave like one careful shopper: a handful of page views, one add-to-cart, no purchase. Our browser identifies itself as QUARRBot, so you can filter it out of analytics."],
-          ["Why only three findings?", "Because three you act on beats thirty you skim. We tell you how many other issues we noticed, and the full journey covers them."],
-          ["What happens to my email?", "We use it to send your First Look and, if you reply, to talk to you. No newsletters unless you ask. You can ask us to delete everything at any time."],
-        ].map(([q, a]) => (
+        {FAQ.map(([q, a]) => (
           <details key={q}>
             <summary>{q}</summary>
             <p>{a}</p>
