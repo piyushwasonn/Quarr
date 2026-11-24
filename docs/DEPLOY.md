@@ -13,7 +13,7 @@
 
 It takes about an hour. Do the steps in order, because later steps need values from earlier ones. Put keys only where this guide says: Netlify environment variables or GitHub secrets. Never put them in chat or code.
 
-QUARR's address is **`https://quarr.in`**. This guide calls it **SITE**. The Netlify address `https://qurr.netlify.app` (note `qurr`) keeps working and redirects to it once step 2 is done.
+QUARR's address is **`https://quarr.in`**. This guide calls it **SITE**. The Netlify address `https://quarr.netlify.app` keeps working and redirects to it once step 2 is done.
 
 ---
 
@@ -47,7 +47,7 @@ Keep DNS at Hostinger and **add** records there. Don't move the nameservers to N
 | Type | Name | Points to | TTL |
 |---|---|---|---|
 | `A` | `@` | `75.2.60.5` (Netlify's load balancer) | 3600 |
-| `CNAME` | `www` | `qurr.netlify.app` | 3600 |
+| `CNAME` | `www` | `quarr.netlify.app` | 3600 |
 
 4. Back in Netlify, wait until the domain shows as verified, then under **HTTPS** click **Verify DNS configuration** / **Provision certificate**. That can take from a few minutes to a few hours. If Netlify shows different values in its instructions, use Netlify's.
 
@@ -63,7 +63,7 @@ With Resend set up, you can skip Gmail entirely. If you've already added `SMTP_U
 ## 3. Netlify: the website
 
 1. In Netlify, go to **Add new project** → **Import an existing project** → **GitHub**, and pick **piyushwasonn/Quarr**. The build settings come from `netlify.toml`; don't change them.
-2. Your project name is `qurr`. Once step 2B is done, SITE is `https://quarr.in`. If the address ever changes again, update `APP_URL`, the Google redirect URI and the Razorpay webhook to match.
+2. Your Netlify project is `quarr` (renamed from `qurr`). Once step 2B is done, SITE is `https://quarr.in`. If the address ever changes again, update `APP_URL`, the Google redirect URI and the Razorpay webhook to match.
 3. Go to **Project configuration** → **Environment variables** and add:
 
 | Variable | Value |
