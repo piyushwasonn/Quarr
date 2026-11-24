@@ -10,13 +10,19 @@ import { appUrl } from "@/lib/email";
 import { db } from "@/lib/db";
 
 type Q = { page: string; text: string };
-function aiView(checkId: string, ai: unknown, detail: unknown): WFinding["ai"] {
+type ShadowView = { report?: { provider?: string; model?: string }; verdicts?: Record<string, { verdict: string; reason: string }>; judged?: Record<string, { outcome: string; reason: string }> } | undefined;
+function aiView(checkId: string, ai: unknown, detail: unknown, shadow: ShadowView): WFinding["ai"] {
+  const other = shadow
+    ? checkId.startsWith("AI-")
+      ? shadow.judged?.[checkId] && { provider: `${shadow.report?.provider}: ${shadow.report?.model}`, verdict: shadow.judged[checkId].outcome === "FAIL" ? "ALSO FAILS" : shadow.judged[checkId].outcome === "PASS" ? "PASSES" : "UNKNOWN", reason: shadow.judged[checkId].reason }
+      : shadow.verdicts?.[checkId] && { provider: `${shadow.report?.provider}: ${shadow.report?.model}`, verdict: shadow.verdicts[checkId].verdict, reason: shadow.verdicts[checkId].reason }
+    : undefined;
   if (checkId.startsWith("AI-")) {
-    const d = (detail ?? {}) as { reason?: string; quotes?: Q[] };
-    return { kind: "judged", verdict: "JUDGED", reason: d.reason ?? "", quotes: d.quotes ?? [] };
+    const d = (detail ?? {}) as { reason?: string; quotes?: Q[]; judgedBy?: string };
+    return { kind: "judged", verdict: "JUDGED", reason: d.reason ?? "", quotes: d.quotes ?? [], by: d.judgedBy, other: other || undefined };
   }
   const v = ai as { verdict?: string; reason?: string; quotes?: Q[] } | null;
-  return v?.verdict ? { kind: "verified", verdict: v.verdict, reason: v.reason ?? "", quotes: v.quotes ?? [] } : null;
+  return v?.verdict ? { kind: "verified", verdict: v.verdict, reason: v.reason ?? "", quotes: v.quotes ?? [], other: other || undefined } : null;
 }
 
 export default async function RunReview({ params }: { params: Promise<{ id: string }> }) {
@@ -51,7 +57,7 @@ export default async function RunReview({ params }: { params: Promise<{ id: stri
     selected: f.selected,
     mode: modes.get(f.checkId) ?? "REVIEW",
     citation: f.checkResult.citation as unknown as Citation | null,
-    ai: aiView(f.checkId, f.checkResult.ai, f.checkResult.detail),
+    ai: aiView(f.checkId, f.checkResult.ai, f.checkResult.detail, (run.ai as { shadow?: ShadowView } | null)?.shadow),
   });
   const shown = run.findings.filter((f) => f.selected && f.state !== "DROPPED").map(toW);
   const others = run.findings.filter((f) => !f.selected || f.state === "DROPPED").map(toW);

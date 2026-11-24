@@ -3,7 +3,7 @@ import { plainPunctuation } from "@/lib/punctuation";
 import { AI_CHECKS } from "../checks/ai";
 import { CHECK_LENS, FRAMEWORK_LENS_BY_ID } from "../framework/lenses";
 import type { CheckDef, CheckVerdict, FindingCopy, PageKind, StoredPage } from "../types";
-import { callModel, type Evidence, type Usage } from "./model";
+import { callModel, type Evidence, type Provider, type Usage } from "./model";
 import { ANALYST_SYSTEM } from "./prompt";
 import { distinctQuotes, verifyQuotes, type Quote } from "./quotes";
 
@@ -51,10 +51,10 @@ ${JSON.stringify(
 
 export type JudgedVerdict = CheckVerdict & { checkId: string };
 
-export async function judgeChecks(evidence: Evidence, pages: Partial<Record<PageKind, StoredPage>>): Promise<{ ok: boolean; reason?: string; verdicts: JudgedVerdict[]; usage?: Usage; ms: number }> {
+export async function judgeChecks(evidence: Evidence, pages: Partial<Record<PageKind, StoredPage>>, provider: Provider = "anthropic", cacheKey?: string): Promise<{ ok: boolean; reason?: string; verdicts: JudgedVerdict[]; usage?: Usage; ms: number }> {
   const checks = AI_CHECKS.filter((c) => c.ai!.pages.some((k) => pages[k]));
   if (!checks.length) return { ok: true, verdicts: [], ms: 0 };
-  const res = await callModel({ name: "judge", system: ANALYST_SYSTEM, evidence, task: TASK(checks), schema: Out, effort: "medium", maxTokens: 12000 });
+  const res = await callModel({ name: "judge", system: ANALYST_SYSTEM, evidence, task: TASK(checks), schema: Out, effort: "medium", maxTokens: 16000, cacheKey }, provider);
   if (!res.ok) return { ok: false, reason: res.reason, verdicts: [], usage: res.usage, ms: res.ms };
 
   const byId = new Map(res.value.answers.map((a) => [a.checkId, a]));
@@ -67,7 +67,7 @@ export async function judgeChecks(evidence: Evidence, pages: Partial<Record<Page
       pages,
     );
     const quotes = distinctQuotes(valid);
-    const base = { quotes, reason: a.reason.trim().slice(0, 400), rejectedQuotes: rejected + (a.quotes.length - a.quotes.filter((q) => allowed.has(q.page as PageKind)).length), judgedBy: "claude" };
+    const base = { quotes, reason: a.reason.trim().slice(0, 400), rejectedQuotes: rejected + (a.quotes.length - a.quotes.filter((q) => allowed.has(q.page as PageKind)).length), judgedBy: provider };
 
     if (a.outcome === "UNKNOWN") return { checkId: def.id, outcome: "NOT_OBSERVABLE", detail: { ...base, why: a.reason.trim().slice(0, 300) || "The pages don't settle it." } };
     if (a.outcome === "PASS") {

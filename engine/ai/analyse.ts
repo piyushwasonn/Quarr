@@ -1,7 +1,7 @@
 import type { PageKind, StoredPage } from "../types";
 import { buildEvidence } from "./evidence";
 import { judgeChecks, type JudgedVerdict } from "./judge";
-import { addUsage, aiUnavailable, ANALYST_MODEL, NO_USAGE, type Usage } from "./model";
+import { addUsage, aiUnavailable, modelFor, NO_USAGE, providers, type Provider, type Usage } from "./model";
 import { verifyFails, type AiVerdict, type FailRow } from "./verify";
 
 // QUARR's AI step for one run, between the rules and the founder:
@@ -11,6 +11,7 @@ import { verifyFails, type AiVerdict, type FailRow } from "./verify";
 
 export type AiReport = {
   status: "on" | "partial" | "off";
+  provider: Provider | null;
   model: string;
   reason?: string;
   verified: { confirmed: number; refuted: number; unsure: number };
@@ -28,9 +29,12 @@ export async function analyseRun(opts: {
   storeName: string | null;
   fails: FailRow[];
   onProgress?: (step: string) => void;
+  provider?: Provider | null; // default: the primary provider
+  cacheKey?: string;
 }): Promise<{ report: AiReport; verdicts: Map<string, AiVerdict>; judged: JudgedVerdict[] }> {
-  const report: AiReport = { status: "off", model: ANALYST_MODEL, verified: { confirmed: 0, refuted: 0, unsure: 0 }, judged: { pass: 0, fail: 0, unknown: 0 }, quotesRejected: 0, usage: NO_USAGE, ms: 0, at: new Date().toISOString() };
-  const off = aiUnavailable();
+  const provider = opts.provider === undefined ? providers().primary : opts.provider;
+  const report: AiReport = { status: "off", provider, model: provider ? (modelFor(provider) ?? "not set") : "none", verified: { confirmed: 0, refuted: 0, unsure: 0 }, judged: { pass: 0, fail: 0, unknown: 0 }, quotesRejected: 0, usage: NO_USAGE, ms: 0, at: new Date().toISOString() };
+  const off = aiUnavailable(provider);
   if (off) return { report: { ...report, reason: off }, verdicts: new Map(), judged: [] };
 
   const evidence = buildEvidence(opts.pages, opts.firstScreens, opts.storeName);
@@ -39,7 +43,7 @@ export async function analyseRun(opts: {
 
   if (opts.judge) {
     opts.onProgress?.("Reading your pages the way a careful buyer would");
-    const j = await judgeChecks(evidence, opts.pages);
+    const j = await judgeChecks(evidence, opts.pages, provider!, opts.cacheKey);
     report.usage = addUsage(report.usage, j.usage);
     report.ms += j.ms;
     if (j.ok) {
@@ -55,7 +59,7 @@ export async function analyseRun(opts: {
 
   opts.onProgress?.("Double-checking every finding against your pages");
   const ruleFails = opts.fails.filter((f) => !f.checkId.startsWith("AI-"));
-  const v = await verifyFails(evidence, opts.pages, ruleFails);
+  const v = await verifyFails(evidence, opts.pages, ruleFails, provider!, opts.cacheKey);
   report.usage = addUsage(report.usage, v.usage);
   report.ms += v.ms;
   if (v.ok) {
@@ -73,9 +77,28 @@ export async function analyseRun(opts: {
   return { report, verdicts: v.verdicts, judged };
 }
 
+// The second provider's reading, when QUARR_AI_SHADOW is set. Recorded on the run for the
+// Bench comparison (/bench/ai); it never changes what a founder sees.
+export type ShadowRecord = {
+  report: AiReport;
+  verdicts: Record<string, { verdict: string; reason: string; quotes: { page: string; text: string }[] }>;
+  judged: Record<string, { outcome: string; reason: string; quotes: { page: string; text: string }[] }>;
+};
+
+export function toShadow(r: Awaited<ReturnType<typeof analyseRun>>): ShadowRecord {
+  const verdicts: ShadowRecord["verdicts"] = {};
+  for (const [id, v] of r.verdicts) verdicts[id] = { verdict: v.verdict, reason: v.reason, quotes: v.quotes };
+  const judged: ShadowRecord["judged"] = {};
+  for (const j of r.judged) {
+    const d = (j.detail ?? {}) as { reason?: string; why?: string; quotes?: { page: string; text: string }[] };
+    judged[j.checkId] = { outcome: j.outcome, reason: d.reason ?? d.why ?? "", quotes: d.quotes ?? [] };
+  }
+  return { report: r.report, verdicts, judged };
+}
+
 export function aiSummaryLine(r: AiReport) {
-  if (r.status === "off") return `AI off: ${r.reason ?? "unknown reason"}. Nothing is shown to the founder without review.`;
-  const parts = [`AI ${r.status}`, `verified ${r.verified.confirmed} confirmed, ${r.verified.refuted} refuted, ${r.verified.unsure} unsure`];
+  if (r.status === "off") return `AI off${r.provider ? ` (${r.provider})` : ""}: ${r.reason ?? "unknown reason"}. Nothing is shown to the founder without review.`;
+  const parts = [`AI ${r.status} (${r.provider ?? "none"}: ${r.model})`, `verified ${r.verified.confirmed} confirmed, ${r.verified.refuted} refuted, ${r.verified.unsure} unsure`];
   if (r.judged.pass + r.judged.fail + r.judged.unknown) parts.push(`AI checks ${r.judged.fail} fail, ${r.judged.pass} pass, ${r.judged.unknown} unknown`);
   if (r.quotesRejected) parts.push(`${r.quotesRejected} quote(s) not found on the page and ignored`);
   if (r.reason) parts.push(r.reason);

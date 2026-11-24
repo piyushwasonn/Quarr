@@ -9,7 +9,8 @@ import { candidateFrom, scoreOf, selectFindings } from "./select";
 import { instantSummary, previewSummary, recheckSummary, type ResultRow } from "./summary";
 import type { CheckContext, CheckVerdict, Citation, CrawlSignals, PageData, PageKind, StoredPage } from "./types";
 import { draftFindings, lastWriterIssue } from "./write";
-import { aiSummaryLine, analyseRun } from "./ai/analyse";
+import { aiSummaryLine, analyseRun, toShadow } from "./ai/analyse";
+import { providers } from "./ai/model";
 import { aiCleared, aiVerdictOf } from "./summary";
 
 // Writes the crawler's current step for the founder's live screen, in order.
@@ -76,14 +77,14 @@ export async function processRun(runId: string) {
   log(`rules: ${first.checked.FAIL} fail, ${first.checked.PASS} pass, ${first.checked.NOT_OBSERVABLE} not observable`);
 
   // QUARR's AI reads the pages: answers the AI-judged checks and double-checks every failed rule.
-  const ai = await analyseRun({
-    judge: run.kind !== "PREVIEW",
-    pages: stored,
-    firstScreens,
-    storeName: crawl.signals.storeName,
-    fails: first.results.filter((r) => r.outcome === "FAIL"),
-    onProgress: progress.set,
-  });
+  // With QUARR_AI_SHADOW set, the other provider reads the same pages at the same time.
+  // Its answers are recorded for the Bench comparison and never change what a founder sees.
+  const aiInput = { judge: run.kind !== "PREVIEW", pages: stored, firstScreens, storeName: crawl.signals.storeName, fails: first.results.filter((r) => r.outcome === "FAIL"), cacheKey: `quarr-${run.id}` };
+  const { primary, shadow } = providers();
+  const [ai, shadowRun] = await Promise.all([
+    analyseRun({ ...aiInput, provider: primary, onProgress: progress.set }),
+    shadow ? analyseRun({ ...aiInput, provider: shadow }).catch(() => null) : Promise.resolve(null),
+  ]);
   for (const v of ai.judged) {
     const row = first.results.find((r) => r.checkId === v.checkId);
     if (!row) continue;
@@ -99,8 +100,14 @@ export async function processRun(runId: string) {
   }
   const aiLine = aiSummaryLine(ai.report);
   const before = await db.run.findUnique({ where: { id: run.id }, select: { notes: true } });
-  await db.run.update({ where: { id: run.id }, data: { ai: ai.report as unknown as Prisma.InputJsonValue, notes: [before?.notes, aiLine].filter(Boolean).join(" · ").slice(0, 900) } });
+  const shadowRecord = shadowRun ? toShadow(shadowRun) : null;
+  const shadowLine = shadowRecord ? `Shadow ${aiSummaryLine(shadowRecord.report)}` : null;
+  await db.run.update({
+    where: { id: run.id },
+    data: { ai: { ...ai.report, ...(shadowRecord ? { shadow: shadowRecord } : {}) } as unknown as Prisma.InputJsonValue, notes: [before?.notes, aiLine, shadowLine].filter(Boolean).join(" · ").slice(0, 1200) },
+  });
   log(aiLine);
+  if (shadowLine) log(shadowLine);
 
   const results = await db.checkResult.findMany({ where: { runId: run.id } });
   const checked = { PASS: 0, FAIL: 0, NOT_OBSERVABLE: 0 };

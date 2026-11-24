@@ -34,7 +34,15 @@ jobs:
       EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
       SMTP_USER: ${{ secrets.SMTP_USER }}
       SMTP_PASS: ${{ secrets.SMTP_PASS }}
+      # QUARR's AI (docs/DEPLOY.md step 7). Keys are secrets; the choices are plain variables
+      # (Settings → Secrets and variables → Actions → Variables).
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      QUARR_AI_PROVIDER: ${{ vars.QUARR_AI_PROVIDER }}
+      QUARR_AI_SHADOW: ${{ vars.QUARR_AI_SHADOW }}
+      ANTHROPIC_MODEL: ${{ vars.ANTHROPIC_MODEL }}
+      OPENAI_MODEL: ${{ vars.OPENAI_MODEL }}
+      OPENAI_REASONING: ${{ vars.OPENAI_REASONING }}
       CRAWL_TIMEOUT_MS: "240000"
     steps:
       - name: Check configuration

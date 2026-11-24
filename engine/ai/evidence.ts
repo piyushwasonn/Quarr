@@ -54,7 +54,7 @@ export function buildEvidence(pages: Partial<Record<PageKind, StoredPage>>, firs
     const shot = firstScreens[k];
     if (!shot) continue;
     blocks.push({ type: "text", text: `First phone screen of the ${LABEL[k] ?? k}, before any scrolling:` });
-    blocks.push({ type: "image", source: { type: "base64", media_type: "image/jpeg", data: shot.toString("base64") } });
+    blocks.push({ type: "image", mediaType: "image/jpeg", data: shot.toString("base64") });
   }
   blocks.push({
     type: "text",

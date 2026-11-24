@@ -138,27 +138,43 @@ Start in **Test mode** (the toggle at the top of the dashboard).
 3. Redeploy. Then sign in on SITE, open a First Look and buy a re-check with test UPI `success@razorpay`. The credit should appear right away, and the payment should show in `/bench/orders`.
 4. **Going live:** Razorpay reviews the website first. It looks for the Contact, Terms, Privacy, and Cancellation & Refund pages, which the site has at `/contact`, `/terms`, `/privacy` and `/refunds`. Make sure `/contact` shows your real name, address and phone. Submit `https://quarr.in` as the website, not the `netlify.app` address. Then switch to the Live keys and add a Live webhook.
 
-## 7. QUARR's AI (Claude): required
+## 7. QUARR's AI: required (Claude or OpenAI)
 
 QUARR's AI reads every store the crawler walks:
 - it answers six checks a simple rule can't, such as whether two pages contradict each other, whether a first order can be low-risk, and whether a claim has support
 - it double-checks every finding a rule produced before a founder can see it
 - it words the findings
 
-It can only point at words that are really on the store's pages: QUARR checks every quote, and discards copy that adds a number not in the evidence.
+It can only point at words that are really on the store's pages: QUARR checks every quote, and discards copy that adds a number not in the evidence. Those checks are QUARR's own code, so they are the same whichever provider you use.
 
-**Without a key, nothing is shown to a founder without your review**, quick scans show no example finding, and nothing publishes on its own.
+**Without a working AI, nothing is shown to a founder without your review**, quick scans show no example finding, and nothing publishes on its own.
 
-1. Go to **console.anthropic.com**, sign in (Google works) and add billing under **Plans & billing**. This is separate from an OpenAI account: an OpenAI key or OpenAI credit doesn't work here.
-2. Go to **API keys** → **Create key**, and name it `QUARR crawler`.
-3. Go to GitHub → **piyushwasonn/Quarr** → **Settings** → **Secrets and variables** → **Actions** → **New repository secret**: `ANTHROPIC_API_KEY`. It goes in GitHub, not Netlify, because the reading happens in the crawler.
-4. Open **Bench → Health**, press **Wake the crawler now**, and scan a store. "QUARR AI (Claude)" should turn green.
+Everything below goes in GitHub → **piyushwasonn/Quarr** → **Settings** → **Secrets and variables** → **Actions**. Keys go under **Secrets**, choices under **Variables**. They go in GitHub, not Netlify, because the reading happens in the crawler.
 
-Approximate cost per store, at Claude Opus 5.5 list prices:
-- **quick scan:** about ₹10 to 15 (one double-check)
-- **full First Look:** about ₹40 to 55 (reading, double-check and wording)
+**A. Claude (Anthropic)**
+1. Go to **console.anthropic.com**, sign in (Google works) and add billing under **Plans & billing**.
+2. Go to **API keys** → **Create key**, name it `QUARR crawler`, and add it as the secret `ANTHROPIC_API_KEY`.
+3. Optional variable `ANTHROPIC_MODEL`. The default is `claude-opus-5-5`; `claude-sonnet-5-5` costs about half.
 
-Bench → Health and each run's notes show what the AI did.
+**B. OpenAI**
+1. Go to **platform.openai.com** → **API keys** → **Create new secret key**, name it `QUARR crawler`, and add it as the secret `OPENAI_API_KEY`. Your existing OpenAI credit pays for it.
+2. Add the variable `OPENAI_MODEL` with the exact model ID from OpenAI's models page (platform.openai.com/docs/models). QUARR won't guess it. Use at least a mid-tier model; the smallest ones are fine for wording but miss too much when checking.
+3. If that model doesn't support a reasoning effort setting, also add the variable `OPENAI_REASONING` = `off`.
+
+**C. Choose**
+- **Variable `QUARR_AI_PROVIDER`** = `anthropic` or `openai`. This one decides what founders get. If you leave it out, QUARR uses Claude when its key is present, otherwise OpenAI.
+- **Variable `QUARR_AI_SHADOW`** = the other one (optional). Both read every store at the same time; the shadow's answers are only recorded. **Bench → AI** then scores both against your review decisions. This doubles the AI cost while it's on, so use it for Step 0 and then remove it.
+
+**D. Check it.** Open **Bench → Health**, press **Wake the crawler now**, and scan a store. "QUARR AI" should turn green and name the provider and model.
+
+Approximate cost per store, at list prices:
+
+| Model | Quick scan | Full First Look |
+|---|---|---|
+| Claude Opus 5.5 | about ₹12 | ₹40 to 55 |
+| Claude Sonnet 5.5, or an OpenAI mid-tier model | about ₹6 | ₹20 to 25 |
+
+OpenAI's prices aren't built into QUARR. To see real costs on Bench → AI, add `AI_PRICES` in **Netlify** (not GitHub), for example `{"your-model-id":[2,10,0.2,0]}`: US$ per million tokens for input, output, cached input and cache write, copied from OpenAI's pricing page.
 
 ## 8. Check everything: Bench → Health
 
@@ -168,7 +184,7 @@ Open SITE `/bench/health` and sign in with `BENCH_PASSWORD`. It tests each piece
 - screenshot storage
 - email login
 - crawler wake-up, and whether queued stores are being picked up
-- whether Claude is actually wording findings (with the last error if it isn't)
+- whether QUARR's AI ran on the last walks, which provider and model, and the last error if it didn't
 - Google sign-in
 - Razorpay
 
@@ -188,4 +204,4 @@ The crawler runs from the US. A few Indian stores show other currencies or block
 - **Hostinger:** your domain and business email.
 - **GitHub Actions:** free (about 600 walks a month on a private repo).
 - **Razorpay:** its standard fee per payment.
-- **QUARR's AI (Claude):** about ₹10 to 15 per quick scan and ₹40 to 55 per full First Look.
+- **QUARR's AI:** about ₹6 to 15 per quick scan and ₹20 to 55 per full First Look, depending on the model (step 7). Double while shadow comparison is on.

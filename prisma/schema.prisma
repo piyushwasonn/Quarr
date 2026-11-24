@@ -165,7 +165,7 @@ model Finding {
   observed      String       @db.Text
   likelyEffect  String       @db.Text
   notYetProven  String       @db.Text
-  draftedBy     String // claude | template
+  draftedBy     String // claude | openai | template
   original      Json? // the draft as written, before any edit
   state         FindingState @default(DRAFT)
   editReason    EditReason?

@@ -22,14 +22,14 @@ export type WFinding = {
   mode: string;
   citation: Citation | null;
   // QUARR's AI: its second reading of a rule, or the reasoning behind an AI-judged check.
-  ai: { kind: "verified" | "judged"; verdict: string; reason: string; quotes: { page: string; text: string }[] } | null;
+  ai: { kind: "verified" | "judged"; verdict: string; reason: string; quotes: { page: string; text: string }[]; by?: string; other?: { provider: string; verdict: string; reason: string } } | null;
 };
 
 const AI_CHIP: Record<string, string> = { CONFIRMED: "pass", REFUTED: "fail", UNSURE: "unseen", JUDGED: "brass" };
 
 function AiNote({ ai, full }: { ai: WFinding["ai"]; full: boolean }) {
   if (!ai) return <p className="mini muted">AI did not read this one (off or failed for this run). It cannot be shown without your review.</p>;
-  const label = ai.kind === "judged" ? "AI-judged check" : ai.verdict === "CONFIRMED" ? "AI agrees" : ai.verdict === "REFUTED" ? "AI disagrees" : "AI unsure";
+  const label = ai.kind === "judged" ? `AI-judged check${ai.by ? ` (${ai.by})` : ""}` : ai.verdict === "CONFIRMED" ? "AI agrees" : ai.verdict === "REFUTED" ? "AI disagrees" : "AI unsure";
   return (
     <div className="small" style={{ borderLeft: "3px solid var(--line)", paddingLeft: 10 }}>
       <span className={`chip ${AI_CHIP[ai.kind === "judged" ? "JUDGED" : ai.verdict] ?? "unseen"}`}>{label}</span> {ai.reason}
@@ -37,6 +37,11 @@ function AiNote({ ai, full }: { ai: WFinding["ai"]; full: boolean }) {
         <ul className="list-clean mini" style={{ marginTop: 4 }}>
           {ai.quotes.map((q, i) => <li key={i}>{pageLabel(q.page)}: &quot;{q.text}&quot;</li>)}
         </ul>
+      ) : null}
+      {ai.other ? (
+        <p className="mini muted" style={{ marginTop: 4 }}>
+          Shadow model ({ai.other.provider}): <strong>{ai.other.verdict.toLowerCase()}</strong>. {full ? ai.other.reason : ""}
+        </p>
       ) : null}
     </div>
   );
@@ -210,7 +215,7 @@ function FindingEditor({ f, index, count, active, onFocus, mode, setMode, pendin
     <div className={`fcard${active ? " active" : ""}`} onClick={onFocus}>
       <div className="spread">
         <span className="mini">
-          <strong>#{index + 1}</strong> · <strong>{f.checkId}</strong> · {LENS_NAMES[f.lens as Lens]} · score {f.score} · <span title="Check mode">{f.mode}</span> · {f.draftedBy === "claude" ? "AI-worded" : "template"}
+          <strong>#{index + 1}</strong> · <strong>{f.checkId}</strong> · {LENS_NAMES[f.lens as Lens]} · score {f.score} · <span title="Check mode">{f.mode}</span> · {f.draftedBy === "template" ? "template" : `AI-worded (${f.draftedBy})`}
         </span>
         <span className={`state ${f.state}`}>{f.state === "DRAFT" ? "needs decision" : f.state.toLowerCase()}{f.editReason ? ` · ${f.editReason.toLowerCase().replace("_", " ")}` : ""}</span>
       </div>

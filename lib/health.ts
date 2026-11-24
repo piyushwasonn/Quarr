@@ -88,21 +88,22 @@ export async function runHealthChecks(requestHost: string | null): Promise<Check
   try {
     const since = new Date(Date.now() - 14 * 24 * 3600 * 1000);
     const runs = await db.run.findMany({ where: { crawledAt: { gte: since } }, orderBy: { crawledAt: "desc" }, take: 20, select: { domain: true, ai: true } });
-    const reports = runs.map((r) => ({ domain: r.domain, ai: r.ai as { status?: string; reason?: string; verified?: { confirmed: number; refuted: number; unsure: number }; usage?: { input: number; output: number; cacheRead: number } } | null }));
+    type Rep = { status?: string; reason?: string; provider?: string; model?: string; verified?: { confirmed: number; refuted: number; unsure: number } };
+    const reports = runs.map((r) => ({ domain: r.domain, ai: r.ai as (Rep & { shadow?: { report?: Rep } }) | null }));
     const on = reports.filter((r) => r.ai?.status === "on").length;
     const last = reports[0];
     const lastProblem = reports.find((r) => r.ai && r.ai.status !== "on");
     const refuted = reports.reduce((n, r) => n + (r.ai?.verified?.refuted ?? 0), 0);
     const checked = reports.reduce((n, r) => n + (r.ai?.verified ? r.ai.verified.confirmed + r.ai.verified.refuted + r.ai.verified.unsure : 0), 0);
     out.push({
-      name: "QUARR AI (Claude)",
+      name: "QUARR AI",
       ok: !reports.length ? null : last?.ai?.status === "on" ? true : false,
       detail: !reports.length
         ? "No store walked in the last 14 days, so nothing to judge."
         : last?.ai?.status === "on"
-          ? `Active on ${on} of the last ${reports.length} walks. It double-checked ${checked} findings and caught ${refuted} the rules got wrong.${lastProblem ? ` Last problem (${lastProblem.domain}): ${lastProblem.ai?.reason ?? lastProblem.ai?.status}.` : ""}`
+          ? `${last.ai.provider ?? "AI"} (${last.ai.model}) active on ${on} of the last ${reports.length} walks. It double-checked ${checked} findings and caught ${refuted} the rules got wrong.${last.ai.shadow?.report ? ` Shadow: ${last.ai.shadow.report.provider} (${last.ai.shadow.report.model}) is ${last.ai.shadow.report.status}${last.ai.shadow.report.reason ? `: ${last.ai.shadow.report.reason}` : ""}; compare at Bench → AI.` : ""}${lastProblem ? ` Last problem (${lastProblem.domain}): ${lastProblem.ai?.reason ?? lastProblem.ai?.status}.` : ""}`
           : `Not active on the last walk (${last?.domain}): ${last?.ai?.reason ?? "this walk ran before AI was added"}. Until it runs, nothing is shown to a founder without your review and nothing publishes on its own.`,
-      fix: last?.ai?.status === "on" ? undefined : "console.anthropic.com → API keys → create a key → GitHub → Settings → Secrets → Actions → ANTHROPIC_API_KEY. Then Wake the crawler.",
+      fix: last?.ai?.status === "on" ? undefined : "docs/DEPLOY.md step 7: add ANTHROPIC_API_KEY, or OPENAI_API_KEY plus the OPENAI_MODEL variable, in GitHub → Settings → Secrets and variables → Actions. Then Wake the crawler.",
     });
   } catch {
     // Database check above already reports this.

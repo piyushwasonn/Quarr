@@ -26,7 +26,7 @@ export const aiVerdictOf = (r: Pick<ResultRow, "ai">) => ((r.ai ?? null) as { ve
 // Cleared by AI: a rule the verifier confirmed, or an AI-judged check (which already had to
 // quote the page). Nothing reaches a founder unreviewed without this (CLAUDE.md).
 export function aiCleared(r: Pick<ResultRow, "checkId" | "ai" | "detail">) {
-  if (r.checkId.startsWith("AI-")) return (r.detail as { judgedBy?: string } | null)?.judgedBy === "claude";
+  if (r.checkId.startsWith("AI-")) return !!(r.detail as { judgedBy?: string } | null)?.judgedBy;
   return aiVerdictOf(r) === "CONFIRMED";
 }
 

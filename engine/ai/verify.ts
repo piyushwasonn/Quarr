@@ -2,7 +2,7 @@ import { z } from "zod";
 import { CHECKS_BY_ID } from "../checks";
 import { CHECK_LENS, FRAMEWORK_LENS_BY_ID } from "../framework/lenses";
 import type { Citation, PageKind, StoredPage } from "../types";
-import { callModel, type Evidence, type Usage } from "./model";
+import { callModel, type Evidence, type Provider, type Usage } from "./model";
 import { ANALYST_SYSTEM } from "./prompt";
 import { verifyQuotes, type Quote } from "./quotes";
 
@@ -42,7 +42,7 @@ Never refute on opinion ("this is normal for the category", "buyers won't mind")
 Findings:
 ${JSON.stringify(items, null, 2)}`;
 
-export async function verifyFails(evidence: Evidence, pages: Partial<Record<PageKind, StoredPage>>, fails: FailRow[]): Promise<{ ok: boolean; reason?: string; verdicts: Map<string, AiVerdict>; usage?: Usage; ms: number }> {
+export async function verifyFails(evidence: Evidence, pages: Partial<Record<PageKind, StoredPage>>, fails: FailRow[], provider: Provider = "anthropic", cacheKey?: string): Promise<{ ok: boolean; reason?: string; verdicts: Map<string, AiVerdict>; usage?: Usage; ms: number }> {
   const verdicts = new Map<string, AiVerdict>();
   if (!fails.length) return { ok: true, verdicts, ms: 0 };
   const items = fails.map((r) => {
@@ -60,7 +60,7 @@ export async function verifyFails(evidence: Evidence, pages: Partial<Record<Page
     };
   });
 
-  const res = await callModel({ name: "verify", system: ANALYST_SYSTEM, evidence, task: TASK(items), schema: Out, effort: "medium", maxTokens: 8000 });
+  const res = await callModel({ name: "verify", system: ANALYST_SYSTEM, evidence, task: TASK(items), schema: Out, effort: "medium", maxTokens: 16000, cacheKey }, provider);
   if (!res.ok) return { ok: false, reason: res.reason, verdicts, usage: res.usage, ms: res.ms };
 
   const byId = new Map(res.value.verdicts.map((v) => [v.checkId, v]));
