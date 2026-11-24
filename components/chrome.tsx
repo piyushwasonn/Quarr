@@ -7,7 +7,7 @@ import Link from "next/link";
 // eslint-disable-next-line @next/next/no-img-element
 export const BrandIcon = ({ size = 30 }: { size?: number }) => <img src="/brand/quarr-icon.svg" alt="" width={Math.round((size * 139) / 131)} height={size} style={{ display: "block" }} />;
 
-export function BrandLogo({ width = 220, alt = "QUARR — See what the customer will see" }: { width?: number; alt?: string }) {
+export function BrandLogo({ width = 220, alt = "QUARR. See what the customer will see." }: { width?: number; alt?: string }) {
   // eslint-disable-next-line @next/next/no-img-element
   return <img src="/brand/quarr-logo.svg" alt={alt} width={width} height={Math.round((width * 280) / 920)} style={{ display: "block", maxWidth: "100%", height: "auto" }} />;
 }

@@ -4,7 +4,7 @@
 |---|---|---|
 | Website, sign-in, payments | **Netlify** | your Netlify account |
 | Database | **Neon** | sign in with Google |
-| Screenshots | **Netlify Blobs** (part of your Netlify site) | — |
+| Screenshots | **Netlify Blobs** (part of your Netlify site) |: |
 | Crawler (walks the stores) | **GitHub Actions** in this repo | your GitHub account |
 | Domain and business email | **Hostinger** | `quarr.in`, mailbox `piyush@quarr.in` |
 | Email QUARR sends (codes, reports) | **Resend**, from `firstlook@quarr.in` | sign in with Google |

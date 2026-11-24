@@ -74,17 +74,17 @@ export default async function Queue({ searchParams }: { searchParams: Promise<{ 
       <div className="tiles">
         <div className="card"><div className="n">{count(["IN_REVIEW", "DRAFTED", "APPROVED"])}</div><div className="t">waiting for review</div></div>
         <div className="card"><div className="n">{count(["QUEUED", "CRAWLING", "CRAWLED", "CHECKED"])}</div><div className="t">queued or crawling</div></div>
-        <div className="card"><div className="n">{med === null ? "–" : `${(med / 60).toFixed(1)}m`}</div><div className="t">median review time (30d)</div></div>
+        <div className="card"><div className="n">{med === null ? "n/a" : `${(med / 60).toFixed(1)}m`}</div><div className="t">median review time (30d)</div></div>
         <div className="card"><div className="n">{sent.length}</div><div className="t">published (30d)</div></div>
-        <div className="card"><div className="n">{sent.length ? `${Math.round((replied.length / sent.length) * 100)}%` : "–"}</div><div className="t">replied</div></div>
+        <div className="card"><div className="n">{sent.length ? `${Math.round((replied.length / sent.length) * 100)}%` : "n/a"}</div><div className="t">replied</div></div>
         <div className="card"><div className="n">{journeys}</div><div className="t">paid journeys (30d)</div></div>
       </div>
 
       <div className="tiles">
         <div className="card"><div className="n">{previews}</div><div className="t">quick scans (30d)</div></div>
         <div className="card"><div className="n">{signups}</div><div className="t">sign-ups (30d)</div></div>
-        <div className="card"><div className="n">{previews ? `${Math.round((signups / previews) * 100)}%` : "–"}</div><div className="t">scan → sign-up</div></div>
-        <div className="card"><div className="n">{signups ? `${Math.round((journeys / signups) * 100)}%` : "–"}</div><div className="t">sign-up → journey</div></div>
+        <div className="card"><div className="n">{previews ? `${Math.round((signups / previews) * 100)}%` : "n/a"}</div><div className="t">scan → sign-up</div></div>
+        <div className="card"><div className="n">{signups ? `${Math.round((journeys / signups) * 100)}%` : "n/a"}</div><div className="t">sign-up → journey</div></div>
       </div>
 
       <div className="tabs">

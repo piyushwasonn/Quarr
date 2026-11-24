@@ -15,10 +15,10 @@ export default async function Orders() {
           <tbody>
             {orders.map((o) => (
               <tr key={o.id}>
-                <td className="mini">{o.paidAt?.toLocaleString("en-IN") ?? "–"}</td>
+                <td className="mini">{o.paidAt?.toLocaleString("en-IN") ?? "n/a"}</td>
                 <td><a href={`mailto:${o.user.email}`}>{o.user.email}</a></td>
                 <td><span className={`chip ${o.product === "JOURNEY" ? "brass" : ""}`}>{o.product === "JOURNEY" ? "Journey" : "Re-check credit"}</span></td>
-                <td>{o.domain ?? "–"}{o.runId ? <div className="mini"><a href={`/bench/runs/${o.runId}`}>run</a></div> : null}</td>
+                <td>{o.domain ?? "n/a"}{o.runId ? <div className="mini"><a href={`/bench/runs/${o.runId}`}>run</a></div> : null}</td>
                 <td>{rupees(o.amountPaise)}<div className="mini">{rupees(o.basePaise)} + {rupees(o.gstPaise)} GST</div></td>
                 <td className="mini">{o.provider}{o.paymentId ? ` · ${o.paymentId}` : ""}{o.status === "REFUNDED" ? " · refunded" : ""}</td>
                 <td>

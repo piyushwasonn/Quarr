@@ -4,7 +4,7 @@ import "@fontsource-variable/manrope";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: { default: "QUARR — See what the customer will see", template: "%s · QUARR" },
+  title: { default: "QUARR: See what the customer will see", template: "%s · QUARR" },
   description: "Every founder has blind spots. QUARR, a customer perspective consultancy, helps you find the gaps in your customer experience before they cost you sales. Free store check for Indian D2C brands.",
 };
 

@@ -1,4 +1,4 @@
-# QUARR — First Look platform
+# QUARR: First Look platform
 
 A founder pastes their store URL and email. QUARR walks the store the way a first-time buyer does, on a 390 px phone and a desktop screen, from the homepage through product, cart and the first checkout screen to the policies. It runs 38 deterministic checks, picks the three findings most likely to cost a first order, and sends a report in which every finding is traced to a screenshot.
 
@@ -25,7 +25,7 @@ Run kinds and who reviews them: `PREVIEW` and `RECHECK` are automated (`READY`);
 
 ## How the engine thinks
 
-The two governing rules come from Notion page `03 — Free First Look Engine`:
+The two governing rules come from Notion page `03: Free First Look Engine`:
 
 1. **A finding exists only when a deterministic check fires.** Every check returns `PASS`, `FAIL` or `NOT_OBSERVABLE`. A `FAIL` without a citation (page, screenshot, snippet) is downgraded to `NOT_OBSERVABLE`. No citation, no finding.
 2. **AI writes words, never verdicts.** Claude (`engine/write.ts`) only rewrites the template copy of checks that already fired, using that check's evidence. Any AI draft that contains a number not present in the evidence is thrown away, and the deterministic template is used instead. Without an API key, the templates are used, and they are complete.

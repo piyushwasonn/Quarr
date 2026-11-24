@@ -3,7 +3,7 @@ import type { CheckDef, StoredPage } from "../types";
 import { absent, cite, fail, findIn, has, hasProduct, label, pagesOf, pass, PRODUCT_KINDS, snippetAround, unseen } from "./helpers";
 
 // The QUARR First Look check library.
-// Rules (03 — Free First Look Engine):
+// Rules (Notion 03, Free First Look Engine):
 //  1. A finding exists only when one of these deterministic checks fires.
 //  2. Every check returns PASS, FAIL or NOT_OBSERVABLE. What the crawler could
 //     not see is NOT_OBSERVABLE, never FAIL.

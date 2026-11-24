@@ -1,6 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { betaZodOutputFormat } from "@anthropic-ai/sdk/helpers/beta/zod";
 import { z } from "zod";
+import { plainPunctuation } from "@/lib/punctuation";
 import type { Citation, FindingCopy } from "./types";
 
 // The AI layer writes words, never verdicts. It only rewrites the template
@@ -19,6 +20,7 @@ Rules:
 - Keep the meaning of each field: "title" names the buyer problem in under 12 words; "observed" states exactly what was seen, plainly; "likelyEffect" describes the probable buyer behaviour, hedged ("likely", "often", "many buyers"); "notYetProven" states honestly what this review could not confirm.
 - Each of observed, likelyEffect and notYetProven is one or two sentences.
 - Indian English. No hype, no blame, no exclamation marks, no emojis. Speak to the founder as "you".
+- Never use em dashes or en dashes as punctuation. Use a comma, a colon or a full stop instead.
 - Never say the store is breaking the law. For labelling findings, say the rules "expect" or "ask for" the information.
 - Return every finding you were given, with the same checkId.`;
 
@@ -85,7 +87,7 @@ export async function draftFindings(storeName: string | null, items: DraftInput[
         lastWriterIssue = draft ? `Draft for ${item.checkId} added a number not in the evidence; template used` : `No draft returned for ${item.checkId}`;
         return fallback[idx];
       }
-      return { checkId: item.checkId, title: draft.title, observed: draft.observed, likelyEffect: draft.likelyEffect, notYetProven: draft.notYetProven, draftedBy: "claude" as const };
+      return { checkId: item.checkId, title: plainPunctuation(draft.title), observed: plainPunctuation(draft.observed), likelyEffect: plainPunctuation(draft.likelyEffect), notYetProven: plainPunctuation(draft.notYetProven), draftedBy: "claude" as const };
     });
   } catch (err) {
     lastWriterIssue = err instanceof Anthropic.APIError ? `Claude API error ${err.status}: ${err.message}` : `Claude call failed: ${err instanceof Error ? err.message : String(err)}`;

@@ -1,4 +1,4 @@
-/* QUARR design tokens — Brand Guidelines v1.0 (Notion 08).
+/* QUARR design tokens: Brand Guidelines v1.0 (Notion 08).
    QUARR Navy #0B1F44 · Slate Blue #71869B · Cool Grey #D9DFE6 · Soft White #F7F9FC · QUARR Black #111111.
    Slate Blue is below 4.5:1 on Soft White, so it is used for borders and icons only;
    small secondary text uses a darker slate (--muted). Status colours are interim until
@@ -142,9 +142,9 @@ p { margin: 0; }
 .chip.status::before { display: inline-grid; place-items: center; width: 14px; height: 14px; border-radius: 50%; font-size: 10px; font-weight: 800; line-height: 1; color: #fff; flex: none; }
 .chip.status.fail::before { content: "!"; background: var(--fail); }
 .chip.status.pass::before { content: "✓"; background: var(--pass); }
-.chip.status.unseen::before { content: "–"; background: var(--unseen); }
+.chip.status.unseen::before { content: "?"; background: var(--unseen); }
 .problem::before { content: "!"; color: #fff; background: var(--fail); width: 16px; height: 16px; border-radius: 50%; display: inline-grid; place-items: center; font-size: 11px; font-weight: 800; flex: none; transform: translateY(2px); }
-.not-assessed::before { content: "–"; color: var(--unseen); font-weight: 700; flex: none; }
+.not-assessed::before { content: "?"; color: var(--unseen); font-weight: 700; flex: none; }
 .chip.unseen { background: var(--unseen-bg); color: var(--unseen); border-color: var(--line); }
 .chip.brass { background: var(--brass-soft); color: #7a5d2f; border-color: #e8dcc6; }
 .chip.dark { background: var(--navy-900); color: #fff; border-color: var(--navy-900); }
@@ -159,7 +159,7 @@ p { margin: 0; }
 .hero-focus { margin-top: 36px; padding-top: 24px; border-top: 1px solid var(--line); display: grid; gap: 6px; color: var(--ink-2); max-width: 56ch; }
 .hero-points { display: grid; gap: 12px; margin-top: 32px; padding: 0; list-style: none; color: var(--ink-2); font-size: 15px; }
 .hero-points li { display: flex; gap: 12px; align-items: baseline; }
-.hero-points li::before { content: ""; width: 14px; height: 1.5px; background: var(--brass); flex: none; transform: translateY(-4px); }
+.hero-points li::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--navy-900); flex: none; transform: translateY(-2px); }
 
 .submit-card { background: #fff; color: var(--ink); border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); padding: clamp(22px, 3vw, 32px); }
 .submit-card h2 { font-size: 24px; }
@@ -181,7 +181,7 @@ p { margin: 0; }
 .list-clean { list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; }
 .list-clean li { display: flex; gap: 12px; align-items: baseline; color: var(--ink-2); }
 .tick::before { content: "✓"; color: var(--pass); font-weight: 700; flex: none; }
-.cross::before { content: "—"; color: var(--subtle); font-weight: 700; flex: none; }
+.cross::before { content: "×"; color: var(--subtle); font-weight: 700; flex: none; }
 
 .offer { background: var(--navy-900); color: #fff; border-radius: var(--radius-lg); padding: clamp(28px, 4vw, 48px); display: grid; grid-template-columns: 1.4fr 1fr; gap: 32px; align-items: center; }
 .offer h2 { color: #fff; }
@@ -192,7 +192,8 @@ p { margin: 0; }
 .faq details { border-bottom: 1px solid var(--line); padding: 18px 0; }
 .faq summary { cursor: pointer; font-weight: 600; color: var(--navy-900); list-style: none; display: flex; justify-content: space-between; gap: 16px; }
 .faq summary::after { content: "+"; color: var(--brass); font-size: 20px; line-height: 1; }
-.faq details[open] summary::after { content: "–"; }
+.faq summary::after { transition: transform .15s; }
+.faq details[open] summary::after { transform: rotate(45deg); }
 .faq details p { margin-top: 10px; color: var(--ink-2); }
 
 /* ── Report ──────────────────────────────────── */

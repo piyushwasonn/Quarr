@@ -7,6 +7,7 @@ import { checkPassword, endBenchSession, requireBench, startBenchSession } from 
 import { db } from "@/lib/db";
 import { publishRun } from "@/lib/deliver";
 import { wakeCrawler } from "@/lib/crawler";
+import { plainPunctuation } from "@/lib/punctuation";
 import { deletePrefix } from "@/lib/storage";
 import { newPublicToken } from "@/lib/tokens";
 import { isValidEmail, normalizeStoreUrl } from "@/lib/url";
@@ -54,11 +55,12 @@ export async function editFinding(_prev: { error?: string; ok?: boolean }, form:
   const reason = reasonOf(form.get("reason"));
   if (!reason) return { error: "Choose why you edited it." };
   const note = String(form.get("note") ?? "").trim() || null;
+  // Bench edits get the same punctuation rule as AI drafts: no em dashes reach a founder.
   const data = {
-    title: String(form.get("title") ?? f.title).trim(),
-    observed: String(form.get("observed") ?? f.observed).trim(),
-    likelyEffect: String(form.get("likelyEffect") ?? f.likelyEffect).trim(),
-    notYetProven: String(form.get("notYetProven") ?? f.notYetProven).trim(),
+    title: plainPunctuation(String(form.get("title") ?? f.title)),
+    observed: plainPunctuation(String(form.get("observed") ?? f.observed)),
+    likelyEffect: plainPunctuation(String(form.get("likelyEffect") ?? f.likelyEffect)),
+    notYetProven: plainPunctuation(String(form.get("notYetProven") ?? f.notYetProven)),
   };
   if (Object.values(data).some((v) => !v)) return { error: "Every field needs text." };
   await db.$transaction([
