@@ -7,13 +7,22 @@ export function pagesOf(ctx: CheckContext, kinds: PageKind[]) {
 }
 
 // The first match of `re` across `kinds`, returned with surrounding context.
+// Information inside a collapsed section counts as present (a buyer can open it with a
+// tap), so presence checks also search each page's hidden text after its visible text.
 export function findIn(ctx: CheckContext, kinds: PageKind[], re: RegExp, radius = 90) {
   for (const p of pagesOf(ctx, kinds)) {
     const hit = snippetAround(p.text, re, radius);
-    if (hit) return { page: p, snippet: hit.snippet, index: hit.index, match: hit.match };
+    if (hit) return { page: p, snippet: hit.snippet, index: hit.index, match: hit.match, collapsed: false };
+  }
+  for (const p of pagesOf(ctx, kinds)) {
+    const hit = p.data.hiddenText ? snippetAround(p.data.hiddenText, re, radius) : null;
+    if (hit) return { page: p, snippet: hit.snippet, index: hit.index, match: hit.match, collapsed: true };
   }
   return null;
 }
+
+// Visible text plus collapsed-section text, for presence checks that test a page directly.
+export const fullText = (p: StoredPage) => `${p.text}\n${p.data.hiddenText ?? ""}`;
 
 export function snippetAround(text: string, re: RegExp, radius = 90) {
   const flags = re.flags.includes("g") ? re.flags : re.flags + "g";
@@ -64,7 +73,7 @@ export function absent(ctx: CheckContext, searched: PageKind[], cited: PageKind[
   if (!page) return unseen(`No ${cited.join("/")} page captured`);
   const looked = searched.filter((k) => ctx.pages[k]);
   return fail(
-    cite(page, `Searched the visible text of ${looked.map(label).join(", ")} for ${what}. Not found.`, { box, searched: looked }),
+    cite(page, `Searched ${looked.map(label).join(", ")} for ${what}, including collapsed sections. Not found.`, { box, searched: looked }),
     { ...detail, searched: looked.map(label) },
     strength,
   );

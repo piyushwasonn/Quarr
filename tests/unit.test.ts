@@ -53,3 +53,11 @@ describe("parsers and library", () => {
     expect(CHECKS.length).toBeGreaterThanOrEqual(33);
   });
 });
+
+describe("in-page extraction script", () => {
+  it("keeps regex escapes (a lost backslash once stripped every letter s)", async () => {
+    const { EXTRACT_SCRIPT } = await import("@/engine/extract");
+    expect(EXTRACT_SCRIPT).not.toContain("replace(/s+/g");
+    expect(EXTRACT_SCRIPT).toContain("replace(/\\s+/g");
+  });
+});

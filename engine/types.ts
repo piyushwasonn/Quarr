@@ -21,6 +21,7 @@ export type LinkInfo = { href: string; text: string; area: "header" | "footer" |
 
 export type PageData = {
   h1: string[];
+  hiddenText?: string; // includes collapsed sections a buyer can open with a tap
   metaDescription: string | null;
   links: LinkInfo[];
   jsonLd: unknown[];

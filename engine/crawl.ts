@@ -64,6 +64,9 @@ export async function crawlStore(startUrl: string, opts: CrawlOptions = {}): Pro
       headless: true,
       executablePath: process.env.CHROMIUM_PATH || undefined,
       args: ["--disable-dev-shm-usage"],
+      // Optional: route the browser through a proxy, e.g. one in India so stores show
+      // Indian prices and serviceability (or a sandbox egress proxy when debugging).
+      ...(process.env.CRAWL_PROXY ? { proxy: { server: process.env.CRAWL_PROXY } } : {}),
     });
     const work = walk(browser, startUrl, deadline, opts.allowPrivateHosts ?? process.env.ALLOW_LOCAL_TARGETS === "1", opts.mode ?? "full", opts.onProgress ?? (() => {}));
     const timer = new Promise<CrawlResult>((resolve) =>
@@ -88,7 +91,7 @@ async function walk(browser: Browser, startUrl: string, deadline: number, allowP
   const page = await mobile.newPage();
   const desk = preview ? null : await desktop.newPage();
   const pages: CapturedPage[] = [];
-  const origin = new URL(startUrl).origin;
+  let origin = new URL(startUrl).origin;
   const timeLeft = () => deadline - Date.now();
 
   // 1. Homepage
@@ -99,33 +102,49 @@ async function walk(browser: Browser, startUrl: string, deadline: number, allowP
 
   const blocked = detectBlock(home);
   if (blocked) return { ok: false, ...blocked, pages };
+  // Follow where the homepage actually landed (www ↔ apex, http → https), so the
+  // site's own links count as "this site".
+  try {
+    origin = new URL(home.finalUrl).origin;
+  } catch {
+    // keep the start origin
+  }
 
   const extra = (home.data.extra ?? {}) as Record<string, unknown>;
   let platform: CrawlSignals["platform"] = extra.isShopify ? "shopify" : extra.isWoo ? "woocommerce" : "unknown";
 
   // 2. Product discovery
   progress("Finding your products");
-  let products: { url: string; variantId?: number; price?: number | null }[] = [];
+  type Candidate = { url: string; variantId?: number; price?: number | null; confirmed: boolean };
+  let candidates: Candidate[] = [];
   const shopifyProducts = await fetchShopifyProducts(page, origin);
   if (shopifyProducts.length) {
     platform = "shopify";
-    products = shopifyProducts;
+    candidates = shopifyProducts.map((p) => ({ ...p, confirmed: true }));
   } else {
-    products = discoverProductLinks(home, origin).map((url) => ({ url }));
+    const byPattern = discoverProductLinks(home, origin);
+    candidates = byPattern.length
+      ? byPattern.map((url) => ({ url, confirmed: true }))
+      : // Custom-built sites: try likely links, keep only pages that look like products.
+        guessProductLinks(home, origin).map((url) => ({ url, confirmed: false }));
   }
-  const isStore = products.length > 0;
 
+  const need = preview ? 1 : 2;
+  const kept: Candidate[] = [];
   const productPrices: CrawlSignals["productPrices"] = [];
-  for (const [i, p] of products.slice(0, preview ? 1 : 2).entries()) {
-    if (timeLeft() < 30_000) break;
-    const kind = (i === 0 ? "PRODUCT_1" : "PRODUCT_2") as PageKind;
-    progress(i === 0 ? "Reading a product page like a first-time buyer" : "Reading a second product page");
-    const cap = await capture(page, desk, kind, p.url);
-    if (cap) {
-      pages.push(cap);
-      productPrices.push({ kind, amount: p.price ?? priceFromJsonLd(cap.data) });
-    }
+  for (const c of candidates.slice(0, need + 4)) {
+    if (kept.length >= need || timeLeft() < 30_000) break;
+    const kind = (kept.length === 0 ? "PRODUCT_1" : "PRODUCT_2") as PageKind;
+    progress(kept.length === 0 ? "Reading a product page like a first-time buyer" : "Reading a second product page");
+    const cap = await capture(page, desk, kind, c.url);
+    if (!cap || (cap.httpStatus ?? 200) >= 400) continue;
+    if (!c.confirmed && !looksLikeProduct(cap)) continue;
+    pages.push(cap);
+    kept.push(c);
+    productPrices.push({ kind, amount: c.price ?? priceFromJsonLd(cap.data) });
   }
+  const isStore = kept.length > 0;
+  const products = kept;
 
   // 3. Add to cart, cart, reload, checkout entry
   const signals: CrawlSignals = {
@@ -314,6 +333,32 @@ async function fetchShopifyProducts(page: Page, origin: string) {
   } catch {
     return [];
   }
+}
+
+const NOT_PRODUCT = /^\/(?:$|about|our-story|story|contact|privacy|terms|shipping|delivery|returns?|refunds?|cancell?ation|policies|policy|cart|bag|basket|checkout|account|login|log-in|signin|sign-in|register|signup|sign-up|blogs?|notes|stories|journal|news|press|faq|help|support|track|tracking|care|careers|jobs|collabs?|collaborations?|wishlist|search|me|collections?|category|categories|pages\/(?:about|contact|faq))(?:\/|$|\.)/i;
+
+// Same-site links that might be product pages on a custom-built store, most promising
+// first: links repeated on the page (product cards) and links in the page body.
+function guessProductLinks(home: CapturedPage, origin: string) {
+  const score = new Map<string, number>();
+  for (const l of home.data.links) {
+    if (!l.href.startsWith(origin) || l.area === "footer") continue;
+    const u = new URL(l.href);
+    if (u.search || NOT_PRODUCT.test(u.pathname) || /\.(pdf|jpe?g|png|webp|svg|xml|txt)$/i.test(u.pathname)) continue;
+    const key = u.pathname.replace(/\/$/, "");
+    if (!key) continue;
+    score.set(key, (score.get(key) ?? 0) + (l.area === "body" ? 2 : 1));
+  }
+  return [...score.entries()].sort((a, b) => b[1] - a[1]).slice(0, 6).map(([path]) => `${origin}${path}`);
+}
+
+// Does a captured page look like a product page? Structured product data, an
+// add-to-cart control, or a rupee price next to a buying action.
+export function looksLikeProduct(cap: CapturedPage) {
+  const ld = (cap.data.jsonLd as Record<string, unknown>[]).some((x) => x && /product/i.test(String(x["@type"] ?? "")));
+  if (ld || priceFromJsonLd(cap.data) !== null || cap.data.boxes?.addToCart) return true;
+  const buy = /add to (cart|bag|basket)|buy now|pre-?order|notify me|select (a )?size|choose (a )?size/i;
+  return /(₹|rs\.?|inr)\s?\d/i.test(cap.text) && (buy.test(cap.text) || cap.data.buttons.some((b) => buy.test(b)));
 }
 
 function discoverProductLinks(home: CapturedPage, origin: string) {

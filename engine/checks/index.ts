@@ -1,6 +1,6 @@
 import { priceFromJsonLd } from "../parse";
 import type { CheckDef, StoredPage } from "../types";
-import { absent, cite, fail, findIn, has, hasProduct, label, pagesOf, pass, PRODUCT_KINDS, snippetAround, unseen } from "./helpers";
+import { absent, cite, fail, findIn, fullText, has, hasProduct, label, pagesOf, pass, PRODUCT_KINDS, snippetAround, unseen } from "./helpers";
 
 // The QUARR First Look check library.
 // Rules (Notion 03, Free First Look Engine):
@@ -11,6 +11,8 @@ import { absent, cite, fail, findIn, has, hasProduct, label, pagesOf, pass, PROD
 
 const PRE_CHECKOUT = ["HOME", "PRODUCT_1", "PRODUCT_2", "CART"] as const;
 const DAYS = String.raw`(?:\d{1,2}\s*(?:-|–|to)\s*\d{1,2}|within\s+\d{1,2}|in\s+\d{1,2}|\d{1,2})\s*(?:working\s+|business\s+)?days?`;
+// Size guide, measurements, materials, ingredients, specifications: the details a buyer checks.
+const SPEC_DETAILS = /size (chart|guide)|dimensions?|specifications?|ingredients|material|fabric|composition|how to use|capacity|\bsize\s*:|fit\s*:|care instructions|fit\s*(&|and)\s*size|size\s*(&|and)\s*fit|garment details|product details|\b\d{2,3}\s?gsm\b/i;
 const NO_RETURNS = /(no|do not|don't|cannot)\s+(accept\s+)?(returns?|exchanges?)|non[- ]returnable|all sales are final/i;
 
 const short = (s: unknown, n = 140) => {
@@ -159,7 +161,7 @@ export const CHECKS: CheckDef[] = [
       const pages = pagesOf(ctx, PRODUCT_KINDS);
       if (!pages.length) return unseen("No product page captured");
       const found = pages.some(
-        (p) => p.data.inputs.some((i) => /pin\s?code|pincode|zip|postal/i.test(`${i.name} ${i.placeholder}`)) || /check (delivery|pincode|availability)|enter (your )?pin ?code|delivery pincode/i.test(p.text),
+        (p) => p.data.inputs.some((i) => /pin\s?code|pincode|zip|postal/i.test(`${i.name} ${i.placeholder}`)) || /check (delivery|pincode|availability)|enter (your )?pin ?code|delivery pincode/i.test(fullText(p)),
       );
       if (found) return pass();
       return absent(ctx, PRODUCT_KINDS, ["PRODUCT_1"], "a pincode or delivery-availability checker", {}, 0.7, "addToCart");
@@ -200,8 +202,8 @@ export const CHECKS: CheckDef[] = [
     run: (ctx) => {
       const p = ctx.pages.RETURNS;
       if (!p || (p.httpStatus ?? 200) >= 400) return unseen("No returns policy captured");
-      if (NO_RETURNS.test(p.text)) return pass({ noReturns: true });
-      const hit = snippetAround(p.text, new RegExp(String.raw`(\d{1,2}|seven|ten|fifteen|thirty)[\s-]*(calendar\s+|working\s+)?days?[^.]{0,80}(return|exchange|replace)|(return|exchange|replace)[^.]{0,80}(\d{1,2}|seven|ten|fifteen|thirty)[\s-]*(calendar\s+|working\s+)?days?`, "i"));
+      if (NO_RETURNS.test(fullText(p))) return pass({ noReturns: true });
+      const hit = snippetAround(fullText(p), new RegExp(String.raw`(\d{1,2}|seven|ten|fifteen|thirty)[\s-]*(calendar\s+|working\s+)?days?[^.]{0,80}(return|exchange|replace)|(return|exchange|replace)[^.]{0,80}(\d{1,2}|seven|ten|fifteen|thirty)[\s-]*(calendar\s+|working\s+)?days?`, "i"));
       if (hit) return pass({ snippet: hit.snippet });
       return fail(cite(p, short(p.text, 300)), {}, 0.8);
     },
@@ -221,8 +223,8 @@ export const CHECKS: CheckDef[] = [
     run: (ctx) => {
       const p = ctx.pages.RETURNS;
       if (!p || (p.httpStatus ?? 200) >= 400) return unseen("No returns policy captured");
-      if (NO_RETURNS.test(p.text)) return pass({ noReturns: true });
-      if (/(return|reverse)\s+(shipping|pick-?\s?up|courier)[^.]{0,100}(free|charge|cost|borne|pay|deduct)|free\s+(return|reverse\s+pick)|(customer|buyer|you)\s+(will\s+)?(have\s+to\s+|need\s+to\s+)?(bear|pay)[^.]{0,60}(return|shipping|courier)|reverse pick-?\s?up/i.test(p.text)) return pass();
+      if (NO_RETURNS.test(fullText(p))) return pass({ noReturns: true });
+      if (/(return|reverse)\s+(shipping|pick-?\s?up|courier)[^.]{0,100}(free|charge|cost|borne|pay|deduct)|free\s+(return|reverse\s+pick)|(customer|buyer|you)\s+(will\s+)?(have\s+to\s+|need\s+to\s+)?(bear|pay)[^.]{0,60}(return|shipping|courier)|reverse pick-?\s?up/i.test(fullText(p))) return pass();
       return fail(cite(p, short(p.text, 300)), {}, 0.7);
     },
     copy: () => ({
@@ -241,8 +243,8 @@ export const CHECKS: CheckDef[] = [
     run: (ctx) => {
       const p = ctx.pages.RETURNS;
       if (!p || (p.httpStatus ?? 200) >= 400) return unseen("No returns policy captured");
-      if (NO_RETURNS.test(p.text)) return pass({ noReturns: true });
-      const hit = snippetAround(p.text, new RegExp(String.raw`refund[^.]{0,120}?` + DAYS + "|" + DAYS + String.raw`[^.]{0,60}refund`, "i"));
+      if (NO_RETURNS.test(fullText(p))) return pass({ noReturns: true });
+      const hit = snippetAround(fullText(p), new RegExp(String.raw`refund[^.]{0,120}?` + DAYS + "|" + DAYS + String.raw`[^.]{0,60}refund`, "i"));
       if (hit) return pass({ snippet: hit.snippet });
       return fail(cite(p, short(p.text, 300)), {}, 0.75);
     },
@@ -339,7 +341,7 @@ export const CHECKS: CheckDef[] = [
       if (!pages.length) return unseen("No product page captured");
       for (const p of pages) {
         const ld = (p.data.jsonLd as Record<string, unknown>[]).some((x) => x && typeof x === "object" && ("aggregateRating" in x || "review" in x));
-        if (ld || p.data.boxes?.reviews || /\d+\s*(reviews?|ratings?)|customer reviews|write a review|★/i.test(p.text)) return pass();
+        if (ld || p.data.boxes?.reviews || /\d+\s*(reviews?|ratings?)|customer reviews|write a review|★/i.test(fullText(p))) return pass();
       }
       return absent(ctx, PRODUCT_KINDS, ["PRODUCT_1"], "ratings, reviews or a review widget", {}, 0.7, "addToCart");
     },
@@ -408,7 +410,7 @@ export const CHECKS: CheckDef[] = [
   },
 
   // ───────────── LEGAL METROLOGY (India, packaged goods) ─────────────
-  lgl("LGL-01", "Net quantity declared", /net\s*(qty|quantity|wt|weight|content|vol(ume)?)|\b\d+(\.\d+)?\s?(g|gm|gms|grams?|kg|ml|l|ltr|litres?|liters?|oz|pcs|pieces|units?)\b/i, "net quantity (weight, volume or count)", {
+  lgl("LGL-01", "Net quantity declared", /net\s*(qty|quantity|wt|weight|content|vol(ume)?)|\b\d+(\.\d+)?\s?(g|gm|gms|grams?|kg|ml|ltr|litres?|liters?|oz|pcs|pieces|units?)\b/i, "net quantity (weight, volume or count)", {
     title: "Product pages don't state the net quantity",
     observed: "We found no net quantity (grams, ml, pieces and so on) on the product pages.",
     likelyEffect: "Buyers comparing value need the quantity, and India's Legal Metrology rules for goods sold online expect it to be displayed.",
@@ -680,6 +682,8 @@ export const CHECKS: CheckDef[] = [
       if (desc === null) return unseen("No structured product description");
       const words = desc.split(/\s+/).filter(Boolean).length;
       if (words > 40) return pass({ words });
+      // A short summary is fine when the page also carries fit, material or spec details.
+      if (findIn(ctx, PRODUCT_KINDS, SPEC_DETAILS)) return pass({ words, detailsElsewhere: true });
       return fail(cite(p, `Product description (${words} words): "${short(desc, 200)}"`, { box: "price" }), { words }, 0.7);
     },
     copy: (d) => ({
@@ -697,7 +701,7 @@ export const CHECKS: CheckDef[] = [
     money: false,
     run: (ctx) => {
       if (!hasProduct(ctx)) return unseen("No product page captured");
-      const hit = findIn(ctx, PRODUCT_KINDS, /size (chart|guide)|dimensions?|specifications?|ingredients|material|fabric|composition|how to use|capacity|\bsize\s*:|fit\s*:|care instructions/i);
+      const hit = findIn(ctx, PRODUCT_KINDS, SPEC_DETAILS);
       if (hit) return pass({ snippet: hit.snippet });
       return absent(ctx, PRODUCT_KINDS, ["PRODUCT_1"], "a size guide, dimensions, materials, ingredients or specifications", {}, 0.7, "addToCart");
     },

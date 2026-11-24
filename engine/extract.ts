@@ -52,6 +52,14 @@ export const EXTRACT_SCRIPT = `
   const clean = (s) => (s || "").replace(/\\s+/g, " ").trim();
 
   const text = document.body ? document.body.innerText : "";
+  // Text inside collapsed sections (accordions, closed <details>, tabs) that a buyer can
+  // open with one tap. Read from the DOM without clicking anything.
+  let hiddenText = "";
+  if (document.body) {
+    const clone = document.body.cloneNode(true);
+    clone.querySelectorAll("script, style, noscript, template, svg, iframe").forEach((n) => n.remove());
+    hiddenText = (clone.textContent || "").replace(/\\s+/g, " ").trim().slice(0, 30000);
+  }
   const h1 = Array.from(document.querySelectorAll("h1")).map((e) => clean(e.innerText)).filter(Boolean).slice(0, 5);
   const metaEl = document.querySelector('meta[name="description"]');
   const links = Array.from(document.querySelectorAll("a[href]")).slice(0, 500).map((a) => ({
@@ -93,6 +101,7 @@ export const EXTRACT_SCRIPT = `
     text: text.slice(0, 80000),
     data: {
       h1,
+      hiddenText,
       metaDescription: metaEl ? metaEl.getAttribute("content") : null,
       links,
       jsonLd: jsonLd.slice(0, 20),
