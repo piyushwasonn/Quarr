@@ -30,6 +30,9 @@ export type ModelRequest<T extends z.ZodType> = {
   schema: T;
   effort: "low" | "medium" | "high";
   maxTokens: number; // includes the model's reasoning
+  // Set only when a later call in the same run reads the same evidence. Writing a cache
+  // costs more than plain input (Claude 1.25x, GPT-6.2 Sol $2.50 vs $2), so a single call
+  // (a quick scan's double-check, the wording step) is sent uncached.
   cacheKey?: string;
 };
 export type ModelResult<T> = { ok: true; value: T; usage: Usage; ms: number } | { ok: false; reason: string; usage?: Usage; ms: number };
@@ -80,7 +83,7 @@ const callAnthropic = async <T extends z.ZodType>(req: ModelRequest<T>): Promise
   const content: Anthropic.Beta.BetaContentBlockParam[] = req.evidence.map((b, i) =>
     b.type === "image"
       ? { type: "image", source: { type: "base64", media_type: b.mediaType, data: b.data } }
-      : { type: "text", text: b.text, ...(i === last ? { cache_control: { type: "ephemeral" as const } } : {}) },
+      : { type: "text", text: b.text, ...(i === last && req.cacheKey ? { cache_control: { type: "ephemeral" as const } } : {}) },
   );
   try {
     const response = await client.beta.messages.parse({
@@ -124,7 +127,7 @@ const callOpenAI = async <T extends z.ZodType>(req: ModelRequest<T>): Promise<Mo
     ...req.evidence.map((b, i): OpenAI.Responses.ResponseInputContent =>
       b.type === "image"
         ? { type: "input_image", image_url: `data:${b.mediaType};base64,${b.data}`, detail: "high" }
-        : { type: "input_text", text: b.text, ...(i === last ? { prompt_cache_breakpoint: { mode: "explicit" as const } } : {}) },
+        : { type: "input_text", text: b.text, ...(i === last && req.cacheKey ? { prompt_cache_breakpoint: { mode: "explicit" as const } } : {}) },
     ),
     { type: "input_text", text: req.task },
   ];
@@ -140,6 +143,9 @@ const callOpenAI = async <T extends z.ZodType>(req: ModelRequest<T>): Promise<Mo
       ...(process.env.OPENAI_REASONING === "off" ? {} : { reasoning: { effort: req.effort } }),
       max_output_tokens: req.maxTokens,
       store: false, // QUARR doesn't need OpenAI to keep the response
+      // Explicit mode: cache only at QUARR's breakpoint, never an automatic one that would
+      // include this call's task (never reused). With no breakpoint, nothing is cached.
+      prompt_cache_options: { mode: "explicit" },
       ...(req.cacheKey ? { prompt_cache_key: req.cacheKey } : {}),
     });
     const u = response.usage;

@@ -172,9 +172,9 @@ Approximate cost per store, at list prices:
 | Model | Quick scan | Full First Look |
 |---|---|---|
 | Claude Opus 5.5 | about ₹12 | ₹40 to 55 |
-| Claude Sonnet 5.5, or an OpenAI mid-tier model | about ₹6 | ₹20 to 25 |
+| Claude Sonnet 5.5, or GPT-6.2 Sol | about ₹6 | ₹20 to 25 |
 
-OpenAI's prices aren't built into QUARR. To see real costs on Bench → AI, add `AI_PRICES` in **Netlify** (not GitHub), for example `{"your-model-id":[2,10,0.2,0]}`: US$ per million tokens for input, output, cached input and cache write, copied from OpenAI's pricing page.
+Bench → AI shows the real cost per run. Prices for Claude Opus 5.5, Claude Sonnet 5.5 and GPT-6.2 Sol are built in. For any other model, add `AI_PRICES` in **Netlify** (not GitHub), for example `{"model-id":[2,10,0.1,2.5]}`: US$ per million tokens for input, output, cached input and cache write, copied from the provider's pricing page.
 
 ## 8. Check everything: Bench → Health
 

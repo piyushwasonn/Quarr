@@ -104,11 +104,12 @@ export function compareProviders(runs: RunForCompare[]): ProviderScore[] {
 
 type Env = Record<string, string | undefined>;
 // List prices in US$ per million tokens: [input, output, cache read, cache write].
-// Anthropic's are built in. Others (OpenAI) come from AI_PRICES on Netlify, for example
-// {"gpt-6.1-sol":[2,10,0.2,0]}, copied from the provider's own pricing page.
+// Built in: Claude Opus 5.5, Sonnet 5.5 and GPT-6.2 Sol. Any other model comes from AI_PRICES
+// on Netlify, for example {"model-id":[2,10,0.1,2.5]}, copied from the provider's pricing page.
 const BUILT_IN: Record<string, [number, number, number, number]> = {
   "claude-opus-5-5": [4, 20, 0.2, 5],
   "claude-sonnet-5-5": [2, 10, 0.1, 2.5],
+  "gpt-6.2-sol": [2, 10, 0.1, 2.5], // OpenAI model page, 24 Nov 2026 (30-minute cache writes)
 };
 
 export function costUsd(model: string, usage: ProviderScore["usage"], env: Env = process.env): number | null {

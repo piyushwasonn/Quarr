@@ -38,12 +38,14 @@ export async function analyseRun(opts: {
   if (off) return { report: { ...report, reason: off }, verdicts: new Map(), judged: [] };
 
   const evidence = buildEvidence(opts.pages, opts.firstScreens, opts.storeName);
+  // Cache the evidence only when two calls read it (judge, then verify).
+  const cacheKey = opts.judge ? opts.cacheKey : undefined;
   const problems: string[] = [];
   let judged: JudgedVerdict[] = [];
 
   if (opts.judge) {
     opts.onProgress?.("Reading your pages the way a careful buyer would");
-    const j = await judgeChecks(evidence, opts.pages, provider!, opts.cacheKey);
+    const j = await judgeChecks(evidence, opts.pages, provider!, cacheKey);
     report.usage = addUsage(report.usage, j.usage);
     report.ms += j.ms;
     if (j.ok) {
@@ -59,7 +61,7 @@ export async function analyseRun(opts: {
 
   opts.onProgress?.("Double-checking every finding against your pages");
   const ruleFails = opts.fails.filter((f) => !f.checkId.startsWith("AI-"));
-  const v = await verifyFails(evidence, opts.pages, ruleFails, provider!, opts.cacheKey);
+  const v = await verifyFails(evidence, opts.pages, ruleFails, provider!, cacheKey);
   report.usage = addUsage(report.usage, v.usage);
   report.ms += v.ms;
   if (v.ok) {

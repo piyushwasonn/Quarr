@@ -156,6 +156,15 @@ describe("OpenAI (Responses API)", () => {
     expect(content[2].prompt_cache_breakpoint).toEqual({ mode: "explicit" }); // end of the shared evidence
     expect(content[3]).toEqual({ type: "input_text", text: "TASK" });
   });
+  it("sends a single call uncached, so a quick scan doesn't pay for a cache write", async () => {
+    setup();
+    handler = () => ({ json: response([{ type: "output_text", text: JSON.stringify(answer), annotations: [] }]) });
+    await callModel({ ...req, cacheKey: undefined }, "openai");
+    const body = requests[0].body as { prompt_cache_options: unknown; prompt_cache_key?: string; input: [unknown, { content: { prompt_cache_breakpoint?: unknown }[] }] };
+    expect(body.prompt_cache_options).toEqual({ mode: "explicit" });
+    expect(body.prompt_cache_key).toBeUndefined();
+    expect(body.input[1].content.some((c) => c.prompt_cache_breakpoint)).toBe(false);
+  });
   it("leaves out reasoning effort when OPENAI_REASONING=off", async () => {
     setup();
     process.env.OPENAI_REASONING = "off";
@@ -227,6 +236,7 @@ describe("comparing providers against your Bench decisions", () => {
 
   it("prices Claude from list prices, and other models only when AI_PRICES says so", () => {
     expect(costUsd("claude-opus-5-5", { input: 1_000_000, output: 0, cacheRead: 0, cacheWrite: 0 })).toBe(4);
+    expect(costUsd("gpt-6.2-sol", { input: 1_000_000, output: 1_000_000, cacheRead: 1_000_000, cacheWrite: 1_000_000 })).toBeCloseTo(14.6);
     expect(costUsd("test-model", { input: 1_000_000, output: 1_000_000, cacheRead: 0, cacheWrite: 0 }, {})).toBeNull();
     expect(costUsd("test-model", { input: 1_000_000, output: 1_000_000, cacheRead: 0, cacheWrite: 0 }, { AI_PRICES: '{"test-model":[2,10]}' })).toBe(12);
   });
