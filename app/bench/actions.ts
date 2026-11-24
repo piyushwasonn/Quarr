@@ -227,3 +227,25 @@ export async function wakeNow() {
   await wakeCrawler("bench health check");
   revalidatePath("/bench/health");
 }
+
+// Something you noticed on a store that QUARR didn't catch: a candidate for a new check.
+export async function addLearning(_prev: { error?: string; ok?: boolean }, form: FormData) {
+  await requireBench();
+  const note = plainPunctuation(String(form.get("note") ?? "").trim()).slice(0, 2000);
+  if (note.length < 8) return { error: "Describe what QUARR missed in a sentence." };
+  const runId = String(form.get("runId") ?? "") || null;
+  const lens = String(form.get("lens") ?? "") || null;
+  const kind = form.get("kind") === "NOTE" ? "NOTE" : "MISSED";
+  await db.learning.create({ data: { runId, lens, note, kind } });
+  if (runId) revalidatePath(`/bench/runs/${runId}`);
+  revalidatePath("/bench/learnings");
+  return { ok: true };
+}
+
+export async function setLearningStatus(form: FormData) {
+  await requireBench();
+  const status = String(form.get("status"));
+  if (!["OPEN", "BUILT", "DISMISSED"].includes(status)) return;
+  await db.learning.update({ where: { id: String(form.get("id")) }, data: { status } });
+  revalidatePath("/bench/learnings");
+}

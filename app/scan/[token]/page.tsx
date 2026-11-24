@@ -24,6 +24,8 @@ export default async function Scan({ params }: { params: Promise<{ token: string
   const failed = run.status === "CRAWL_FAILED";
   const sum = (ready ? run.summary : null) as PreviewSummary | null;
   const teaserPage = sum?.teaser?.citation ? run.pages.find((p) => p.kind === sum.teaser!.citation!.pageKind) ?? null : null;
+  // No product page: QUARR's checks are for stores, so a quiet result must not read as a pass.
+  const store = run.pages.some((p) => p.kind.startsWith("PRODUCT"));
 
   return (
     <>
@@ -58,13 +60,21 @@ export default async function Scan({ params }: { params: Promise<{ token: string
         {sum ? (
           <div className="stack" style={{ ["--stack" as string]: "24px", marginTop: 12 }}>
             <h1 style={{ fontSize: "clamp(30px, 4.4vw, 44px)", maxWidth: "22ch" }}>
-              {sum.issues
-                ? `A first-time buyer may question ${sum.issues} ${sum.issues === 1 ? "thing" : "things"} on ${run.domain}.`
-                : `Nothing obvious stood out in a quick walk of ${run.domain}.`}
+              {!store
+                ? `We couldn't find anything to buy on ${run.domain}.`
+                : sum.issues
+                  ? `A first-time buyer may question ${sum.issues} ${sum.issues === 1 ? "thing" : "things"} on ${run.domain}.`
+                  : `Nothing obvious stood out in a quick walk of ${run.domain}.`}
             </h1>
-            <p className="lede">
-              That&apos;s from a one-minute walk of your homepage, one product page and your policies. The full First Look also walks your cart, the first screen of checkout, a second product and both phone and desktop.
-            </p>
+            {!store ? (
+              <p className="lede">
+                QUARR checks online stores: product pages, prices, the cart and the policies a buyer reads before paying. We found no product pages, so most of our checks couldn&apos;t run, and this isn&apos;t a clean bill of health. If it is a store, sign up and a QUARR Expert will look at it by hand.
+              </p>
+            ) : (
+              <p className="lede">
+                That&apos;s from a one-minute walk of your homepage, one product page and your policies. The full First Look also walks your cart, the first screen of checkout, a second product and both phone and desktop.
+              </p>
+            )}
 
             {sum.byLens.length ? (
               <div className="row" style={{ gap: 8 }}>

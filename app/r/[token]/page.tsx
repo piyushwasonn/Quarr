@@ -31,6 +31,8 @@ export default async function Report({ params }: { params: Promise<{ token: stri
   const seen = [...run.pages].sort((a, b) => order.indexOf(a.kind) - order.indexOf(b.kind));
   const passedNames = run.results.filter((r) => r.outcome === "PASS").map((r) => CHECKS_BY_ID[r.checkId]?.name).filter(Boolean).slice(0, 8);
   const lenses = coverage(run.results);
+  // No product page: QUARR's checks are for stores, so a quiet report must not read as a pass.
+  const store = run.pages.some((p) => p.kind.startsWith("PRODUCT"));
 
   return (
     <>
@@ -80,10 +82,17 @@ export default async function Report({ params }: { params: Promise<{ token: stri
               return <FindingCard key={f.id} index={i + 1} lens={f.lens} title={f.title} observed={f.observed} likelyEffect={f.likelyEffect} notYetProven={f.notYetProven} citation={citation} page={page} why={whyBuyersCare(f.checkId)} lensName={lensNameFor(f.checkId)} />;
             })
           ) : (
-            <div className="card card-pad stack">
-              <h2>Nothing serious enough to lead with.</h2>
-              <p className="muted">Your store passed the checks that most often cost a first order. That is a credible result, not a gap in our review.</p>
-            </div>
+            store ? (
+              <div className="card card-pad stack">
+                <h2>Nothing serious enough to lead with.</h2>
+                <p className="muted">Your store passed the checks that most often cost a first order. That is a credible result, not a gap in our review.</p>
+              </div>
+            ) : (
+              <div className="card card-pad stack">
+                <h2>We couldn&apos;t find anything to buy here.</h2>
+                <p className="muted">QUARR checks online stores. We found no product pages on {run.domain}, so the checks about products, prices, the cart and checkout couldn&apos;t run. Read this as a partial look, not a clean result.</p>
+              </div>
+            )
           )}
         </div>
 
@@ -136,6 +145,7 @@ export default async function Report({ params }: { params: Promise<{ token: stri
               <li className="cross">We did not pay, log in, enter a pincode or submit any form.</li>
               <li className="cross">This is one visit, at one moment, from an automated browser. Your real visitors&apos; networks and devices vary.</li>
               <li className="cross">We read text, not text inside images.</li>
+              {!store ? <li className="cross">We found no product pages, so checks about products, prices, the cart and checkout didn&apos;t run.</li> : null}
               <li className="cross">Findings describe likely buyer behaviour. They are not legal advice.</li>
             </ul>
           </div>

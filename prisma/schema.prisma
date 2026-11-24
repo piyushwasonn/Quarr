@@ -102,8 +102,9 @@ model Run {
 
   pages    Page[]
   results  CheckResult[]
-  findings Finding[]
-  events   ReviewEvent[]
+  findings  Finding[]
+  events    ReviewEvent[]
+  learnings Learning[]
 
   @@index([domain, createdAt])
   @@index([email, createdAt])
@@ -176,6 +177,21 @@ model Finding {
 
   @@index([runId])
   @@index([checkId, reviewedAt])
+}
+
+// What a reviewer noticed that QUARR didn't: a missed issue (a candidate new check) or a note.
+// Everything else on Bench → Learnings is worked out from runs, results and decisions.
+model Learning {
+  id        String   @id @default(cuid())
+  runId     String?
+  run       Run?     @relation(fields: [runId], references: [id], onDelete: SetNull)
+  kind      String // MISSED | NOTE
+  lens      String? // framework lens id (engine/framework/lenses.ts)
+  note      String
+  status    String   @default("OPEN") // OPEN | BUILT (became a check) | DISMISSED
+  createdAt DateTime @default(now())
+
+  @@index([status, createdAt])
 }
 
 // Every Bench decision, kept forever. This is what trains the engine.

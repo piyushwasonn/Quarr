@@ -6,6 +6,9 @@ import { aiSummaryLine, type AiReport } from "@/engine/ai/analyse";
 import { costUsd } from "@/engine/ai/compare";
 import { CHECKS_BY_ID } from "@/engine/checks";
 import { coverage } from "@/engine/framework";
+import { FRAMEWORK_LENS_BY_ID, FRAMEWORK_LENSES, type FrameworkLensId } from "@/engine/framework/lenses";
+import { isStoreRun } from "@/engine/learn";
+import { MissedForm } from "@/components/bench/MissedForm";
 import { checkModes } from "@/engine/promotion";
 import type { Citation } from "@/engine/types";
 import { appUrl } from "@/lib/email";
@@ -76,6 +79,7 @@ export default async function RunReview({ params }: { params: Promise<{ id: stri
       pages: { select: { id: true, kind: true, url: true, finalUrl: true, httpStatus: true, mobileShot: true, desktopShot: true, mobileHeight: true, desktopHeight: true } },
       findings: { include: { checkResult: { select: { citation: true, detail: true, evidenceStrength: true, ai: true } } }, orderBy: [{ selected: "desc" }, { position: "asc" }, { score: "desc" }] },
       results: { select: { checkId: true, outcome: true, detail: true } },
+      learnings: { orderBy: { createdAt: "desc" } },
     },
   });
   if (!run) notFound();
@@ -108,6 +112,8 @@ export default async function RunReview({ params }: { params: Promise<{ id: stri
   const unseen = run.results.filter((r) => r.outcome === "NOT_OBSERVABLE").map((r) => ({ id: r.checkId, name: CHECKS_BY_ID[r.checkId]?.name ?? r.checkId, why: String((r.detail as { why?: string } | null)?.why ?? "") }));
   const published = ["PUBLISHED", "DELIVERED"].includes(run.status);
   const reportLink = appUrl(`/r/${run.publicToken}`);
+  const working = ["QUEUED", "CRAWLING", "CRAWLED"].includes(run.status);
+  const store = isStoreRun(run);
 
   return (
     <div className="stack" style={{ ["--stack" as string]: "16px" }}>
@@ -137,6 +143,16 @@ export default async function RunReview({ params }: { params: Promise<{ id: stri
 
       {run.status === "CRAWL_FAILED" ? (
         <p className="alert">Crawl failed: <strong>{run.failureCode}</strong>, {run.failureDetail}. {run.source === "PUBLIC" ? "The founder was emailed and offered a manual First Look." : ""}</p>
+      ) : null}
+      {working ? (
+        <p className="card card-pad small" style={{ boxShadow: "none" }}>
+          <span className="chip unseen">Still working</span> {run.progress ?? (run.status === "CRAWLED" ? "Running checks and the AI, then drafting findings." : "Waiting for the crawler.")} Findings appear when it finishes; refresh in a minute.
+        </p>
+      ) : null}
+      {!working && run.pages.length && !store ? (
+        <p className="card card-pad small" style={{ boxShadow: "none" }}>
+          <span className="chip fail">Not an online store</span> QUARR found no product pages on {run.domain}, so most checks couldn&apos;t run and a clean result here means little. If it is a store, the crawler couldn&apos;t find its products: note that below. Publishing tells the founder plainly that this isn&apos;t a store check.
+        </p>
       ) : null}
       {run.ai ? <AiCard report={run.ai as unknown as RunAi} /> : null}
       {notesWithoutAi(run.notes, run.ai as unknown as RunAi | null) ? <p className="alert">{notesWithoutAi(run.notes, run.ai as unknown as RunAi | null)}</p> : null}
@@ -179,6 +195,21 @@ export default async function RunReview({ params }: { params: Promise<{ id: stri
         />
       ) : run.status === "QUEUED" || run.status === "CRAWLING" ? (
         <p className="card card-pad muted">Waiting for the worker. Refresh in a minute.</p>
+      ) : null}
+
+      {!working ? (
+        <section className="card card-pad stack" style={{ boxShadow: "none" }}>
+          <h3 style={{ margin: 0 }}>What did QUARR miss?</h3>
+          <p className="small muted">Anything a first-time buyer would trip over that no finding covers. Each note goes to <Link href="/bench/learnings">Learnings</Link> as a candidate for a new check.</p>
+          {run.learnings.length ? (
+            <ul className="list-clean small">
+              {run.learnings.map((l) => (
+                <li key={l.id}><div><span className="mini">{l.kind === "NOTE" ? "Note" : "Missed"}{l.lens ? ` · ${FRAMEWORK_LENS_BY_ID[l.lens as FrameworkLensId]?.name ?? l.lens}` : ""} · {l.status.toLowerCase()}</span><br />{l.note}</div></li>
+              ))}
+            </ul>
+          ) : null}
+          <MissedForm runId={run.id} lenses={FRAMEWORK_LENSES.map((l) => ({ id: l.id, name: l.name }))} />
+        </section>
       ) : null}
     </div>
   );
