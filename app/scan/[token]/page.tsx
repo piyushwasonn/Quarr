@@ -1,3 +1,4 @@
+import { lensNameFor, whyBuyersCare } from "@/engine/framework";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { SiteFooter, SiteHeader } from "@/components/chrome";
@@ -76,7 +77,7 @@ export default async function Scan({ params }: { params: Promise<{ token: string
             {sum.teaser ? (
               <div className="stack" style={{ ["--stack" as string]: "10px" }}>
                 <div className="row"><span className="chip dark">Automated preview</span><span className="small muted">One finding we can show you right away. The rest are read by a QUARR Expert first.</span></div>
-                <FindingCard index={1} {...sum.teaser} page={teaserPage} />
+                <FindingCard index={1} {...sum.teaser} page={teaserPage} why={whyBuyersCare(sum.teaser.checkId)} lensName={lensNameFor(sum.teaser.checkId)} />
               </div>
             ) : sum.issues ? (
               <p className="card card-pad muted">We only show a finding automatically when the evidence leaves no room for doubt. Your findings need a person to read them first, so they&apos;re in the full First Look.</p>

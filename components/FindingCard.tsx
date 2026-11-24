@@ -1,6 +1,10 @@
 import { LENS_NAMES, type Citation, type Lens } from "@/engine/types";
 import { Shot } from "./Shot";
 
+// "Why buyers care", from QUARR's research (engine/framework). Computed on the server and
+// passed in, so the research corpus never ships to the browser.
+export type WhyView = { note: string; stories: { title: string; url: string; source: string }[] } | null;
+
 export type EvidencePage = { kind: string; mobileShot: string | null; desktopShot: string | null; mobileHeight: number | null; desktopHeight: number | null; finalUrl: string | null; url: string };
 
 const PAGE_LABEL: Record<string, string> = {
@@ -31,6 +35,8 @@ export function FindingCard({
   notYetProven,
   citation,
   page,
+  why,
+  lensName,
 }: {
   index: number;
   lens: string;
@@ -40,6 +46,8 @@ export function FindingCard({
   notYetProven: string;
   citation: Citation | null;
   page: EvidencePage | null;
+  why?: WhyView;
+  lensName?: string;
 }) {
   const desktop = citation?.viewport === "desktop" && page?.desktopShot;
   const shot = desktop ? page?.desktopShot : page?.mobileShot;
@@ -51,7 +59,7 @@ export function FindingCard({
           <div className="row" style={{ justifyContent: "space-between" }}>
             <span className="finding-num">FINDING {String(index).padStart(2, "0")}</span>
             <span className="row" style={{ gap: 6 }}>
-              <span className="chip">{LENS_NAMES[lens as Lens] ?? lens}</span>
+              <span className="chip">{lensName ?? LENS_NAMES[lens as Lens] ?? lens}</span>
               <span className="chip fail status">Problem found</span>
             </span>
           </div>
@@ -64,6 +72,23 @@ export function FindingCard({
             <span className="label">Likely effect on a buyer</span>
             <p>{likelyEffect}</p>
           </div>
+          {why ? (
+            <div className="facet">
+              <span className="label">Why buyers care</span>
+              <p>{why.note}</p>
+              {why.stories.length ? (
+                <p className="small muted" style={{ marginTop: 6 }}>
+                  Seen in QUARR&apos;s research:{" "}
+                  {why.stories.map((s, i) => (
+                    <span key={s.url}>
+                      {i ? "; " : ""}
+                      <a href={s.url} target="_blank" rel="noreferrer nofollow" title={s.title}>{s.source}</a>
+                    </span>
+                  ))}
+                </p>
+              ) : null}
+            </div>
+          ) : null}
           <div className="facet">
             <span className="label">Not yet proven</span>
             <p>{notYetProven}</p>

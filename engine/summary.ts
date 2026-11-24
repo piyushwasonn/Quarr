@@ -1,6 +1,7 @@
 import { CHECKS_BY_ID } from "./checks";
 import { candidateFrom, selectFindings } from "./select";
 import { ENGINE_VERSION } from "./version";
+import { CHECK_LENS, FRAMEWORK_LENS_BY_ID, type FrameworkLensId } from "./framework/lenses";
 import { LENS_NAMES, type Citation, type FindingCopy, type Lens, type Outcome } from "./types";
 
 // What QUARR may show without a person reading it first (Notion 07):
@@ -28,11 +29,15 @@ function shown(r: ResultRow): ShownFinding {
   return { ...copy, checkId: r.checkId, lens: r.lens, citation };
 }
 
+// Grouped by the buyer-journey lens (engine/framework), the same names the First Look uses.
 function countsByLens(fails: ResultRow[]) {
   const by: Record<string, number> = {};
-  for (const f of fails) by[f.lens] = (by[f.lens] ?? 0) + 1;
+  for (const f of fails) {
+    const key = CHECK_LENS[f.checkId] ?? f.lens;
+    by[key] = (by[key] ?? 0) + 1;
+  }
   return Object.entries(by)
-    .map(([lens, n]) => ({ lens, name: LENS_NAMES[lens as Lens] ?? lens, n }))
+    .map(([lens, n]) => ({ lens, name: FRAMEWORK_LENS_BY_ID[lens as FrameworkLensId]?.name ?? LENS_NAMES[lens as Lens] ?? lens, n }))
     .sort((a, b) => b.n - a.n);
 }
 

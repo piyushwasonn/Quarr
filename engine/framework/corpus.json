@@ -1,0 +1,1797 @@
+{
+ "source": "Notion 90, Research & Asset Index (Drive corpora)",
+ "stories": [
+  {
+   "key": "reddit:1uovc46",
+   "fingerprint": "reddit:1uovc46 | delivery-agent-requests-off-platform-cod-payment-order-pre-marked-delivered-customer-fears-retaliation",
+   "kind": "customer",
+   "title": "Delivery agent tried to move a COD payment outside Amazon",
+   "url": "https://www.reddit.com/r/IndiaTech/comments/1uovc46/new_type_of_scam_by_amazon_delivery_boy/",
+   "date": "27 July 2026",
+   "lensLabels": "Delivery, Payment, Support and Service Recovery Lens.",
+   "questions": [
+    "Can an agent complete or alter delivery status before the customer confirms receipt?",
+    "What should a customer do when asked to pay outside the platform?",
+    "Can support show that an escalation was investigated and closed?",
+    "Are repeat complaints connected to the same delivery location or partner?"
+   ],
+   "evidence": "Medium-high",
+   "gap": "Marketplace controls appear strong in the app but can be bypassed at the physical handoff. Customers lack a trusted, visible escalation path and support agents may escalate behaviour without being able to confirm what action followed.",
+   "complaint": "An unsafe and intimidating delivery interaction with unreliable order-status records."
+  },
+  {
+   "key": "reddit:1ux3046",
+   "fingerprint": "reddit:1ux3046 | hp-laptop-open-box-accepted-later-doa-three-pickup-refusals-refund-stalled",
+   "kind": "customer",
+   "title": "Open-box laptop passed the visible check but was later confirmed dead on arrival",
+   "url": "https://www.reddit.com/r/amazonindia/comments/1ux3046/laptop_return_issues_doa_laptop_not_being_refunded/",
+   "date": "27 July 2026",
+   "lensLabels": "Open-box Purchase, Returns, Refunds and Service Recovery Lens.",
+   "questions": [
+    "What exactly does the open-box check protect against?",
+    "Which defects cannot reasonably be identified at delivery?",
+    "Does a manufacturer dead-on-arrival confirmation automatically change pickup instructions?",
+    "Can the customer see one accountable owner?"
+   ],
+   "evidence": "High",
+   "gap": "The open-box check covered power-on and visible damage, not latent defects such as charging failure. Responsibility also became fragmented across Amazon, HP and pickup agents.",
+   "complaint": "A defective laptop was accepted under an apparently protective process, but the return process repeatedly failed."
+  },
+  {
+   "key": "reddit:1omlihi",
+   "fingerprint": "reddit:1omlihi | accidental-extra-food-restaurant-agrees-ai-blocks-human-until-order-picked-up",
+   "kind": "customer",
+   "title": "AI support blocked a time-sensitive partial-order cancellation until the food had already been collected",
+   "url": "https://www.reddit.com/r/Zomato/comments/1omlihi/i_broke_the_zomato_customer_service_ai/",
+   "date": "27 July 2026",
+   "lensLabels": "Order Change, AI Support, Escalation and Service Recovery Lens.",
+   "questions": [
+    "Which requests become impossible after a specific milestone?",
+    "Can the AI recognise partial cancellation and urgency?",
+    "What safe language should trigger human review?",
+    "Can the restaurant modify an order when the platform is unreachable?"
+   ],
+   "evidence": "High",
+   "gap": "Automation was optimised to contain support contacts rather than complete the customer's job within a shrinking decision window. The platform, restaurant and support system lacked a usable partial-cancellation workflow.",
+   "complaint": "The support bot could not handle a simple, urgent exception or provide a timely human escape route."
+  },
+  {
+   "key": "reddit:1t9sgw3",
+   "fingerprint": "reddit:1t9sgw3 | dineout-50-percent-off-influences-family-meal-payment-error-no-support-full-bill",
+   "kind": "customer",
+   "title": "A dining discount failed only after the family had completed the meal",
+   "url": "https://www.reddit.com/r/Zomato/comments/1t9sgw3/zomato_scam_with_dineout_offer/",
+   "date": "27 July 2026",
+   "lensLabels": "Promotion, Dining Payment, Trust and Point-of-No-Return Recovery Lens.",
+   "questions": [
+    "What happens if an offer fails after the customer consumes the service?",
+    "Is eligibility locked at booking or recalculated at payment?",
+    "Can the restaurant verify and honour the offer offline?",
+    "What response time is acceptable at the table?"
+   ],
+   "evidence": "Medium-high",
+   "gap": "Promotion reliability and recovery were treated as payment concerns even though the offer had shaped the earlier discovery and purchase decision. The platform had no visible guarantee for failures after consumption.",
+   "complaint": "A promoted discount influenced the purchase but disappeared during payment, with no effective support."
+  },
+  {
+   "key": "reddit:1ntd3sl",
+   "fingerprint": "reddit:1ntd3sl | detailed-restaurant-reviews-unavailable-users-search-google-avoid-orders-threaten-uninstall-feature-returned",
+   "kind": "customer",
+   "title": "Removing detailed restaurant reviews changed how customers judged whether it was safe to order",
+   "url": "https://www.reddit.com/r/Zomato/comments/1ntd3sl/zomato_removed_detailed_review_section_of/",
+   "date": "27 July 2026",
+   "lensLabels": "Discovery, Trust Evidence, Reviews and Purchase Confidence Lens.",
+   "questions": [
+    "Which information reduces uncertainty before purchase?",
+    "What decisions depend on written or photo evidence?",
+    "If a feature is removed or tested, how is lost confidence measured?",
+    "Do users leave the platform to finish the decision elsewhere?"
+   ],
+   "evidence": "Medium-high",
+   "gap": "The business may have treated written reviews as interface content, while customers were using them as a trust, food-safety and purchase-risk control.",
+   "complaint": "Ratings without review detail removed the context customers relied on to assess quality and safety."
+  },
+  {
+   "key": "reddit:1rz9cko",
+   "fingerprint": "reddit:1rz9cko | same-day-delivery-fails-twice-customer-cancels-charged-fee-refund-trust",
+   "kind": "customer",
+   "title": "Same-day delivery failed twice, then the customer was charged for cancelling",
+   "url": "https://www.reddit.com/r/amazonprime/comments/1rz9cko/more_shady_nonsense_regarding_refunds/",
+   "date": "28 July 2026",
+   "lensLabels": "Delivery Promise, Cancellation, Refund and Service Recovery Lens.",
+   "questions": [
+    "Does the cancellation policy change automatically after a missed promise?",
+    "Can customers see why any fee was charged?",
+    "Does support distinguish customer-choice cancellation from business-failure cancellation?",
+    "Are credits and refund adjustments auditable in one place?"
+   ],
+   "evidence": "Medium",
+   "gap": "Delivery promises, cancellation rules and refund accounting appear to be managed as separate systems. The cancellation flow did not recognise that the business, not the customer, had already broken the original commitment.",
+   "complaint": "Amazon failed the promised service and still made cancellation costly."
+  },
+  {
+   "key": "reddit:1ulu2mt",
+   "fingerprint": "reddit:1ulu2mt | paid-five-dollar-three-hour-express-window-delayed-support-says-window-can-be-extended",
+   "kind": "customer",
+   "title": "Customer paid for three-hour express delivery, but the retailer said the window could still be extended",
+   "url": "https://www.reddit.com/r/WalmartComplaints/comments/1ulu2mt/do_not_pay_the_extra_for_quicker_delivery/",
+   "date": "29 July 2026",
+   "lensLabels": "Paid Upgrade, Delivery Promise, Pricing Integrity and Service Recovery Lens.",
+   "questions": [
+    "What exactly does the paid upgrade guarantee?",
+    "When the upgraded promise is missed, is the fee refunded without the customer asking?",
+    "Does support explain the difference between an estimate and a paid commitment?",
+    "Can the business measure whether customers receive a materially different outcome from the premium tier?"
+   ],
+   "evidence": "Medium-high",
+   "gap": "The marketing, operational promise and support policy were misaligned. The fee was presented as buying a shorter delivery window, while the recovery policy treated that window as non-binding.",
+   "complaint": "The customer paid for speed but received a flexible promise that behaved like the free option."
+  },
+  {
+   "key": "reddit:1uw1mss",
+   "fingerprint": "reddit:1uw1mss | account-restricted-visible-id-address-completed-hidden-live-video-requirement-support-only",
+   "kind": "customer",
+   "title": "Account restrictions required verification steps that were invisible inside the product",
+   "url": "https://www.reddit.com/r/Etoro/comments/1uw1mss/untrained_customer_supportbackend/",
+   "date": "30 July 2026",
+   "lensLabels": "Account Review, Verification, Financial Access, Support Handoff and Trust Lens.",
+   "questions": [
+    "Can every required action be seen in the product before support is contacted?",
+    "Does the customer know which team owns the review and what remains incomplete?",
+    "Are new requirements pushed into the same checklist immediately?",
+    "What safeguards exist when access to funds is restricted?"
+   ],
+   "evidence": "Medium-high",
+   "gap": "Compliance, product UI and support were operating from different checklists. The customer journey had no single source of truth for required actions or completion status.",
+   "complaint": "The customer completed every visible requirement but remained blocked because a crucial verification step existed only in the support channel."
+  },
+  {
+   "key": "reddit:1uz8mud",
+   "fingerprint": "reddit:1uz8mud | pre-existing-sofa-bed-dent-host-claims-over-400-airbnb-rules-against-guest-no-shared-checkin-condition-recor",
+   "kind": "customer",
+   "title": "Guest was charged more than $400 for damage they said existed before check-in",
+   "url": "https://www.reddit.com/r/AirBnB/comments/1uz8mud/host_asking_for_more_than_400_reimbursement_for/",
+   "date": "31 July 2026",
+   "lensLabels": "Listing Accuracy, Check-in Evidence, Damage Dispute, Trust and Service Recovery Lens.",
+   "questions": [
+    "Is a dated condition record required before every stay?",
+    "Who carries the burden of proving when damage occurred?",
+    "Can both parties see the evidence and decision criteria?",
+    "What happens when the property differs materially from the listing but the guest stays anyway?"
+   ],
+   "evidence": "Medium-high",
+   "gap": "The marketplace asks customers to trust a post-stay adjudication process without a shared pre-stay condition record. Evidence burden and decision logic are unclear, so the customer experiences the platform as favouring the party who files the claim.",
+   "complaint": "The platform charged a guest for alleged damage without giving them confidence that the host had proved causation."
+  },
+  {
+   "key": "reddit:1uymdzx",
+   "fingerprint": "reddit:1uymdzx | preordered-imax-row-t-does-not-exist-verbal-reassignment-occupied-seats-missed-thirty-minutes-refun",
+   "kind": "customer",
+   "title": "Pre-ordered cinema tickets assigned customers to seats that did not exist",
+   "url": "https://www.reddit.com/r/askportland/comments/1uymdzx/the_odyssey_at_bridgeport_issues/",
+   "date": "1 August 2026",
+   "lensLabels": "Reservation Accuracy, Inventory Synchronisation, Opening-Night Operations and Service Recovery Lens.",
+   "questions": [
+    "How can a seat be sold if it is absent from the current auditorium map?",
+    "Are layout changes reconciled against all existing bookings?",
+    "Can staff instantly reissue a valid ticket with protected replacement seats?",
+    "What compensation reflects lost time and a missed opening-night experience?"
+   ],
+   "evidence": "Medium-high",
+   "gap": "Inventory and auditorium configuration were out of sync. The recovery process depended on verbal instructions rather than an updated entitlement, forcing customers to negotiate with other guests and absorb the operational error themselves.",
+   "complaint": "The business accepted payment for a specific reserved seat but could not provide that seat or a credible replacement."
+  },
+  {
+   "key": "reddit:1uxjign",
+   "fingerprint": "reddit:1uxjign | recurring-interest-personalisation-popup-no-skip-blocks-search-browsing-users-refuse-data-use-old-reddit-browser-workaround",
+   "kind": "customer",
+   "title": "Forced interest-selection popup blocked normal browsing and offered no visible skip path",
+   "url": "https://www.reddit.com/r/help/comments/1uxjign/why_the_heck_do_i_keep_getting_this_popup_now/",
+   "date": "4 August 2026",
+   "lensLabels": "Software Experience, Consent, Personalisation, Existing-User Onboarding and Core-Task Access Lens.",
+   "questions": [
+    "Is the requested information truly necessary for the user’s current task?",
+    "Is there an obvious skip and a durable “not interested” choice?",
+    "How often can a dismissed prompt reappear?",
+    "Does the experiment measure abandonment, use of legacy interfaces and browser workarounds, not only form completion?",
+    "Are existing users segmented from new-user onboarding?"
+   ],
+   "evidence": "Medium-high",
+   "gap": "The business appears to have treated preference collection as onboarding or feed optimisation, while established users experienced it as coerced data collection and loss of control. The prompt also failed to recognise that some users deliberately prefer chronological, self-selected communities rather than a generated feed.",
+   "complaint": "A personalisation request behaved like a mandatory gate and interrupted the task users came to complete."
+  },
+  {
+   "key": "reddit:1vbxnj8",
+   "fingerprint": "reddit:1vbxnj8 | holiday-membership-252000-cancelled-within-days-171360-refund-admitted-90-day-deadline-missed-instalments-conditioned-on-withdrawing-disputes-still-unpaid",
+   "kind": "customer",
+   "title": "Holiday-membership customer accepted a large cancellation deduction but still could not obtain the admitted refund",
+   "url": "https://www.reddit.com/r/LegalAdviceIndia/comments/1vbxnj8/company_admitted_refund_is_due_kept_delaying_for/",
+   "date": "7 August 2026",
+   "lensLabels": "Cancellation, Refund Reliability, High-Value Subscription Exit, Escalation, Trust and Service Recovery Lens.",
+   "questions": [
+    "When a refund is approved, is the amount and payment date locked in one system?",
+    "Who owns missed refund deadlines?",
+    "Can repayment terms be changed after approval without customer consent?",
+    "Why should a customer withdraw an external dispute before receiving at least the first payment?",
+    "What percentage of approved refunds miss the stated SLA, and how many require repeated customer follow-up?",
+    "At what point does an operational delay become a retention, reputation or legal-risk event?"
+   ],
+   "evidence": "Medium-high",
+   "gap": "The customer’s recovery path appears to depend on internal finance processes and negotiation rather than a single auditable refund commitment. Requiring withdrawal of external escalation before demonstrating payment also reverses the trust sequence: the customer is asked to surrender leverage before the business fulfils an already-admitted obligation.",
+   "complaint": "The business acknowledged money was owed but repeatedly changed dates and conditions instead of paying it."
+  },
+  {
+   "key": "reddit:1rxt2k3",
+   "fingerprint": "reddit:1rxt2k3 | liftoff-vungle-ads-stop-possible-traffic-suspension-support-silent-unity-cannot-resolve-peer-fraud-algorithm-bd-escalation",
+   "kind": "customer",
+   "title": "Automated ad-network enforcement stopped monetisation while the official support path provided no usable recovery route",
+   "url": "https://www.reddit.com/r/adops/comments/1rxt2k3/liftoff_vungle_stopped_serving_ads_and_support_is/",
+   "date": "8 August 2026",
+   "lensLabels": "B2B Software Support, Automated Enforcement, Revenue Interruption, Platform Handoff, Appeal and Service Recovery Lens.",
+   "questions": [
+    "What signal can suspend serving, and can the publisher see that state immediately?",
+    "Which legitimate traffic changes resemble fraud?",
+    "Is there a documented appeal path and response SLA for revenue-impacting enforcement?",
+    "Does Unity receive a reason code it can surface even if it cannot overturn the decision?",
+    "Why did a peer customer need a business-development contact rather than support to regain access?",
+    "How many suspended customers abandon the network, reduce traffic or seek informal escalation before support responds?"
+   ],
+   "evidence": "Medium-high",
+   "gap": "Automated enforcement was treated as a risk-control decision rather than as a customer journey with material revenue consequences. When the only effective escalation depends on an informal commercial relationship, customers without the right contact face a structurally weaker recovery path. The mediation partner can identify the responsible vendor but cannot close the loop, leaving the customer to coordinate the platforms.",
+   "complaint": "Ads stopped serving and the official support route did not explain, own or resolve the interruption."
+  },
+  {
+   "key": "mouthshut:ajio-review-uqmrrupqtop",
+   "fingerprint": "mouthshut:ajio-review-uqmrrupqtop | active-account-all-payment-modes-fail-supercash-400-bank-discount-expire-before-support-update-customer-asks-extension",
+   "kind": "customer",
+   "title": "Checkout failures prevented a customer from using expiring SuperCash while support response times extended beyond the benefit window",
+   "url": "https://www.mouthshut.com/review/ajio-review-uqmrrupqtop",
+   "date": "9 August 2026",
+   "lensLabels": "Checkout, Promotional Entitlement, Stored Value, Payment Failure, Support SLA and Service Recovery Lens.",
+   "questions": [
+    "Does the system distinguish an account problem from a platform-wide checkout failure?",
+    "Can support see the exact expiry time of SuperCash, coupons and bank offers?",
+    "When a verified defect prevents redemption, is promotional value automatically extended?",
+    "Which response SLA applies when customer value will expire before the ordinary ticket SLA?",
+    "How many customers abandon purchase after repeated payment-method failures?",
+    "Does the business measure promotional breakage caused by technical or support failures separately from genuine non-use?"
+   ],
+   "evidence": "Medium",
+   "gap": "Checkout reliability, promotional entitlement and support SLAs appear to operate as separate journeys. A standard 48-hour support clock may be reasonable for an ordinary defect but becomes inappropriate when the customer’s economic entitlement expires sooner. The business needs an expiry-aware recovery rule so operational delay cannot silently convert valid customer value into breakage.",
+   "complaint": "The customer could not spend valid SuperCash or use a bank discount because every checkout method failed, and support timelines exceeded the remaining benefit window."
+  },
+  {
+   "key": "reddit:1j34rcv-comment-amelie-clothing",
+   "fingerprint": "reddit:1j34rcv-comment-amelie-clothing | 450-order-trip-out-of-stock-extra-split-shipping-ten-day-promise-still-unshipped-no-tracking-partial-refund-fee-fifty-plus-emails",
+   "kind": "customer",
+   "title": "A $450 clothing order for a time-sensitive trip stayed unshipped for over a month while stock, shipping and refund promises kept changing",
+   "url": "https://www.reddit.com/r/InstaShoppingFails/comments/1j34rcv/is_amelie_official_clothing_a_scam/",
+   "date": "10 August 2026",
+   "lensLabels": "Ecommerce Inventory, Promise Reliability, Time-Sensitive Purchase, Shipping Entitlement, Tracking, Refund and Service Recovery Lens.",
+   "questions": [
+    "Is stock reserved at checkout or only checked later?",
+    "Why was an order above the advertised threshold charged shipping?",
+    "When the business causes a stock split, who should pay the additional shipment cost?",
+    "Can support see one authoritative stock, packing and tracking state?",
+    "What evidence allows staff to promise a delivery date?",
+    "When a customer states a hard-use date such as travel, can the system offer a realistic cancel-or-expedite decision before the value of the purchase expires?"
+   ],
+   "evidence": "Medium-high",
+   "gap": "Inventory availability, promotional shipping entitlement, warehouse status, customer-service messaging, split-shipment cost ownership and refund accounting appear disconnected. A stock error became a prolonged trust failure because every recovery step created another uncertainty or customer cost. The business also failed to recognise the customer’s time-sensitive purchase intent and therefore treated delay as interchangeable with fulfilment even though late delivery could destroy the value of the order.",
+   "complaint": "The retailer kept changing the stock and shipping story, asked the customer to absorb an additional shipping cost caused by its own inventory problem, and still could not provide tracking more than a month after purchase."
+  },
+  {
+   "key": "reddit:1upuets",
+   "fingerprint": "reddit:1upuets | supermarket-open-nine-ten-deli-closes-six-thirty-eight-evening-customer-arrives-counter-closed-service-hours-mismatch-repeated-complaints",
+   "kind": "customer",
+   "title": "Supermarket opening hours implied the deli was available, but evening customers repeatedly arrived after the counter had already closed",
+   "url": "https://en.reddit.com/r/coles/comments/1upuets/deli_counter_times/",
+   "date": "14 August 2026",
+   "lensLabels": "Service Availability, Hours and Expectation Setting, In-store Conversion, Staffing, Customer Effort and Journey Transparency Lens.",
+   "questions": [
+    "Are deli-specific hours visible in the app, website, Google listing and at the store before customers travel?",
+    "How often does the actual cutoff differ from the nominal deli close because of staffing?",
+    "How many customers arrive during close-down and leave without the intended item?",
+    "Can customers reserve sliced products earlier for evening pickup?",
+    "Which pre-sliced alternatives actually substitute for the staffed counter?",
+    "Does reducing late labour save more than the value lost through abandoned or substituted purchases and customer dissatisfaction?"
+   ],
+   "evidence": "Medium-high",
+   "gap": "Store hours are being used by customers as a proxy for service availability even though the deli has a different operating window and may close earlier because of staffing. The business appears to optimise the deli around labour, food-safety and closing tasks without giving customers equally strong pre-visit information about the service cutoff. This can turn an operationally rational staffing decision into missed purchases and repeated complaints.",
+   "complaint": "Customers arrive during published store hours but discover that a service they reasonably expected to use has already closed or stopped fulfilling the requested task."
+  },
+  {
+   "key": "reddit:1ukz5ey",
+   "fingerprint": "reddit:1ukz5ey | social-app-free-trial-membership-14-99-event-19-99-user-almost-pays-twice-cancels-pricing-entitlement-unclear-peer-six-months-surface-level-connections",
+   "kind": "customer",
+   "title": "A social-membership free trial converted into a £14.99 charge before the customer understood that the event they wanted appeared to cost another £19.99",
+   "url": "https://www.reddit.com/r/bristol/comments/1ukz5ey/circle_up_is_not_worth_it/",
+   "date": "Aug 16, 2026",
+   "lensLabels": "Trial Conversion, Subscription Pricing, Entitlement Clarity, Community Experience, Customer Outcome, Cancellation and Retention Lens.",
+   "questions": [
+    "What exactly is included during the free trial and after membership purchase?",
+    "Can a trial user be prompted to buy membership without first seeing whether the selected event is included?",
+    "Which events carry extra charges and how early is that shown?",
+    "What percentage of new members cancel before attending one event?",
+    "What percentage form a relationship or group that continues outside the organised event?",
+    "Are retained customers paying for event curation, social safety, accountability, introductions or a durable friendship outcome?"
+   ],
+   "evidence": "Medium-high",
+   "gap": "Pricing clarity and customer outcome may be disconnected. Even if most events are included, a confusing entitlement state can make legitimate monetisation feel like double charging. Beyond checkout, the service can deliver repeated events while still failing the customer’s actual job if interactions never turn into durable relationships or community outside the organised setting.",
+   "complaint": "The trial-to-membership journey made the customer feel they had to pay a subscription and then pay again for the event, while the value of membership was not clear enough to justify the cost."
+  },
+  {
+   "key": "trustpilot:6a7b291f38edaec5646d1143",
+   "fingerprint": "trustpilot:6a7b291f38edaec5646d1143 | jobleads-2-99-trial-customer-does-not-understand-73-76-renewal-failed-charge-debt-collector-dispute",
+   "kind": "customer",
+   "title": "A €2.99 trial became a disputed €73.76 subscription debt before the customer understood the recurring commitment",
+   "url": "https://uk.trustpilot.com/reviews/6a7b291f38edaec5646d1143",
+   "date": "17 August 2026",
+   "lensLabels": "Trial Conversion, Subscription Comprehension, Renewal, Cancellation, Payment Failure, Collections, Trust and Service Recovery Lens.",
+   "questions": [
+    "Before paying €2.99, can customers accurately state the next charge, its date and how to cancel?",
+    "What percentage of trial customers first recognise the recurring price only after an attempted renewal?",
+    "Is a renewal reminder sent before the charge?",
+    "How many failed or disputed renewals move to collections, and after what customer communication?",
+    "Can customers resolve a disputed subscription directly before collection fees or external pressure appear?",
+    "Do cancellation-search behaviour, chargebacks and debt disputes cluster around the same acquisition offer?"
+   ],
+   "evidence": "Medium-high",
+   "gap": "The business may treat disclosure of renewal terms as contract completion while customers judge comprehension from what they actually notice at the moment of purchase. When the first unmistakable signal of the full commitment is a failed charge or debt-collection contact, the journey has shifted from conversion to coercive-feeling recovery. Subscription design therefore needs to measure remembered price, renewal awareness and successful cancellation, not only whether terms were technically presented.",
+   "complaint": "A low-cost trial felt materially different from the financial commitment that followed, and the customer encountered debt collection before feeling they had knowingly accepted or resolved that commitment."
+  },
+  {
+   "key": "reddit:1vq0n9x",
+   "fingerprint": "reddit:1vq0n9x | amazon-two-orders-same-items-first-delivery-attempt-disputed-buffer-date-no-delivery-reorder-reaches-same-last-mile-and-is-cancelled-customer-refunds-instead-of-fulfilment",
+   "kind": "customer",
+   "title": "Reordering the same failed Amazon purchase reproduced the same last-mile failure instead of creating a reliable recovery path",
+   "url": "https://www.reddit.com/r/amazonindia/comments/1vq0n9x/amazon_shipping_refusing_their_deliveries/",
+   "date": "22 August 2026",
+   "lensLabels": "Last-mile Delivery, Failed-Attempt Verification, Reorder Recovery, Local-Node Reliability, Customer Effort and Service Recovery Lens.",
+   "questions": [
+    "Can support distinguish a genuine customer-unavailable attempt from a disputed or failed-contact attempt?",
+    "When the same customer reorders the same items, does the system detect that the replacement will pass through the same failed delivery node?",
+    "What operational change occurs during a “buffer period”?",
+    "Can the customer choose an alternate carrier, pickup point or fulfilment path after a node-level failure?",
+    "How often do replacement or reordered packages fail for the same customer and destination within days?",
+    "Does refund completion mask repeated fulfilment failure because the transaction is marked resolved?"
+   ],
+   "evidence": "Medium-high",
+   "gap": "Recovery appears to operate at the order level while the root problem may sit at the local delivery node. If a customer is encouraged or forced to reorder without the system recognising that the same hub, route or delivery partner caused the first failure, the business can duplicate cost and customer effort while reproducing the defect. A refund closes the financial transaction but does not explain why the fulfilment system rejected two attempts.",
+   "complaint": "A package was marked attempted after a non-communicative call, support’s buffer period did not produce delivery, and a reorder of the same items failed again at the final delivery centre."
+  },
+  {
+   "key": "reddit:1vfazyv",
+   "fingerprint": "reddit:1vfazyv | zomato-rescue-order-driver-arrives-without-order-support-promises-full-refund-system-records-cancelled-by-customer-customer-charged-refund-later-initiate",
+   "kind": "customer",
+   "title": "A failed Zomato delivery was recorded as “Cancelled by Customer,” turning an operational failure into the customer’s apparent responsibility",
+   "url": "https://www.reddit.com/r/Zomato/comments/1vfazyv/zomato_charged_me_for_an_order_they_failed_to/",
+   "date": "23 August 2026",
+   "lensLabels": "Order-State Integrity, Failure Attribution, AI Support, Cancellation, Refund, Cross-party Handoff and Service Recovery Lens.",
+   "questions": [
+    "Who or what can set “Cancelled by Customer,” and what evidence is required before that reason is final?",
+    "Does refund logic depend on cancellation reason, and can support override an incorrect reason without opening a separate dispute?",
+    "Can the restaurant, delivery partner and support agent see the same authoritative event timeline?",
+    "When support promises a full refund, is that promise linked automatically to the transaction so a conflicting cancellation fee cannot be applied later?",
+    "How many refunds or complaints originate from misclassified cancellation reasons?",
+    "Can customers dispute the reason code directly in the order history?"
+   ],
+   "evidence": "Medium-high",
+   "gap": "Cancellation reason is not merely a descriptive label; it can determine refund eligibility, fees, customer blame, restaurant or delivery-partner accountability and downstream analytics. If the fulfilment system, support system and customer-facing order state can disagree about who cancelled, the business may apply the wrong recovery policy and then learn the wrong cause from its data. A transaction can therefore be financially resolved later while still leaving a journey-integrity failure: the customer had to prove that the company’s own recorded state was wrong.",
+   "complaint": "The order was not delivered, human support was difficult to reach, the customer was told they would receive a full refund, and the app nevertheless labelled the order as customer-cancelled and initially left the customer charged."
+  },
+  {
+   "key": "reddit:1vnbz9q",
+   "fingerprint": "reddit:1vnbz9q | defective-ups-month-long-return-delay-customer-cancels-return-next-day-agent-still-picks-up-item-support-confirms-custody-later-system-says-no-pickup-refund-disputed-nch-escalation",
+   "kind": "customer",
+   "title": "A return pickup happened after the customer had cancelled the return request, leaving Amazon’s physical custody and digital order state in conflict",
+   "url": "https://www.reddit.com/r/amazonindia/comments/1vnbz9q/amazon_india_denied_my_refund_after_confirming/",
+   "date": "24 August 2026",
+   "lensLabels": "Returns, Reverse Logistics, Order-State Integrity, Custody Evidence, Refund, Support Handoff and Service Recovery Lens.",
+   "questions": [
+    "Can a pickup task remain active after a return is cancelled, and what automatically happens if it does?",
+    "Does the pickup agent’s scan update the customer-facing order state before the item leaves the customer?",
+    "Can support see one custody timeline across customer request, carrier scan, warehouse receipt and refund eligibility?",
+    "What exception is raised when the company has the item but the return record is inactive?",
+    "How many refund disputes involve a pickup completed without a matching system event?",
+    "Should customers receive an immutable pickup receipt before surrendering a product?"
+   ],
+   "evidence": "Medium-high",
+   "gap": "Return orchestration appears capable of allowing a logistics task to survive after the customer-facing return state has been cancelled. Once that happens, pickup confirmation, carrier investigation, support history and refund eligibility can disagree. The customer becomes the integration layer between systems and must preserve photos, video and chat records to prove custody. A recovery workflow should detect “physical item received while digital return inactive” as an exception requiring immediate reconciliation rather than treating it as an ordinary concession request.",
+   "complaint": "Amazon took possession of the defective item after a cancelled return request, then support gave contradictory answers about whether pickup had happened and the refund remained unresolved at the time of the reviewed thread."
+  },
+  {
+   "key": "reddit:1vvad2p",
+   "fingerprint": "reddit:1vvad2p | hp-omen-116k-defective-display-multiple-replacement-resets-hp-flipkart-handoffs-nch-pickup-july16-replacement-never-ships-full-refund-after-50-days-prices-rise-customer-not-economically-restore",
+   "kind": "customer",
+   "title": "A full refund after a 50-day defective-laptop replacement loop still left the customer unable to buy an equivalent product at the original price",
+   "url": "https://www.reddit.com/r/LaptopDealsIndia/comments/1vvad2p/how_i_lost_the_war_against_flipkart_50_days_a/",
+   "date": "25 August 2026",
+   "lensLabels": "High-Value Ecommerce, Defect Resolution, Replacement, Cross-company Handoff, Recovery Delay, Price Protection, Customer Effort and Service Recovery Lens.",
+   "questions": [
+    "When a replacement is approved, is equivalent inventory reserved immediately?",
+    "How often are replacement requests cancelled or recreated after technical evidence has already been supplied?",
+    "Can manufacturer inspection records follow the case without customer rework?",
+    "Once the defective product is collected, who owns the replacement shipment and what happens if the seller does not dispatch it?",
+    "What percentage of delayed replacements end as refunds rather than equivalent fulfilment?",
+    "When prices rise during a business-caused delay, is the customer made economically whole through price protection, replacement credit or another mechanism?"
+   ],
+   "evidence": "High",
+   "gap": "Refund completion can be a misleading recovery metric when delay destroys the value of the original deal. For price-sensitive or promotion-driven purchases, the customer's true entitlement may be the ability to obtain an equivalent product at the agreed economic position, not merely the return of nominal rupees weeks later. Replacement inventory, case continuity and recovery timing therefore need to be measured together. A process can be financially 'resolved' while leaving the customer with a real replacement-cost loss.",
+   "complaint": "A high-value defective laptop triggered repeated replacement cancellations, retailer-manufacturer handoffs and a failed replacement shipment; the eventual full refund arrived only after nearly 50 days."
+  },
+  {
+   "key": "reddit:1vxzh79",
+   "fingerprint": "reddit:1vxzh79 | niyo-series-fare-spicejet-cancellation-passenger-not-notified-pnr-uses-intermediary-contact-trip-becomes-useless-refund-routed-through-aggregator-peer-yatra-same-pattern",
+   "kind": "customer",
+   "title": "A discounted series-fare flight was cancelled, but disruption notices went to an intermediary rather than the passenger",
+   "url": "https://www.reddit.com/r/AirTravelIndia/comments/1vxzh79/spicejet_cancelled_my_flight_less_than_24_hours/",
+   "date": "26 August 2026",
+   "lensLabels": "Travel Booking, Intermediary Handoff, Notification Reliability, Discount/Fare Transparency, Disruption Recovery, Refund Routing and Customer Ownership Lens.",
+   "questions": [
+    "Whose phone and email are stored in the airline PNR for every fare type?",
+    "If an intermediary contact is required operationally, how is the passenger copied on every schedule change?",
+    "Does the checkout clearly explain any difference between a normal fare and a series/group fare before payment?",
+    "Can the OTA prove that a cancellation alert reached the traveller?",
+    "Who owns customer recovery when the airline notified the intermediary but the intermediary did not notify the passenger?",
+    "How often do cheaper fares create notification, rescheduling or refund limitations that customers only discover after disruption?"
+   ],
+   "evidence": "High",
+   "gap": "Traveller identity, booking-owner identity, notification recipient, refund recipient and recovery owner can become different entities when an OTA or consolidator uses blocked/group inventory. Each system may technically complete its own task while the passenger, the person who bears the disruption, falls out of the communication loop. Price disclosure therefore needs to include operational consequences, not only fare amount. The business also needs a control that verifies that disruption notices reach the actual traveller rather than merely a booking-record contact.",
+   "complaint": "The customer bought a confirmed flight but the cancellation notice was sent to an intermediary, the customer was not warned clearly that a cheaper series fare could weaken real-time communication, and the resulting late discovery made the surrounding trip unusable."
+  },
+  {
+   "key": "reddit:1vypb91",
+   "fingerprint": "reddit:1vypb91 | india-spicejet-goibibo-emergency-reschedule-airline-cancels-hours-before-departure-ota-ai-forces-customer-cancel-reason-refund-below-airline-display-return-also-cancelled-two-thousand-shortfall",
+   "kind": "customer",
+   "title": "Airline cancellation recovery forced the passenger to select the wrong cause and still returned less money than the airline showed",
+   "url": "https://www.reddit.com/r/AirTravelIndia/comments/1vypb91/spicejet_flight_horrible_experience/",
+   "date": "27 August 2026",
+   "lensLabels": "Travel Intermediary Handoff, Cancellation Attribution, Refund Transparency, AI Support, Recovery Ownership and State-Integrity Lens.",
+   "questions": [
+    "Which system is the source of truth for the cancellation reason?",
+    "Why was “airline cancelled” unavailable in the customer flow?",
+    "Does choosing “I cancelled” alter fees, compensation, refund eligibility or analytics?",
+    "What exact components explain the difference between airline-displayed and OTA-displayed refund?",
+    "Can an OTA automatically reconcile provider-side cancellations before presenting the customer with options?",
+    "Which recovery SLA applies when travel is within hours and replacement fares are rising?"
+   ],
+   "evidence": "Medium-high",
+   "gap": "Intermediary systems need state fidelity across airline, OTA and customer records. When the underlying provider cancels, the interface should preserve that cause, expose the same eligible refund calculation or a clear reconciliation, and route recovery by provider responsibility rather than asking the customer to choose a knowingly false reason simply to continue.",
+   "complaint": "The customer is being financially penalised and forced to describe an airline cancellation as their own cancellation, with no transparent explanation for the refund difference."
+  },
+  {
+   "key": "reddit:1vye06b",
+   "fingerprint": "reddit:1vye06b | high-value-hp-laptop-preexisting-warranty-missing-serial-documentation-return-picked-up-amazon-confirms-receipt-refund-fails-warehouse-alleges-different-item-without-visible-evidence-customer-has-neither-product-nor-mone",
+   "kind": "customer",
+   "title": "A high-value laptop return reached Amazon, but the customer was left with neither the product nor the refund after an unexplained “different item” finding",
+   "url": "https://www.reddit.com/r/amazonindia/comments/1vye06b/amazon_india_took_back_my_15l_laptop_refund/",
+   "date": "28 August 2026",
+   "lensLabels": "High-Value Returns, Chain of Custody, Evidence Transparency, Refund Recovery, Marketplace Trust, Product Identity and Service-Recovery Lens.",
+   "questions": [
+    "What identifier is captured at outbound fulfilment, delivery, return pickup and warehouse inspection?",
+    "Can the customer see the serial number Amazon believes was shipped and the serial number it believes was returned?",
+    "What evidence is generated when a warehouse rejects a return as a different item?",
+    "Who can review or override that decision?",
+    "What happens when company tracking proves physical receipt but finance refuses the refund?",
+    "Does the customer retain a recoverable path to the original product if the refund is denied?"
+   ],
+   "evidence": "High",
+   "gap": "The important failure is not simply refund delay. It is evidence asymmetry after custody transfer. Once the seller or marketplace takes possession, the customer loses the ability to inspect the item themselves. A high-consequence “wrong item” determination therefore needs chain-of-custody integrity, inspection evidence, serial-number reconciliation, a clear reason code and an appeal workflow. Without those safeguards, the customer is asked to disprove an internal warehouse conclusion while no longer possessing the object in dispute. A second hidden gap is pre-sale asset identity: warranty start date and serial-number documentation should reconcile with the product represented as newly sold b",
+   "complaint": "“I have no laptop and no refund,” combined with frustration that a serious return rejection was asserted without showing the evidence needed to contest it."
+  },
+  {
+   "key": "reddit:1vzx5ae",
+   "fingerprint": "reddit:1vzx5ae | amazon-india-high-value-phone-preactivated-warranty-self-ship-required-customer-reports-couriers-refuse-safe-high-value-return-recovery-path-not-executable",
+   "kind": "customer",
+   "title": "High-value Amazon return required self-shipping, but the customer said couriers refused the shipment under the conditions needed to protect it",
+   "url": "https://www.reddit.com/r/amazonindia/comments/1vzx5ae/amazon_india_delivered_a_preused_phone_49999_and/",
+   "date": "29 August 2026",
+   "lensLabels": "Returns and Refunds, Marketplace Handoffs, Recovery-Path Executability, High-Value Custody, Trust, Exception Handling and State Ownership Lens.",
+   "questions": [
+    "When a marketplace requires self-shipping, has it verified that the customer can actually use the instructed route for the product value and category?",
+    "Who bears loss risk before seller receipt?",
+    "What proof is accepted if the seller disputes the returned item?",
+    "Can the platform issue a prepaid label or secure pickup when ordinary self-ship fails?",
+    "Which order/seller conditions remove platform pickup, and are those conditions disclosed before purchase?",
+    "How many refund journeys stall because the policy's required next action is technically available in the system but practically unavailable to the customer?"
+   ],
+   "evidence": "Medium-high",
+   "gap": "Recovery-path executability. A return policy can exist on paper yet fail behaviourally if the customer cannot complete the required step with available logistics providers or cannot safely transfer custody. For high-value marketplace orders, seller identity, who owns reverse logistics, declared-value/insurance requirements, chain of custody and exception escalation should be visible before the customer is told to self-ship.",
+   "complaint": "A supposedly new phone appeared previously activated, and the only offered return route felt impossible or unsafe to execute."
+  },
+  {
+   "key": "reddit:1w196o5",
+   "fingerprint": "reddit:1w196o5 | three-flipkart-orders-same-pincode-shadowfax-says-not-serviceable-platform-keeps-extending-customer-repeatedly-selects-want-order-all-three-cancelled-refunded-serviceability-handoff-failure",
+   "kind": "customer",
+   "title": "Three separate Flipkart orders repeatedly reached a courier network that said the customer’s pincode was not serviceable, while the platform kept accepting orde",
+   "url": "https://www.reddit.com/r/india/comments/1w1cx3u/amazon_india_delivered_a_preused_phone_49999_and/",
+   "date": "30 August 2026",
+   "lensLabels": "Delivery Serviceability, Checkout Promise Integrity, Logistics Handoff, Repeated-Failure Detection, Customer Preference vs Automation and Service Recovery Lens.",
+   "questions": [
+    "What serviceability check was used at checkout?",
+    "When did Shadowfax first know the pincode could not be delivered?",
+    "Why could that status not flow back to Flipkart before subsequent orders were accepted?",
+    "What did the “Want Order” response actually change operationally?",
+    "When the rider requested a re-route email, who owned that action and what SLA applied?",
+    "Should the second failure to the same address automatically suppress the courier route or offer pickup/alternate-carrier options?"
+   ],
+   "evidence": "Medium-high",
+   "gap": "Checkout serviceability, courier route capability, support escalation and cancellation logic appear to have operated as separate systems. A refund resolved the ledger but did not resolve the original customer job. Repeated failures to the same pincode should have triggered a serviceability exception before a second or third order entered the same broken route.",
+   "complaint": "“The money came back, but the platform repeatedly accepted orders it could not deliver and ignored my explicit choice to keep the orders active.”"
+  },
+  {
+   "key": "reddit:1w27fk3",
+   "fingerprint": "reddit:1w27fk3 | cod-order-paid-before-handoff-delivery-put-on-hold-cancelled-refund-status-mismatch-peer-customer-switches-to-cod-or-other-platfor",
+   "kind": "customer",
+   "title": "Paying a COD order shortly before delivery appeared to push the parcel into a hold state, changing future customer payment behaviour",
+   "url": "https://www.reddit.com/r/amazonindia/comments/1w27fk3/learn_from_my_mistake_so_you_guys_dont_regret_it/",
+   "date": "31 August 2026",
+   "lensLabels": "Checkout, Payment-State Change, Last-Mile Fulfilment, Refund and Learned Customer Behaviour Lens.",
+   "questions": [
+    "What operational state changes when a COD parcel is prepaid after dispatch or while out for delivery?",
+    "Does the app warn customers if payment confirmation can pause or reroute fulfilment?",
+    "How often do late COD-to-prepaid conversions correlate with delivery holds or cancellations?",
+    "Does refund status distinguish 'issued by Amazon' from 'received by customer'?",
+    "Are customers who experience this pattern subsequently more likely to choose COD or purchase elsewhere?"
+   ],
+   "evidence": "Medium-high",
+   "gap": "Payment-state changes close to physical handoff may not be synchronised cleanly across checkout, fraud/payment verification, delivery routing and refund systems. The business exposes the option as a convenience without making any operational consequence visible to the customer. If repeated, customers can learn to avoid prepaid transactions or leave the platform entirely for purchases where COD is unavailable.",
+   "complaint": "A convenient payment option offered late in the journey appeared to introduce fulfilment friction, followed by confusing refund status."
+  },
+  {
+   "key": "reddit:1w2cqcn",
+   "fingerprint": "reddit:1w2cqcn | wrong-food-order-in-app-support-cannot-validate-evidence-refund-after-public-external-escalation-multiple-peers-report-same",
+   "kind": "customer",
+   "title": "Wrong order evidence was rejected in-app; public escalation finally unlocked the refund",
+   "url": "https://www.reddit.com/r/Zomato/comments/1w2cqcn/awful_zomato_customer_support/",
+   "date": "",
+   "lensLabels": "Understand → Refine → Remember. Understand where evidence stops moving the case forward; refine the recovery authority and evidence rules; remember repeat cases so the same complaint does not need public escalation each time.",
+   "questions": [
+    "What percentage of wrong-item claims rejected or stalled in-app are later refunded after social, grievance, or NCH escalation?",
+    "What evidence threshold does each support tier use?",
+    "Why can one tier authorise recovery while another cannot?",
+    "Can the same evidence and authority be available at first contact?",
+    "Does public escalation correlate with faster resolution independent of case merit?"
+   ],
+   "evidence": "Medium-high",
+   "gap": "Evidence-review and escalation parity. A valid case should not need greater public visibility to become actionable. If social or grievance teams can resolve cases that in-app support rejects, the organisation may be training customers to bypass its intended support channel.",
+   "complaint": "“Customer support did nothing” despite a clearly wrong order."
+  },
+  {
+   "key": "reddit:1vjwl9i",
+   "fingerprint": "reddit:1vjwl9i | swiggy-hidden-batched-delivery-app-shows-preparing-food-while-order-ready-rider-waits-for-other-order-multiple-customers-report-status-opacity",
+   "kind": "customer",
+   "title": "Hidden batched delivery made the visible order status contradict the actual journey",
+   "url": "https://www.reddit.com/r/swiggy/comments/1vjwl9i/hidden_multiple_orders_per_delivery/",
+   "date": "",
+   "lensLabels": "Delivery transparency; expectation management; status accuracy; trust; operational hand-offs.",
+   "questions": [
+    "When an order is batched, what exact state does the customer see at each step?",
+    "Can the app distinguish “restaurant still preparing your order” from “your order is ready but the rider is waiting for another order”?",
+    "Does the initial ETA incorporate batching before the customer commits to the order?",
+    "How often do support, AI support, restaurant and rider views disagree about the same order state?",
+    "Do customers receiving batched orders reorder less, complain more, or change subscription behaviour?"
+   ],
+   "evidence": "High",
+   "gap": "Delivery batching, ETA logic and customer-facing status appear to be separate systems. If batching is operationally efficient but the interface attributes the wait to restaurant preparation, customers may blame the wrong party and interpret ordinary optimisation as deception.",
+   "complaint": "The customer believed Swiggy was hiding multi-order delivery and showing a misleading preparation state."
+  },
+  {
+   "key": "reddit:1w6aj8i",
+   "fingerprint": "reddit:1w6aj8i | zomato-promotion-repeated-payment-failures-three-debits-reversal-wait-customer-retries-peer-repeats-three-times-switches-swiggy",
+   "kind": "customer",
+   "title": "A promotional checkout failure led the customer to retry while earlier payment reversals were still unresolved",
+   "url": "https://www.reddit.com/r/Zomato/comments/1w6aj8i/70_off_orders_payment_getting_cancelled/",
+   "date": "",
+   "lensLabels": "Promotional checkout; payment-state integrity; retry safety; refund/reversal recovery; channel switching.",
+   "questions": [
+    "Does the app detect an unresolved failed payment before allowing another attempt?",
+    "What percentage of failed promotional checkouts still create a debit?",
+    "What is time-to-reversal by amount and payment rail?",
+    "How often do customers retry before recovery completes?",
+    "Does repeated failure increase switching to another platform?"
+   ],
+   "evidence": "Medium-high",
+   "gap": "Retry safety. Promotional urgency and unresolved payment recovery were not coordinated from the customer's perspective, allowing one defect to become repeated financial exposure.",
+   "complaint": "Repeated payment outflow despite the app showing a failed transaction, followed by inconsistent reversal timing."
+  },
+  {
+   "key": "reddit:1voq99w",
+   "fingerprint": "reddit:1voq99w | fingerprint: Amazon India parcel marked delivered but initially missing → refund issued → parcel arrives later → customer offers to repay → support says keep both → internal concession may remain unreconciled and create future account-risk signal.",
+   "kind": "customer",
+   "title": "A successful refund can leave a hidden future penalty when the delivery state later changes",
+   "url": "https://www.reddit.com/r/amazonindia/comments/1voq99w/an_unpleasant_delivery_mixup_turned_into_a/",
+   "date": "",
+   "lensLabels": "Remember / customer-history integrity; Refine / recovery design; Understand / operational truth versus customer-account truth.",
+   "questions": [
+    "After a refund is issued and the parcel later arrives, does the system automatically reconcile the concession?",
+    "Is the original fault code preserved as carrier/platform failure rather than customer-caused concession?",
+    "Can frontline agents reverse or reclassify the refund without forcing an unnecessary return?",
+    "Do future fraud/risk models distinguish business-caused duplicate recovery from customer-initiated abuse?",
+    "How often do later-valid claims get rejected because an earlier recovery was recorded incompletely?"
+   ],
+   "evidence": "Unrated",
+   "gap": "Recovery-state reconciliation. A company can solve today’s complaint while leaving an internal record that later treats the customer as higher-risk. Customer-visible resolution and internal-account resolution are not necessarily the same thing.",
+   "complaint": "None after recovery; the customer was satisfied. The original failure was a false delivered status and delayed physical handoff."
+  },
+  {
+   "key": "reddit:1w6goh8",
+   "fingerprint": "reddit:1w6goh8 | defective-vivo-x200t-camera-fog-replacement-approved-seven-days-stock-unavailable-customer-offered-different-phone-or-30k-paid-upgrade-refund-refused-remedy-not-executable",
+   "kind": "customer",
+   "title": "An approved replacement became a downgrade-or-pay-more choice when replacement stock ran out",
+   "url": "https://www.reddit.com/r/Vivo/comments/1w6goh8/faulty_vivo_x200t_please_help/",
+   "date": "6 September 2026",
+   "lensLabels": "Defect Resolution, Replacement Inventory, Remedy Equivalence, Customer Effort, Price Protection, Cross-channel Handoff and Service Recovery Lens.",
+   "questions": [
+    "When a replacement is approved, is same-model inventory checked or reserved immediately?",
+    "What percentage of approved replacements miss the SLA because stock is unavailable?",
+    "How does the business define an “equivalent” replacement from the customer's perspective, price, specifications, model preference, resale value, financing or warranty?",
+    "If the only available upgrade costs more, who should absorb that difference when the original remedy cannot be fulfilled?",
+    "At what point does unavailable replacement inventory automatically unlock a refund?",
+    "How many customers accept a downgrade or paid upgrade because they need a working device urgently rather than because they prefer the alternative?"
+   ],
+   "evidence": "Medium-high",
+   "gap": "Remedy-equivalence and replacement-inventory design. Approving a replacement should create an executable entitlement, not merely permission to enter a new negotiation. If identical stock is unavailable, the recovery policy needs a pre-defined hierarchy that protects the customer's original economic and product position: equivalent replacement, price-protected upgrade, refund, or another remedy the customer can choose without financing the company's inventory shortage. Replacement inventory availability should ideally be checked or reserved when approval is granted, not after the customer has already waited through the SLA.",
+   "complaint": "“Replacement approved” did not produce the promised same-model replacement, while refund was reportedly unavailable and the available alternatives required either compromise or additional spend."
+  },
+  {
+   "key": "reddit:1w7u31q",
+   "fingerprint": "reddit:1w7u31q | zomato-payment-retry-original-cart-four-idlis-one-vada-idlis-out-of-stock-between-attempts-retry-removes-items-reprices-order-small-cart-fee-one-vada-122-no-explicit-reconfirmation",
+   "kind": "customer",
+   "title": "“Retry Payment” became agreement to a materially different basket and price",
+   "url": "https://www.reddit.com/r/Zomato/comments/1w7u31q/the_curious_case_of_the_122_vada_and_the_ghost/",
+   "date": "7 September 2026",
+   "lensLabels": "Checkout, Payment Retry, Inventory Synchronisation, Promotion and Fee Continuity, Purchase Consent, Expectation Management and State Integrity Lens.",
+   "questions": [
+    "Which fields are allowed to change between a failed payment and a retry, items, quantities, restaurant availability, discounts, delivery charges, small-cart fees or total?",
+    "Is the original basket reserved for any retry window?",
+    "When inventory changes, does the product show a clear before-versus-after delta before charging?",
+    "Must the customer actively reconfirm a changed basket and total?",
+    "How often does the final order produced by “Retry Payment” differ from the failed attempt?",
+    "Can support see both states and explain exactly what changed?"
+   ],
+   "evidence": "Medium-high",
+   "gap": "Transaction-intent continuity. A retry flow needs an explicit contract about which prior customer decisions are frozen and which may be re-evaluated. Inventory revalidation may be operationally necessary, but item removal, promotion loss and fee changes create a new commercial decision. If the system can alter those elements while presenting the action as a payment retry, successful payment can mask a purchase-consent failure.",
+   "complaint": "“Retry Payment” did not behave like retrying the same purchase. The customer believed the label implied continuity while the resulting basket and price had changed materially."
+  },
+  {
+   "key": "reddit:1w7sxrg",
+   "fingerprint": "reddit:1w7sxrg | makemytrip-failed-booking-200k-debit-no-booking-object-ai-ivr-cannot-route-human-escalation-refund-five-days",
+   "kind": "customer",
+   "title": "Failed flight booking leaves ₹2 lakh+ payment in a support blind spot",
+   "url": "https://www.reddit.com/r/AirTravelIndia/comments/1w7sxrg/connect_to_a_human_agent_at_make_my_trip/",
+   "date": "",
+   "lensLabels": "First Purchase Lens; Recovery Journey; Support Access; Payment Failure; Exception-State Design.",
+   "questions": [
+    "Can support locate a customer using payment reference, phone/email and timestamp when no booking/order ID exists?",
+    "What percentage of failed payments create a recoverable case automatically?",
+    "Is there a human fallback after repeated bot failure?",
+    "Does the refund SLA start at debit, failed booking detection, or support contact?",
+    "How much effort is required before a customer reaches someone with authority?"
+   ],
+   "evidence": "Unrated",
+   "gap": "Exception-state support identity. Businesses often key support to the successful object, order, booking, subscription, while the customer who most needs help may only have a payment attempt, timestamp, transaction reference, or failed checkout state.",
+   "complaint": "AI support and IVR could not resolve or even reliably route a failed booking despite a large debit."
+  },
+  {
+   "key": "reddit:1w7u5nw",
+   "fingerprint": "reddit:1w7u5nw | swiggy-cancellation-chatbot-quotes-20-rupee-fee-customer-confirms-full-780-charged-nch-escalation-refund-quote-to-charge-consent-mismatch",
+   "kind": "customer",
+   "title": "The cancellation decision was confirmed at a ₹20 penalty, but the system charged the full ₹780",
+   "url": "https://www.reddit.com/r/swiggy/comments/1w7u5nw/chatbot_offers_rs20_cancellation_charge_swiggy/",
+   "date": "9 September 2026",
+   "lensLabels": "Checkout and Transaction Integrity; Cancellation; Consent; Fee Transparency; Support Authority; Recovery; Trust.",
+   "questions": [
+    "What exact cancellation amount was displayed at each step?",
+    "Which backend event changed the fee from ₹20 to 100%?",
+    "Does the system compare the final charge with the last amount shown to the customer before committing it?",
+    "What happens when they differ?",
+    "Is reconfirmation mandatory after any material price change?",
+    "How many full-fee cancellations are later refunded after support or grievance escalation?"
+   ],
+   "evidence": "High",
+   "gap": "Cancellation-policy logic, customer-facing quote logic and final charge execution can diverge. A support agent in the comments identifying as a customer-service agent said frontline agents may have very limited ability to override system-generated outcomes; this is role-based context, not verified Swiggy policy. The larger product gap is quote-to-charge integrity: the recovery system should treat the amount shown immediately before confirmation as a transaction term, not informational copy.",
+   "complaint": "The chatbot offered a ₹20 cancellation charge but the completed cancellation charged the entire order amount."
+  },
+  {
+   "key": "reddit:1wd6owc",
+   "fingerprint": "reddit:1wd6owc | flipkart-extended-warranty-not-fulfilled-four-months-repeated-support-escalations-customer-keeps-waiting-final-refund-time-based-protection-value-not-restored",
+   "kind": "customer",
+   "title": "When automation removes every exception path, the customer may leave instead of escalating",
+   "url": "https://www.reddit.com/r/FuckFlipkart/comments/1wd6owc/waited_4_months_for_my_extended_warranty_only_to/",
+   "date": "12 September 2026",
+   "lensLabels": "Post-purchase Entitlement, Warranty Activation, Promise Reliability, Support Escalation, Time-sensitive Value, Service Recovery and Trust Lens.",
+   "questions": [
+    "How long after purchase should an extended-warranty entitlement take to become active?",
+    "Can the customer independently verify activation and coverage dates?",
+    "What percentage of warranty orders remain pending beyond the normal activation SLA?",
+    "At what age of an unresolved case should support stop saying “wait” and offer refund or alternative coverage?",
+    "If activation is delayed, is the coverage period extended so the customer receives the full protection duration purchased?",
+    "Does the company measure time spent unprotected and number of contacts before refund, not only whether money was eventually returned?"
+   ],
+   "evidence": "Medium",
+   "gap": "Time-sensitive entitlement fulfilment. Businesses often measure warranty, insurance-like add-ons, memberships, or service plans as successfully resolved if the charge is eventually reversed. But these products sell protection over time. If activation never occurs while support repeatedly promises fulfilment, the customer loses decision time and may remain exposed to the underlying risk. Escalation should not function as a queue that preserves false hope when fulfilment probability has already collapsed.",
+   "complaint": "The customer waited four months through repeated escalations only to receive the remedy that could have been offered much earlier: a refund."
+  },
+  {
+   "key": "reddit:1wexp11",
+   "fingerprint": "reddit:1wexp11 | amazon-india-shattered-glass-delivery-replacement-phantom-attempts-return-marked-received-while-item-still-with-customer-refund-fails-unapproved-hazardous-pickups-executive-relations-waives-return-full-refund-day-21",
+   "kind": "customer",
+   "title": "A shattered-glass return turned recovery into a safety problem before a refund was finally granted",
+   "url": "https://www.reddit.com/r/amazonindia/comments/1wexp11/update_resolved_how_i_beat_amazon_indias_21day/",
+   "date": "14 September 2026",
+   "lensLabels": "Returns and Refunds; Safety; Reverse Logistics; State Integrity; Evidence; Exception Handling; Service Recovery.",
+   "questions": [
+    "Does the return flow identify hazardous or unsafe-to-handle damage at first contact?",
+    "What evidence is sufficient to waive physical return?",
+    "Who can authorise disposal, specialist pickup or refund-without-return?",
+    "Can the app prevent “return received” or “customer unavailable” states when no verified handoff occurred?",
+    "How are repeated failed scans audited against gate/CCTV or carrier GPS evidence?",
+    "What percentage of hazardous-item cases require more than one support contact, and how often are customers asked to package or transport something unsafe?"
+   ],
+   "evidence": "High",
+   "gap": "Recovery-path safety and executability. Return systems often assume that the item is safe to package, transport and hand over. When a product arrives shattered, leaking, contaminated, swollen, electrically unsafe or otherwise hazardous, the normal reverse-logistics path may itself create risk. The product needs a hazard exception that changes evidence requirements, pickup method, custody rules and refund authority rather than forcing the customer through an ordinary-return script.",
+   "complaint": "Repeated phantom delivery/verification states, contradictory return/refund status, and attempts to collect hazardous broken glass through unannounced or disputed pickups."
+  },
+  {
+   "key": "reddit:1wfzmd1",
+   "fingerprint": "reddit:1wfzmd1 | swiggy-bathinda-food-order-metal-foreign-object-customer-detects-before-swallowing-refund-initiated-customer-seeks-safety-investigation-restaurant-listing-name-differs-from-bill-financial-recovery-does-not-prove-risk-closure",
+   "kind": "customer",
+   "title": "A food-safety incident was financially refunded, but the customer still had no evidence that the underlying restaurant-safety risk was closed",
+   "url": "https://www.reddit.com/r/Bathinda/comments/1wfzmd1/found_a_metal_piece_inside_my_swiggy_food_order/",
+   "date": "15 September 2026",
+   "lensLabels": "Food Safety; Marketplace Merchant Identity; Complaint Severity; Service Recovery; Investigation Closure; Trust.",
+   "questions": [
+    "Does a foreign-object complaint automatically enter a safety workflow rather than an ordinary refund workflow?",
+    "Can support reconcile the restaurant name shown in-app with the entity on the bill?",
+    "What evidence is preserved and shared with the merchant?",
+    "Who decides whether the listing is paused or reviewed?",
+    "Can the customer see that an investigation occurred without exposing internal or personal data?",
+    "How many high-severity safety complaints are marked resolved solely because money was refunded?"
+   ],
+   "evidence": "Medium-high",
+   "gap": "Safety-incident closure is different from financial recovery. High-severity complaints need an auditable path showing who owns investigation, which merchant entity was involved, what evidence was preserved, and when the risk is considered closed. Refund completion should not be used as the sole resolution state.",
+   "complaint": "A metal foreign object was found in delivered food; the customer cared more about safety investigation than reimbursement."
+  },
+  {
+   "key": "reddit:1w51uab-comment-2026-09-15-ahmedabad",
+   "fingerprint": "reddit:1w51uab-comment-2026-09-15-ahmedabad | return-agent-collects-item-x-without-paperwork-records-pickup-against-item-y-both-refunds-stuck-customer-reduces-high-value-amazon-buying",
+   "kind": "customer",
+   "title": "A return pickup was recorded against the wrong item, trapping refunds because physical custody and system identity diverged",
+   "url": "https://www.reddit.com/r/amazonindia/comments/1w51uab/frustrations_caused_by_false_delivery_updated/",
+   "date": "16 September 2026",
+   "lensLabels": "Returns, Reverse Logistics, Custody Integrity, Refund and Trust Lens.",
+   "questions": [
+    "What must the agent show before collection?",
+    "Does the customer see and confirm the exact item/order being scanned?",
+    "Can one pickup agent accidentally close another pending return?",
+    "What evidence survives when a family member hands over the item?",
+    "How are custody mismatches reconciled without making the customer prove internal scanning errors?"
+   ],
+   "evidence": "Medium-high",
+   "gap": "Reverse logistics treated pickup completion as a scan event without sufficiently binding agent, item, order and customer confirmation. When physical custody and digital return identity diverge, frontline support inherits an unusually difficult proof problem.",
+   "complaint": "Unverifiable pickup execution and a return recorded against the wrong product."
+  },
+  {
+   "key": "reddit:1whhmxi",
+   "fingerprint": "reddit:1whhmxi | dented-fridge-returned-customer-reorders-second-fridge-same-day-pickup-delivery-installation-attached-to-wrong-unit-both-orders-refunded-customer-keeps-second-fridge-and-repeatedly-tries-to-report-mismatch",
+   "kind": "customer",
+   "title": "A return, reorder and installation handoff produced two refunds while the customer still retained the replacement fridge",
+   "url": "https://www.reddit.com/r/amazonindia/comments/1whhmxi/i_got_a_free_fridge_and_refund/",
+   "date": "17 September 2026",
+   "lensLabels": "Order-State Integrity; Asset Identity; Large-Appliance Fulfilment; Returns; Installation Handoff; Refund Controls; Revenue Leakage; Customer Honesty and Exception Recovery.",
+   "questions": [
+    "What physical identifier is captured at outbound delivery, return pickup and installation for large appliances?",
+    "Can an installation technician accidentally close service against the unit being returned?",
+    "Before a second refund is issued, does the system check whether another same-product order was delivered to the same customer during the same return window?",
+    "Can frontline support open an exception when a customer says “you refunded me but I still have the product,” or does the workflow force agents to answer only the visible refund state?",
+    "How often do simultaneous return-and-reorder journeys produce duplicate refunds, incorrect installations or custody mismatches?",
+    "What reconciliation occurs when serial number, order ID, installation record and refund state disagree?"
+   ],
+   "evidence": "Medium-high",
+   "gap": "Cross-transaction asset identity. Pickup, delivery, installation and refund systems can each complete valid-looking events while referring to the wrong physical unit or order. For high-value durable goods, order IDs alone may be insufficient when two near-identical units cross paths on the same day. Serial number or another persistent asset identifier should bind the physical product to every custody, service and financial event.",
+   "complaint": "The customer was not seeking compensation; they were trying to tell Amazon that the system had refunded a refrigerator they still possessed, but support reportedly kept confirming refund completion rather than investigating the cross-order mismatch."
+  },
+  {
+   "key": "reddit:1ugomuc",
+   "fingerprint": "reddit:1ugomuc | landlord-builds-rental-inspection-saas-30k-three-paying-users-no-repeatable-acquisition-burnout",
+   "kind": "founder",
+   "title": "Founder spent about $30,000 building a rental-inspection SaaS before understanding repeatable demand",
+   "url": "https://www.reddit.com/r/SaaS/comments/1ugomuc/i_think_i_wasted_30k_of_my_own_money_on_my_saas/",
+   "date": "27 July 2026",
+   "lensLabels": "Idea Validation, Customer Understanding, Willingness-to-Pay and Early Acquisition Lens.",
+   "questions": [
+    "What commitment existed before development?",
+    "Which customer segment experiences this problem frequently?",
+    "Why do the three paying users continue paying?",
+    "What is the cheapest manual way to test demand?",
+    "Which costs can stop until a repeatable channel is proven?"
+   ],
+   "evidence": "High",
+   "belief": "A problem personally experienced in property management, combined with dissatisfaction with existing tools, was treated as sufficient evidence for a sizeable market.",
+   "gap": "Why the three current users pay, what they did before, which property type creates frequent enough inspections, who experiences the financial consequence, and whether landlords or another party are the true buyer."
+  },
+  {
+   "key": "reddit:1rjyjmq",
+   "fingerprint": "reddit:1rjyjmq | first-time-b2b-founder-two-responses-fifteen-linkedin-messages-fears-idea-theft-considers-paid-ads",
+   "kind": "founder",
+   "title": "First-time B2B founder hesitated between customer discovery and immediately building or advertising",
+   "url": "https://www.reddit.com/r/startups/comments/1rjyjmq/repost_advice_needed_first_time_founder_i_will/",
+   "date": "27 July 2026",
+   "lensLabels": "Founder Discovery, Idea Validation and Early Customer Acquisition Lens.",
+   "questions": [
+    "Who specifically experiences the problem?",
+    "What evidence exists beyond the founder’s belief?",
+    "What customer action would count as validation?",
+    "Can interviews focus on present behaviour rather than pitching the solution?",
+    "What is the smallest credible sample before changing channels?"
+   ],
+   "evidence": "High",
+   "belief": "The founder initially wanted to start coding immediately, then assumed a small number of personalised LinkedIn messages might begin validation. They also feared that sharing product detail could allow others to steal the idea.",
+   "gap": "Who owns the problem, how frequently it occurs, what it costs, what current workaround exists, and what level of commitment would demonstrate meaningful interest."
+  },
+  {
+   "key": "reddit:1ucrcmq",
+   "fingerprint": "reddit:1ucrcmq | founder-hosts-multiple-hobby-products-mostly-bots-no-audience-or-distribution-plan-blames-discoverability",
+   "kind": "founder",
+   "title": "Founder repeatedly launched hobby products without a distribution plan and blamed discoverability",
+   "url": "https://www.reddit.com/r/startups/comments/1ucrcmq/discoverability_i_will_not_promote/",
+   "date": "27 July 2026",
+   "lensLabels": "Customer Definition, Awareness-to-Visit and Early Adoption Lens.",
+   "questions": [
+    "Who is the first narrow audience?",
+    "Where do they currently discover tools?",
+    "What behaviour would count as success?",
+    "Can the founder recruit ten users manually before paying for more infrastructure?",
+    "What did previous non-users do instead?"
+   ],
+   "evidence": "Medium",
+   "belief": "Building something useful or interesting should create at least modest organic discovery, and declining search visibility or algorithm-controlled feeds may be the main reason nobody arrives.",
+   "gap": "Who should care, where those people already gather, what problem or curiosity motivates them, what message earns a click, and what action would demonstrate that the project is worth sustaining."
+  },
+  {
+   "key": "reddit:1t0v3kb",
+   "fingerprint": "reddit:1t0v3kb | appointment-saas-nine-month-feature-creep-no-launch-simpler-side-version-reports-paying-subscribers",
+   "kind": "founder",
+   "title": "Feature expansion delayed a simple appointment SaaS for nine months while a narrower copy gained paying users",
+   "url": "https://www.reddit.com/r/singaporestartups/comments/1t0v3kb/i_built_a_saas_out_of_spite_because_of_my_boss/",
+   "date": "27 July 2026",
+   "lensLabels": "MVP Scope, First Value, Product Clarity and Launch Readiness Lens.",
+   "questions": [
+    "What is the smallest complete customer outcome?",
+    "Which feature has direct evidence of demand?",
+    "What becomes learnable only after launch?",
+    "How is each scope addition approved?",
+    "Can a customer explain the product in one sentence?"
+   ],
+   "evidence": "Medium",
+   "belief": "Adding HR, bookkeeping and other capabilities would strengthen the product before launch.",
+   "gap": "The primary customer, the one essential workflow, what buyers would pay for now, which extra features create genuine adoption, and which only postpone exposure to the market."
+  },
+  {
+   "key": "reddit:1pmibnh",
+   "fingerprint": "reddit:1pmibnh | b2b-saas-21-days-first-use-31-percent-activation-trials-expire-during-setup",
+   "kind": "founder",
+   "title": "A B2B SaaS required 21 days before customers experienced meaningful value",
+   "url": "https://www.reddit.com/r/SaaS/comments/1pmibnh/our_customer_onboarding_takes_3_weeks_and_i_dont/",
+   "date": "27 July 2026",
+   "lensLabels": "Software Onboarding, Activation, First Value and Trial Conversion Lens.",
+   "questions": [
+    "What can the customer achieve before connecting integrations or inviting a team?",
+    "Which action predicts retention?",
+    "Can QUARR observe five new users attempting setup?",
+    "Should the trial start at signup or after initial configuration?"
+   ],
+   "evidence": "High",
+   "belief": "The founder believed the product was not fundamentally complicated and that the main problem was making the first step more obvious.",
+   "gap": "What users expected at signup, which step creates the first useful result, why activated users persisted, why abandoned users stopped and whether every setup task is necessary before value."
+  },
+  {
+   "key": "reddit:1ryswro",
+   "fingerprint": "reddit:1ryswro | five-saas-tests-long-signup-blank-dashboard-long-tour-no-progress-power-user-bias",
+   "kind": "founder",
+   "title": "Testing five SaaS products found repeated drop-off caused by long forms, blank dashboards and power-user assumptions",
+   "url": "https://www.reddit.com/r/SaaS/comments/1ryswro/we_tested_5_saas_onboarding_flows_last_month/",
+   "date": "27 July 2026",
+   "lensLabels": "Signup, Software Onboarding, Empty State and First-Time User Lens.",
+   "questions": [
+    "What is the minimum information needed to begin?",
+    "What should appear in a brand-new account?",
+    "Can users see progress and estimated effort?",
+    "Has the flow been watched with people who have never seen the product?"
+   ],
+   "evidence": "Medium",
+   "belief": "Product teams often assume that more signup information, complete feature tours and interfaces obvious to daily users will also help first-time customers.",
+   "gap": "What users believe will happen after signup, what data they are comfortable sharing, the single first action they value and which internal assumptions are invisible to a first-time user."
+  },
+  {
+   "key": "reddit:1gb7n1y",
+   "fingerprint": "reddit:1gb7n1y | technical-founder-six-months-nearly-40k-advanced-automation-misses-core-problem",
+   "kind": "founder",
+   "title": "A technical founder spent six months and nearly $40,000 building advanced features that missed the customer's core problem",
+   "url": "https://www.reddit.com/r/startups/comments/1gb7n1y/how_i_wasted_6_months_building_features_nobody/",
+   "date": "27 July 2026",
+   "lensLabels": "Idea Validation, Customer Priority, Feature Decisions and Willingness-to-Pay Lens.",
+   "questions": [
+    "What action showed that complaints would become adoption?",
+    "Which workaround is tolerated today?",
+    "What problem did the prospect mean by the missing basic feature?",
+    "What evidence would justify each advanced feature?"
+   ],
+   "evidence": "High",
+   "belief": "Because customers complained about a problem, the founder assumed they cared enough to adopt a new solution and that advanced automation would be valuable.",
+   "gap": "The actual priority, current workaround, cost of inaction, willingness to change and which evidence should have stopped or redirected development earlier."
+  },
+  {
+   "key": "reddit:1r1h1x0",
+   "fingerprint": "reddit:1r1h1x0 | sixty-percent-day-one-ghosting-founder-assumes-forgetting-promotes-onboarding-email-tool",
+   "kind": "founder",
+   "title": "A founder attributed 60% day-one trial loss to forgetfulness and then promoted an onboarding-email product",
+   "url": "https://www.reddit.com/r/SaaS/comments/1r1h1x0/how_i_lost_60_of_trial_users_and_what_i_did_about/",
+   "date": "27 July 2026",
+   "lensLabels": "Trial Signup, Activation Diagnosis, Onboarding Communication and Retention Lens.",
+   "questions": [
+    "What evidence separates forgetting from rejection?",
+    "What percentage reached a defined first-value event?",
+    "Did emailed users activate or merely revisit?",
+    "How do results vary by acquisition source and intent?"
+   ],
+   "evidence": "Medium",
+   "belief": "The founder concluded that most users were interested but simply forgot to return because of distraction, rather than first establishing why they left.",
+   "gap": "Why customers signed up, what they expected, what they did in the first minute, whether they understood the product, what made returning users activate and whether discounts produced durable usage."
+  },
+  {
+   "key": "reddit:1shmblc",
+   "fingerprint": "reddit:1shmblc | three-months-no-validation-positive-feedback-no-use-or-payment-authenticity-questioned",
+   "kind": "founder",
+   "title": "A founder coded for three months without validation and discovered that positive feedback did not become use or payment",
+   "url": "https://www.reddit.com/r/startupideas/comments/1shmblc/i_wasted_3_months_building_something_nobody_wanted/",
+   "date": "27 July 2026",
+   "lensLabels": "Idea Validation, Behavioural Evidence, Customer Commitment and Founder Assumption Lens.",
+   "questions": [
+    "What customer action would have counted as validation before coding?",
+    "Were prospective users already spending time or money on a workaround?",
+    "What happened when payment, a pilot or a real task was requested?",
+    "Is the source authentic enough to use beyond a pattern signal?"
+   ],
+   "evidence": "Low-medium",
+   "belief": "Personal conviction and encouraging comments were treated as sufficient reason to continue building.",
+   "gap": "Who the intended customer was, which current behaviour demonstrated pain, what commitment was requested and why people who expressed interest chose not to use or pay."
+  },
+  {
+   "key": "reddit:1ulfqs7",
+   "fingerprint": "reddit:1ulfqs7 | usb4-cable-product-store-built-no-reviews-testers-trust-or-first-customer-channel",
+   "kind": "founder",
+   "title": "A hardware-accessory founder had a product and store but no path to first trust, testers or reviews",
+   "url": "https://www.reddit.com/r/leanstartup/comments/1ulfqs7/earlystage_hardware_accessory_brand_should_i/",
+   "date": "28 July 2026",
+   "lensLabels": "First Customer, Trust Evidence, Hardware Validation and Early Acquisition Lens.",
+   "questions": [
+    "Which narrow customer has the strongest reason to switch?",
+    "What risk prevents purchase from an unknown accessory brand?",
+    "Can five users test the cable in real workflows before advertising?",
+    "Which measurable result, speed, reliability, heat, durability or desk convenience, creates trust?"
+   ],
+   "evidence": "High",
+   "belief": "The founder appeared to assume that having a technically differentiated product and a functioning store should make the remaining challenge mainly a choice between creators, Reddit, testers, affiliates or paid advertising.",
+   "gap": "Which use case creates the highest cost of failure, why current cables are inadequate, what proof buyers need before trusting a new brand, which customers will test early and what result would make them recommend it."
+  },
+  {
+   "key": "reddit:1uintor",
+   "fingerprint": "reddit:1uintor | founder-50-lakh-capital-searches-real-indian-pain-point-before-investing",
+   "kind": "founder",
+   "title": "A founder with ₹50 lakh in available capital was trying to identify a real pain point before spending it",
+   "url": "https://www.reddit.com/r/IndiaBusiness/comments/1uintor/27m_with_50_lakhs_capital_how_do_i_identify_real/",
+   "date": "28 July 2026",
+   "lensLabels": "Founder Direction, Opportunity Discovery, Capital Discipline and Idea Validation Lens.",
+   "questions": [
+    "Which customer groups can the founder observe directly?",
+    "Where is money already being spent inefficiently?",
+    "What can be tested for under ₹50,000 before committing ₹50 lakh?",
+    "What evidence would cause the founder to reject an opportunity?"
+   ],
+   "evidence": "High",
+   "belief": "The founder correctly recognised that capital alone does not create a good business, but still framed the search partly around finding a problem where available capital could become an advantage.",
+   "gap": "Which customers the founder can access repeatedly, what costly behaviour they already exhibit, what problem they urgently fund today and what manual experiment could prove demand before significant investment."
+  },
+  {
+   "key": "reddit:1uvp0ku",
+   "fingerprint": "reddit:1uvp0ku | two-years-ecommerce-saas-60-cac-three-month-payback-running-out-cash-considers-productized-servic",
+   "kind": "founder",
+   "title": "Founder spent two years building an ecommerce platform, reached cash pressure and considered switching from SaaS to service",
+   "url": "https://www.reddit.com/r/alexhormozi/comments/1uvp0ku/built_an_ecommerce_platform_but_im_running_out_of/",
+   "date": "30 July 2026",
+   "lensLabels": "Founder Runway, Product Positioning, Pricing, SaaS-to-Service Pivot, Retention and Customer Outcome Lens.",
+   "questions": [
+    "Which customers retained long enough to recover CAC?",
+    "What did they buy, software flexibility or a working online store?",
+    "Which segment converts fastest and stays longest?",
+    "Can the founder sell five done-for-you stores before rebuilding the model?",
+    "Which product features can stop consuming cash?"
+   ],
+   "evidence": "High",
+   "belief": "A broad, Shopify-priced product with extensive features could compete as a self-serve SaaS, and the immediate problem was whether to keep pushing acquisition or change the delivery model.",
+   "gap": "Why existing customers chose the product, which features they actually use, whether they remain after three months, what business outcome they expected, why non-buyers refused, and whether a done-for-you store solves a more urgent job than another website builder."
+  },
+  {
+   "key": "reddit:1utgcht",
+   "fingerprint": "reddit:1utgcht | eight-year-company-two-million-revenue-low-profit-debt-limited-recurring-revenue-founder-below-market-pay-considers-leavin",
+   "kind": "founder",
+   "title": "Eight-year company reached $2 million revenue but remained unprofitable while the founder subsidised it through below-market pay",
+   "url": "https://www.reddit.com/r/startups/comments/1utgcht/advice_welcome_stay_or_go_i_will_not_promote/",
+   "date": "2 August 2026",
+   "lensLabels": "Founder Sustainability, Unit Economics, Pricing, Revenue Quality, Recurring Revenue, Debt and Business-Model Transition Lens.",
+   "questions": [
+    "What is gross and contribution margin by customer and product?",
+    "How much revenue is recurring, repeat or one-off?",
+    "Which customers remain profitable after delivery and support costs?",
+    "Have happy customers been asked for a price increase, upsell or referral?",
+    "How much unpaid market-rate compensation has the founder effectively invested?",
+    "What happens to founder, investor and lender returns under realistic exit values?"
+   ],
+   "evidence": "High",
+   "belief": "Continued growth, customer happiness and a hoped-for exit were treated as reasons to keep accepting low personal compensation, even though debt and investor preferences could leave the founder’s equity with little practical value.",
+   "gap": "Which customers and offerings produce real margin; what customers would pay more for; which revenue can become recurring; why happy customers do or do not refer; what delivery work customers value versus what merely raises cost; and whether the company is selling an outcome that can be standardised profitably."
+  },
+  {
+   "key": "reddit:1sghg9c",
+   "fingerprint": "reddit:1sghg9c | client-requests-multitenancy-at-eighty-percent-six-weeks-database-rework-founder-adopts-discovery-week",
+   "kind": "founder",
+   "title": "A client’s “small change” at 80% completion exposed that the founder had been selling execution before understanding the real requirement",
+   "url": "https://www.reddit.com/r/indiehackers/comments/1sghg9c/i_am_a_solo_entrepreneur_i_spent_a_year_trying_to/",
+   "date": "3 August 2026",
+   "lensLabels": "Customer Discovery, Requirements Validation, Scope Control, Service Pricing, Workflow Observation and Founder Positioning Lens.",
+   "questions": [
+    "What workflow did the client perform before buying?",
+    "Who else touches the process?",
+    "What happens on a bad day rather than the happy path?",
+    "Which assumptions should be shown through a prototype before architecture is committed?",
+    "Is discovery priced and contracted separately?",
+    "What qualifies as a change of scope rather than a revision?"
+   ],
+   "evidence": "High",
+   "belief": "Building exactly what the client initially described was treated as sufficient requirements discovery. The founder also appears to have sold the build itself rather than separately valuing the questioning and judgement needed to define the correct system.",
+   "gap": "Who uses the product beyond the initial contact; which data, permissions and workflows differ by organisation; what happens when internet, staffing or the happy path fails; which future scenario is likely enough to design for now; and what the client is truly buying, code, a functioning business process or reduced implementation risk."
+  },
+  {
+   "key": "reddit:1rywnjm",
+   "fingerprint": "reddit:1rywnjm | four-month-saas-585-mrr-flat-new-users-replace-churn-promise-attracts-low-intent-users-businesses-upgrade",
+   "kind": "founder",
+   "title": "A SaaS reached about $585 MRR but new customers only replaced churn because the promise attracted users unwilling to perform the required work",
+   "url": "https://www.reddit.com/r/micro_saas/comments/1rywnjm/i_feel_like_nobody_talks_about_this_what_got_you/",
+   "date": "4 August 2026",
+   "lensLabels": "Positioning, Customer Commitment, Activation, Churn Diagnosis, Ideal Customer Profile and Revenue Quality Lens.",
+   "questions": [
+    "What do the ten longest-retained customers have in common before signup?",
+    "Which action in the first session predicts continued payment?",
+    "What promise is made in acquisition, and does it accurately represent the customer’s required effort?",
+    "Which channels bring users already doing the underlying work?",
+    "Can the founder separate customers seeking a tool from customers seeking a done-for-you result?",
+    "What happens to churn when onboarding produces one real outcome within 48 hours?"
+   ],
+   "evidence": "High",
+   "belief": "The founder initially framed the problem as reaching a growth stage that required a different strategy. They also believed the product worked, but customers were attracted by the promise of getting clients and later resisted the time and effort required to achieve that result.",
+   "gap": "What retained customers were already doing before purchase; the triggering event that made them seek a solution; which acquisition messages attract low-intent users; what first result predicts retention; how much customer work is essential versus accidental friction; and whether the buyer values software access or a more assisted outcome."
+  },
+  {
+   "key": "reddit:1plk0sr-comment-construction-material-31-years-40-crore-turnover-6-point-4-crore-bad-debt-cash-buy-credit-sel",
+   "fingerprint": "reddit:1plk0sr-comment-construction-material-31-years-40-crore-turnover-6-point-4-crore-bad-debt-cash-buy-credit-sel",
+   "kind": "founder",
+   "title": "A construction-material operator reached ₹40 crore turnover but lost ₹6.4 crore to credit-driven bad debt",
+   "url": "https://www.reddit.com/r/IndiaBusiness/comments/1plk0sr/21m_want_to_start_a_construction_material/",
+   "date": "5 August 2026",
+   "lensLabels": "Revenue Quality, Working Capital, Credit Behaviour, Customer Profitability, Pricing, Collections and Founder Capital Discipline Lens.",
+   "questions": [
+    "What is collected contribution margin by customer after interest, delivery and bad debt?",
+    "Which customers repeatedly request credit near project completion?",
+    "What credit limit and payment trigger should stop further supply?",
+    "Can deposits, staged payment, invoice finance or supplier terms shift risk?",
+    "Which customers would accept cash terms for reliable availability or faster delivery?",
+    "How much turnover would the founder willingly sacrifice to protect cash?"
+   ],
+   "evidence": "Medium-high",
+   "belief": "High construction activity, broad product availability and turnover can make the category appear attractive, while the decisive economic risk, buying inventory in cash and selling it on uncertain credit, remains hidden until customers delay or default.",
+   "gap": "Which customer types pay on time and remain profitable after financing cost; which late-payment signals appear before default; whether customers value faster delivery, guaranteed supply or technical support enough to accept cash terms or higher prices; and whether the business can serve a narrower segment without financing the customer’s project."
+  },
+  {
+   "key": "indiehackers:885da8cf24",
+   "fingerprint": "indiehackers:885da8cf24 | saas-price-4-99-to-6-99-forty-percent-increase-new-cohort-churn-22-percent-lower-support-volume-drops-intent-filter",
+   "kind": "founder",
+   "title": "Raising a low-priced SaaS plan by 40% coincided with lower cohort churn and fewer support-heavy, low-intent customers",
+   "url": "https://www.indiehackers.com/post/i-fixed-my-saas-churn-by-raising-the-price-40-has-anyone-else-tried-this-885da8cf24",
+   "date": "6 August 2026",
+   "lensLabels": "Pricing, Customer Commitment, Churn Diagnosis, Support Cost, Acquisition Quality and Willingness-to-Pay Lens.",
+   "questions": [
+    "What were the cohort sizes and acquisition sources?",
+    "Did visit-to-paid conversion decline, and was that offset by improved retained revenue and lower support cost?",
+    "Which first-session behaviours differed by price?",
+    "Did the higher-priced cohort retain beyond one month?",
+    "Can willingness to pay be tested through controlled pricing or segment experiments rather than a single before-and-after comparison?",
+    "Which customers became unprofitable after support time was included?"
+   ],
+   "evidence": "Medium",
+   "belief": "The founder initially assumed churn was primarily an onboarding problem and that keeping the price low would reduce purchase resistance and support growth.",
+   "gap": "Why each cohort signed up, what workaround they used before purchase, whether higher-priced users reached first value faster, which acquisition messages brought them, whether willingness to pay reflected urgency or merely income, and whether the churn difference persists after three to six months."
+  },
+  {
+   "key": "reddit:1vgs2bu",
+   "fingerprint": "reddit:1vgs2bu | two-month-b2c-saas-reddit-organic-first-customers-meta-many-signups-zero-trial-starts-founder-blames-low-price-site-audience-unclear",
+   "kind": "founder",
+   "title": "Founder generated many ad signups but zero trial starts and initially blamed price rather than the broken handoff",
+   "url": "https://www.reddit.com/r/SaaS/comments/1vgs2bu/i_launched_my_saas_about_two_months_ago_to/",
+   "date": "7 August 2026",
+   "lensLabels": "Acquisition Quality, Message-to-Landing-Page Fit, Signup-to-Trial Conversion, Positioning, Onboarding, Channel Fit and Founder Assumption Lens.",
+   "questions": [
+    "What exact promise did each ad make?",
+    "Which ad cohorts signed up, and what did they do in the next five minutes?",
+    "Where is the first point that requires more effort, information or payment?",
+    "Can five ad signups who did not start a trial be interviewed or replayed through session data?",
+    "Why did Reddit visitors become customers when Meta visitors did not?",
+    "Is the target customer obvious above the fold?"
+   ],
+   "evidence": "Medium-high",
+   "belief": "The founder believed extensive onboarding optimisation was central to conversion and interpreted Meta ads that produced many signups but zero trial starts primarily as an economics problem: the product price was probably too low to support profitable paid acquisition.",
+   "gap": "Why Meta users clicked, what they believed they were signing up for, what changed between signup and trial start, whether they understood the audience and price, how those users differ from Reddit-sourced buyers, and which first action predicts payment and retention."
+  },
+  {
+   "key": "indiehackers:xaDBfmynasknHQkim3sO",
+   "fingerprint": "indiehackers:xaDBfmynasknHQkim3sO | five-failed-products-seven-years-100-revenue-founder-tests-waitlist-dms-before-mvp-30-signups-fixes-voluntary-churn-before-scaling-reaches-reported-7500-monthl",
+   "kind": "founder",
+   "title": "After five failed products, a founder tested acquisition before building and then fixed retention before trying to scale",
+   "url": "https://www.indiehackers.com/post/xaDBfmynasknHQkim3sO",
+   "date": "8 August 2026",
+   "lensLabels": "Idea Validation, Distribution Validation, Customer Discovery, Activation, Churn Diagnosis, Pricing, Funnel Conversion and Founder Learning Lens.",
+   "questions": [
+    "What percentage of the 30-person waitlist eventually paid?",
+    "What concrete behaviour before development distinguished serious prospects from curious signups?",
+    "What did customers say when they cancelled at 43% churn?",
+    "Which offer changes reduced voluntary churn to the reported 25%?",
+    "Were acquisition source and cohort mix stable across the comparison?",
+    "Did the single $99 plan improve retained revenue after conversion changes?"
+   ],
+   "evidence": "Medium-high",
+   "belief": "Earlier projects were built for too long without enough proof of distribution or durable economics. The founder concluded that the next business should solve a recurring B2B problem, have a recurring revenue model and use an acquisition channel they could test before committing significant build time.",
+   "gap": "Which waitlist behaviours predicted eventual payment; why early customers voluntarily cancelled; what changed in the new offer from the customer's perspective; which segment retained best; whether the higher $99 price filtered for stronger intent or merely increased revenue per retained customer; how much of growth came from existing distribution skill versus product changes; and whether customers value a software tool, a managed acquisition outcome or both."
+  },
+  {
+   "key": "producthunt:causo-272-founders",
+   "fingerprint": "producthunt:causo-272-founders | 272-signups-253-profiles-92-onboarded-117-campaigns-built-38-launched-18-paid-users-hesitate-at-reputationally-risky-send-step",
+   "kind": "founder",
+   "title": "272 founder signups collapsed to 38 launched outreach campaigns because the product reached the point of action before users trusted it",
+   "url": "https://www.producthunt.com/p/causo-hub-free-tools-for-fundraising/got-272-founders-to-sign-up-the-hard-part-was-everything-after-that",
+   "date": "9 August 2026",
+   "lensLabels": "Activation, High-Stakes Workflow, Trust, AI-Assisted Action, Customer Commitment, Onboarding, Funnel Diagnosis and Reputation-Risk Lens.",
+   "questions": [
+    "What did the 92 onboarding completers understand that the others did not?",
+    "For every unlaunched campaign, what exact sentence completes “I would send this if…”?",
+    "Can ten draft-campaign users be observed reviewing one real unsent campaign and asked where confidence breaks?",
+    "Which hesitation bucket predicts non-send: investor fit, message voice, fundraising readiness, reputation risk or lack of control?",
+    "Does allowing approval and editing increase actual sends rather than merely time in product?",
+    "Which event should count as activation, profile creation, investor matching, campaign creation, first approved send, reply received or paid conversion?"
+   ],
+   "evidence": "Medium-high",
+   "belief": "The team initially treated investor discovery and outreach automation as the central customer problem and expected more users who built campaigns to proceed to sending them. The post-launch funnel showed that generating matches and drafts was not equivalent to customers trusting the product enough to put their reputation in its hands.",
+   "gap": "What distinguishes the 38 senders from the 79 campaign builders who did not send; how much drop-off is caused by fundraising readiness versus investor-fit trust versus email-voice trust versus reputational risk; whether customers want automation or an approval-first assistant; what proof or preview makes sending feel safe; and which acquisition channels bring founders with an immediate fundraising job rather than curiosity."
+  },
+  {
+   "key": "reddit:1v5size",
+   "fingerprint": "reddit:1v5size | ai-job-search-saas-800-signups-530-resume-uploaders-190-monthly-active-40-weekly-10-daily-zero-paid-feature-creep-short-term-job-search-subscription",
+   "kind": "founder",
+   "title": "An AI job-search SaaS reached 800 registered users and zero paying customers while feature growth disguised weak repeat behaviour",
+   "url": "https://www.reddit.com/r/SaaS/comments/1v5size/well_800_users_taught_me_that_signups_mean_almost/",
+   "date": "11 August 2026",
+   "lensLabels": "Signup Quality, Activation, Retention, Willingness-to-Pay, Feature Decisions, Acquisition Intent, Subscription Fit and Founder Assumption Lens.",
+   "questions": [
+    "Which channels produced the 10 daily and 40 weekly users?",
+    "What do those retained users do that the other 760 do not?",
+    "What percentage reaches the proposed first result of one strong match plus one improved application?",
+    "What happens immediately before users stop returning?",
+    "Have retained users been asked to pay at a specific moment of demonstrated value?",
+    "How much usage is satisfied by free tokens?"
+   ],
+   "evidence": "Medium-high",
+   "belief": "The founder initially treated growing signup counts as evidence that the product was working. When usage slowed, the default response was to add more capabilities, job matching, resume tailoring, application tracking, referral search and form filling, on the assumption that more utility would create stronger traction.",
+   "gap": "Which acquisition sources produce users who return rather than merely register; what triggers a job seeker to seek help now; which action produces a result the user notices; what users do after uploading a resume; why the 40 weekly users return; why those retained users still do not pay; whether customers want a one-time outcome, a short intensive job-search package or an ongoing subscription; and whether the economic buyer should instead be an employer, recruiter or another party."
+  },
+  {
+   "key": "reddit:1vcm3g5",
+   "fingerprint": "reddit:1vcm3g5 | india-founder-seven-day-reddit-only-acquisition-60k-views-80-visits-seven-signups-zero-paid-attention-without-active-problem-intent",
+   "kind": "founder",
+   "title": "An India-based founder generated about 60,000 Reddit views but only 80 site visits, seven signups and zero paid conversions",
+   "url": "https://www.reddit.com/r/SaaS/comments/1vcm3g5/i_marketed_my_product_with_nothing_but_reddit_for/",
+   "date": "12 August 2026",
+   "lensLabels": "Acquisition Intent, Distribution Quality, Attention-to-Visit Conversion, Customer Problem Timing, Signup Quality and Founder Assumption Lens.",
+   "questions": [
+    "Which posts and subreddits generated site visits, signups and eventual payment, not merely views?",
+    "What was the reader doing immediately before discovering the product?",
+    "Was the problem active at that moment?",
+    "What promise did each post create and did the landing page continue the same promise?",
+    "Can the founder compare broad discussion posts with replies inside threads where users explicitly describe the problem?",
+    "What happened to each of the seven signups after registration?"
+   ],
+   "evidence": "High",
+   "belief": "The founder believed Reddit could provide distribution without an existing following if useful posts reached communities containing the target audience. After the experiment, the founder interpreted the main failure as earning attention without creating a sufficient bridge or reason for readers to leave Reddit and inspect the product.",
+   "gap": "Which of the seven subreddits generated the 80 actual visitors rather than only views; what problem those visitors were trying to solve at the time; whether the seven signups came from the same high-intent contexts; what new users did after signup; why none paid; whether people already searching for the underlying solution behave differently from people consuming founder stories; and which customer trigger makes the product relevant enough to leave Reddit immediately."
+  },
+  {
+   "key": "indiehackers:a66b5fbe33",
+   "fingerprint": "indiehackers:a66b5fbe33 | seo-founder-reengages-fourteen-lapsed-two-return-zero-tool-runs-dashboard-zero-state-no-action-instrumentation-missing",
+   "kind": "founder",
+   "title": "Re-engagement brought two lapsed users back, but both stopped at a technically correct dashboard that gave them nothing actionable",
+   "url": "https://www.indiehackers.com/post/im-a-solo-founder-it-took-me-9-months-and-at-least-3-stack-rewrites-to-ship-my-saas-a66b5fbe33",
+   "date": "14 August 2026",
+   "lensLabels": "Reactivation, Activation, Empty and Zero States, Instrumentation, First Value, Evidence Discipline and Feature Prioritisation Lens.",
+   "questions": [
+    "What events need to be captured between dashboard open and first tool run?",
+    "What did each of the two returning users expect when they logged back in?",
+    "Can a zero state explain why the number is zero and prescribe one action instead of presenting an empty-looking result?",
+    "How do activated users' first screens differ from lapsed users'?",
+    "Can five users be observed completing the same first-session task before another feature is built?",
+    "What sample size is required for each funnel question?"
+   ],
+   "evidence": "Medium-high",
+   "belief": "Earlier development effort concentrated heavily on getting the product and stack working. The later evidence exposed a different risk: a workflow can function technically while the first customer-visible state still gives the user no reason or direction to continue. The founder treated this as a hypothesis rather than claiming that the screen itself had been proven as the cause of churn.",
+   "gap": "Why the 12 non-returners ignored the re-engagement message; why the two returners stopped before running a tool; what each user expected to see after login; which dashboard state predicts a tool run; what action creates first value; whether a zero result can itself create useful insight; and what minimum volume is required before funnel conclusions are trustworthy."
+  },
+  {
+   "key": "hn:48905763-comment-0xmattf",
+   "fingerprint": "hn:48905763-comment-0xmattf | niche-saas-known-business-owners-say-will-try-free-none-use-local-radius-free-outreach-also-nothing-founder-gives-up",
+   "kind": "founder",
+   "title": "Prospects said they would try a niche SaaS for free, but none actually used it and broader local outreach produced no response",
+   "url": "https://news.ycombinator.com/item?id=48905763",
+   "date": "17 August 2026",
+   "lensLabels": "Customer Discovery, Behavioural Validation, Verbal Interest vs Action, Problem Urgency, Free-Trial Adoption, Early Acquisition and Founder Assumption Lens.",
+   "questions": [
+    "What exactly did each prospect say yes to, a polite offer or a current problem?",
+    "What happened the last time the problem occurred?",
+    "What workaround is already good enough?",
+    "Can one prospect be observed attempting the first task instead of merely being sent access?",
+    "Where did each person stop between receiving the offer and using the product?",
+    "Would asking for a small commitment, data, setup time, a scheduled trial or payment, produce clearer validation than free access?"
+   ],
+   "evidence": "Medium-high",
+   "belief": "Knowing business owners in the niche, receiving positive verbal reactions and removing price by offering the product free were expected to be enough to trigger initial usage.",
+   "gap": "Whether prospects had already identified the problem, what they currently did instead, when the problem last occurred, whether they had tried to replace the workaround, what cost or risk the problem created, why they agreed verbally but did not start, and what action would have represented meaningful commitment before more product development."
+  },
+  {
+   "key": "reddit:1uzrgql",
+   "fingerprint": "reddit:1uzrgql | free-unrelated-tools-grow-to-47-percent-of-clicks-1-point-4m-impressions-zero-license-buyers-qualified-developer-searches-fall-50-percent-revenue-down-50-percent-topline-traffic-hides-collapse",
+   "kind": "founder",
+   "title": "Free tools grew traffic while hiding a 50% collapse in the searches that actually produced paying customers",
+   "url": "https://www.reddit.com/r/SaaS/comments/1uzrgql/my_revenue_dropped_50_because_the_free_tools_i/",
+   "date": "18 August 2026",
+   "lensLabels": "Acquisition Quality, Customer Intent, Vanity Metrics, SEO Strategy, Revenue Attribution, Funnel Segmentation and Founder Assumption Lens.",
+   "questions": [
+    "Which traffic segments have ever produced payment?",
+    "What happens when traffic is split by problem intent rather than page views?",
+    "Which acquisition metric moved first when revenue began declining?",
+    "Are free tools serving the same customer and job as the paid product or merely borrowing the same domain authority?",
+    "What percentage of free-tool users ever view pricing, documentation or licensing pages?",
+    "Could aggregate traffic, lead or signup growth be hiding deterioration in qualified demand?"
+   ],
+   "evidence": "Medium-high",
+   "belief": "The founder had previously added free utility tools to attract search traffic and treated growing traffic as broadly beneficial to the commercial product. Because aggregate traffic was only modestly lower, they did not initially investigate whether the composition of that traffic had changed or whether the visitors arriving through the free tools had any relationship to the paying customer problem",
+   "gap": "Which queries, pages and acquisition paths lead to commercial-license evaluation; what percentage of visitors arrive with an active developer need; whether free-tool users ever become library users later; which content attracts customers already implementing a gallery; what commercial behaviour was declining before revenue visibly fell; and which acquisition metric best predicts licence purchase rather than page traffic."
+  },
+  {
+   "key": "reddit:1v5ldrl",
+   "fingerprint": "reddit:1v5ldrl | iran-founder-builds-three-saas-five-months-before-testing-payment-rail-sanctions-block-monetisation-three-more-months-workarounds-no-launch-no-customer-validation",
+   "kind": "founder",
+   "title": "Founder spent five months building three SaaS products before discovering that their location blocked the payment rail needed to monetise them",
+   "url": "https://www.reddit.com/r/SaaS/comments/1v5ldrl/i_lost/",
+   "date": "19 August 2026",
+   "lensLabels": "Founder Feasibility, Monetisation Infrastructure, Pre-build Validation, Jurisdiction Risk, Constraint Discovery and Customer Commitment Lens.",
+   "questions": [
+    "Before building, can the founder legally and operationally charge the intended customer?",
+    "Which payment, settlement, entity and banking assumptions could make the model impossible?",
+    "What is the cheapest compliant way to test one real transaction?",
+    "Can ten target users adopt a free or manual version before further development?",
+    "Why build three products in parallel before proving one problem?",
+    "Which assumption, if false, would make every other product improvement irrelevant?"
+   ],
+   "evidence": "High",
+   "belief": "The founder treated product execution and market opportunity as the main uncertainties while implicitly assuming that a workable path to accepting international payments could be solved later. The ability to transact was therefore left as an untested business-critical assumption until after the products were built.",
+   "gap": "Which of the three ideas solves the most urgent problem; who the first reachable customer is; whether people will use a free version repeatedly; what they currently do instead; whether any buyer will make a meaningful commitment before full payment infrastructure exists; which jurisdictions and customer segments can be served compliantly; and which operational constraint could invalidate the model before more code is written."
+  },
+  {
+   "key": "reddit:1ka3ml1",
+   "fingerprint": "reddit:1ka3ml1 | fresh-graduate-india-founders-term-sheet-treated-as-near-certain-cash-four-lakh-diligence-compliance-costs-runway-collapses-debt-cycle-walk-away-before-first-client",
+   "kind": "founder",
+   "title": "Fresh-graduate founders treated a signed term sheet as near-certain cash, then spent about ₹4 lakh on prolonged diligence while runway collapsed",
+   "url": "https://id.reddit.com/r/StartUpIndia/comments/1ka3ml1/got_fcked_by_a_vc/?sort=confidence",
+   "date": "20 August 2026",
+   "lensLabels": "Founder Runway, Financing Assumptions, External Dependency, Customer Validation, Capital Discipline and Funding Process Lens.",
+   "questions": [
+    "What exactly becomes legally and financially certain at each fundraising stage, verbal interest, term sheet, diligence completion, signed definitive documents and cash received?",
+    "What runway remains if funding takes three months longer than promised?",
+    "What diligence costs can be capped, shared or delayed?",
+    "Did the founders continue talking to customers and alternative investors while one fund was processing?",
+    "What customer commitment existed before investor dependence began?",
+    "Can a paid pilot, deposit or first contract reduce the amount of survival runway exposed to fundraising?"
+   ],
+   "evidence": "Medium-high",
+   "belief": "The founders treated possession of a term sheet and repeated indications that funding was close as sufficiently strong evidence that capital would arrive soon. That assumption shaped how much time and money they were willing to spend on compliance and how long they tolerated an externally controlled process without preserving an independent survival plan.",
+   "gap": "Whether a real buyer urgently needed the product; what the first prospective client had actually committed; how long the team could operate without outside capital; whether customer revenue, paid pilots or deposits could finance validation; what milestones made venture funding necessary; and how much founder runway could safely be exposed to an investment process that had not closed."
+  },
+  {
+   "key": "reddit:1vskyls",
+   "fingerprint": "reddit:1vskyls | screen-hide-saas-months-feature-building-low-traffic-founder-switches-to-problem-led-social-content-free-user-uses-reports-setup-issue-founder-asks-will-pay-if-fixed-user-pays-9-99-first-customer",
+   "kind": "founder",
+   "title": "Founder stopped adding features, found one real user through problem-led content, and asked for a payment commitment before doing more work",
+   "url": "https://www.reddit.com/r/SaaS/comments/1vskyls/i_finally_got_my_first_paying_customers_back_in/",
+   "date": "22 August 2026",
+   "lensLabels": "Founder Feature Decisions, Behavioural Validation, Willingness-to-Pay, Problem-led Acquisition, First Customer, Customer Commitment and Evidence Discipline Lens.",
+   "questions": [
+    "Before building a requested change, what customer commitment can be obtained?",
+    "Did the customer actually encounter the problem in a real workflow or merely request a desirable feature?",
+    "What happened between seeing the problem-led content and starting the product?",
+    "How many users who encounter the same setup problem would pay for the fix?",
+    "Which earlier features were built without comparable customer evidence?",
+    "What percentage of the reported $420.58 is recurring and retained?"
+   ],
+   "evidence": "Medium-high",
+   "belief": "The founder initially behaved as if product completeness would make distribution easier later. Development felt productive and controllable, so feature work substituted for exposing the product to customer behaviour. The later experiment tested a different assumption: a specific user problem plus an explicit willingness-to-pay question could provide stronger evidence than another internally chosen",
+   "gap": "Which screen-sharing situations create enough risk or embarrassment to motivate purchase; which content themes bring actual users rather than viewers; how many free users reach the same meaningful usage event; what percentage of requested fixes convert into payment after an explicit commitment; why later customers paid; whether customers retain after the immediate fear is solved; and which features are used by paying customers versus those added before evidence existed."
+  },
+  {
+   "key": "reddit:1veyo3k",
+   "fingerprint": "reddit:1veyo3k | mumbai-parking-information-founder-borivali-west-one-month-almost-no-usage-manual-data-pretrip-habit-unproven-founder-questions-real-problem-vs-distributio",
+   "kind": "founder",
+   "title": "A Mumbai parking founder launched in one neighbourhood before proving that drivers would change their pre-trip behaviour",
+   "url": "https://www.reddit.com/r/developersIndia/comments/1veyo3k/a_month_in_barely_anyones_using_it_want_to_know/",
+   "date": "23 August 2026",
+   "lensLabels": "Problem Validation, Existing Behaviour, Habit Change, Local Marketplace Utility, Geographic Coverage, Discovery, Data Freshness and Early Adoption Lens.",
+   "questions": [
+    "Before building further coverage, can ten Mumbai drivers be observed planning a real unfamiliar trip and asked what they do about parking today?",
+    "When was the last time each person lost time, paid unexpectedly or received a fine because of parking uncertainty?",
+    "Which part mattered, legality, price, actual vacancy, walking distance or safety?",
+    "Would users check the service if the information appeared inside an existing navigation workflow but not as a separate destination?",
+    "What percentage of people who search a covered destination actually use the parking information and then return later?",
+    "Which businesses receive repeated “where can I park?” calls and would distribute or pay for reliable parking instructions?"
+   ],
+   "evidence": "Medium",
+   "belief": "The product was built around a plausible lived problem: drivers may waste time circling, risk fines or arrive without knowing whether parking is permitted. The launch implicitly assumed that this uncertainty was painful enough for drivers to create a new pre-trip habit, opening a separate parking service before travelling, and that one neighbourhood could provide enough usage to learn from. A seco",
+   "gap": "What drivers do today immediately before visiting an unfamiliar destination; whether they experience rule uncertainty, space availability or last-mile navigation as the real pain; how often the problem occurs; what a parking mistake costs in time, money or stress; which destinations create enough urgency to check beforehand; which existing behaviour a new product must replace; whether users need static rule information or live probability of finding a space; whether the buyer should be the driver or the destination business; and what successful use would cause a second visit without prompting."
+  },
+  {
+   "key": "reddit:1vw3aht",
+   "fingerprint": "reddit:1vw3aht | forty-paying-users-low-support-volume-founder-assumes-satisfaction-one-early-customer-cancels-explains-hidden-workarounds-and-workflow-mismatch",
+   "kind": "founder",
+   "title": "A founder treated low support volume from 40 paying users as satisfaction until a cancellation exposed months of hidden workflow mismatch",
+   "url": "https://www.reddit.com/r/SaasDevelopers/comments/1vw3aht/today_i_learned_something_expensive_about_early/",
+   "date": "24 August 2026",
+   "lensLabels": "Retention, Customer Health, Silent Churn Risk, Workflow Fit, Usage Signals, Customer Discovery After Purchase and Founder Assumption Lens.",
+   "questions": [
+    "What does a healthy retained customer actually do each week or month?",
+    "Which behaviours changed before this customer cancelled?",
+    "Can the product detect workaround patterns, declining use or repeated failed actions before support is contacted?",
+    "When did the customer first realise the product no longer fit, and why did they not report it then?",
+    "What would the founder learn by interviewing five retained, five recently churned and five low-usage paying customers?",
+    "Does support volume correlate with retention at all?"
+   ],
+   "evidence": "Medium",
+   "belief": "Silence from paying customers was treated as positive evidence. The founder implicitly assumed that if a customer remained subscribed and did not open support tickets, the product continued to fit the customer’s workflow.",
+   "gap": "Which workflows the 40 customers originally hired the product for; what changed for the cancelled customer; which workarounds appeared before churn; which usage patterns predict deteriorating fit; why retained users stay; whether silent customers are satisfied, stuck or already evaluating alternatives; and what cadence of qualitative check-in reveals risk without depending on support tickets."
+  },
+  {
+   "key": "reddit:1vwejv6",
+   "fingerprint": "reddit:1vwejv6 | marketplace-seller-saas-seven-years-nearly-100k-personal-spend-800-mrr-plateau-ai-speeds-feature-shipping-zero-new-customers-repeated-prospect-feature-unlock-loop-5k-audit-founder-stop",
+   "kind": "founder",
+   "title": "A founder spent nearly seven years and about 100K on marketplace software while repeated prospect-specific features failed to move the business beyond roughly 8",
+   "url": "https://www.reddit.com/r/SaaS/comments/1vwejv6/after_7_years_100k_of_my_own_money_and_800_mrr_im/",
+   "date": "25 August 2026",
+   "lensLabels": "Founder Assumptions, Feature Decisions, Distribution, Prospect Requests vs Repeatable Demand, AI-Accelerated Execution, Customer Workflow Fit, Unit Economics, Founder Runway and Stop/Pivot Decision Lens.",
+   "questions": [
+    "For every major feature built in the last two years, which named prospect requested it, what commitment existed before development, did that prospect buy afterward, and did the feature help win any unrelated customer?",
+    "Which five retained customers generate the healthiest margin and what did they do before buying?",
+    "How do small, medium and large marketplace sellers actually operate day to day, and where does the product ask them to behave differently?",
+    "What percentage of the founder's marketing spend produced activated and retained users rather than signups?",
+    "What is support and infrastructure cost per paying customer?",
+    "What evidence would justify another 5K audit before paying for it, signed commitments, deposits, pipeline value or a repeatable segment?"
+   ],
+   "evidence": "High",
+   "belief": "Whenever growth stalled, a missing feature or integration appeared to offer a plausible next unlock. A prospect would suggest they could buy if feature X existed, the founder would build it, and another requested capability would then become the next perceived blocker. Because building was the founder's strongest and most enjoyable activity, product work repeatedly felt like progress even when cus",
+   "gap": "Which current customers stay and why; what seller size and operating style best fits the product; which requested features ever converted a prospect and retained them; which requests were custom exceptions; what customers actually do when sourcing, reconciling inventory and managing receipts; what existing tools or improvised workflows are 'good enough'; what support and integration burden each account creates; and whether the product is economically viable at the number of realistically reachable customers."
+  },
+  {
+   "key": "indiehackers:2b87260749",
+   "fingerprint": "indiehackers:2b87260749 | subscription-tracking-chrome-extension-founder-uses-market-stats-and-competitor-gap-tests-landing-page-with-about-20-people-expressing-pain-zero-waitlist-signups-gmail-permission-trust-hypothesis-before-build",
+   "kind": "founder",
+   "title": "A founder used market research to justify a subscription-tracking idea, but direct outreach to people expressing the pain produced zero waitlist signups before ",
+   "url": "https://www.indiehackers.com/post/i-built-a-landing-page-to-validate-a-chrome-extension-idea-0-signups-in-week-1-roast-my-funnel-2b87260749",
+   "date": "26 August 2026",
+   "lensLabels": "Idea Validation, Problem Evidence vs Solution Evidence, Trust and Permission Friction, Behavioural Commitment, Pre-build Testing, Channel Fit and Willingness-to-Pay Lens.",
+   "questions": [
+    "Of the roughly 20 people contacted, how many saw the message, clicked and reached the landing page?",
+    "What did each person last do when they discovered an unwanted subscription?",
+    "Were they actively searching for a solution or merely complaining?",
+    "Would they join if the product required no Gmail access?",
+    "Would they grant Gmail access to an established brand but not an unknown extension?",
+    "Can the trust assumption be tested through a clickable permission mockup or five supervised prototype installs before full development?"
+   ],
+   "evidence": "High",
+   "belief": "Desk research made the opportunity look compelling: consumers reportedly waste money on unused subscriptions, many dislike sharing banking data with aggregation services, a category leader requires bank access, and the founder believed the email-scanning-plus-browser-extension combination was relatively unoccupied. The implicit assumption was that people already complaining about forgotten subscri",
+   "gap": "What recipients did after seeing the founder's reply; whether they clicked the landing page; what they currently do when they notice an unwanted subscription; whether the problem happens frequently enough to support a recurring product; which data source they trust more, email, bank, manual entry or none; what permission language stops them; what proof would make Gmail access acceptable; whether the customer wants subscription detection, cancellation help, renewal reminders or spending insight; and what level of commitment can be obtained before a functioning extension exists."
+  },
+  {
+   "key": "reddit:1vyy5b4",
+   "fingerprint": "reddit:1vyy5b4 | young-compliance-saas-founder-optimises-technical-correctness-then-finds-inconsistent-language-ambiguous-zero-unavailable-states-and-architecture-heavy-buying-path-creates-unproven-trust-debt-hypothesis-peer-healthcare-founder-credits-references-and-25-years-credibility",
+   "kind": "founder",
+   "title": "A compliance-SaaS founder realised technical correctness was not enough to make the product understandable or safe to buy",
+   "url": "https://www.reddit.com/r/SaaS/comments/1vyy5b4/i_built_a_technically_serious_b2b_saas_and/",
+   "date": "27 August 2026",
+   "lensLabels": "B2B Buyer Trust, Product Comprehension, Enterprise Purchase Risk, Founder Credibility, Pre-sales Validation, Interface State Integrity and Evidence-to-Trust Lens.",
+   "questions": [
+    "What did the last ten serious prospects need to believe before progressing?",
+    "Which claims did they independently verify?",
+    "Where did they pause, request clarification or abandon?",
+    "Can five target compliance buyers review the website and product without explanation and describe what is live, what is unavailable and what evidence supports a result?",
+    "Which trust signal changes behaviour rather than merely sounding reassuring?",
+    "How much does founder age or lack of references matter relative to product evidence?"
+   ],
+   "evidence": "Medium",
+   "belief": "The founder had treated technical correctness and sophisticated engineering as evidence that the product was becoming good and assumed that buyer trust would follow from depth and correctness. Looking at the buying journey as an outsider exposed a different problem: pages used inconsistent language, internal architecture leaked into normal interfaces, and technically accurate states could be easy ",
+   "gap": "Which exact buyer roles evaluate the product; what evidence each needs to defend the purchase internally; what terms or states they misinterpret; what questions appear repeatedly in sales calls; whether unknown-founder risk or product comprehension is the larger barrier; which trust signals, references, security posture, legal pages, auditability, transparent limitations, founder credibility or product demos, change actual buyer action; and where in the journey serious prospects stop."
+  },
+  {
+   "key": "indiehackers:y1bbTHkoRJmfJzMEmPsT",
+   "fingerprint": "indiehackers:y1bbTHkoRJmfJzMEmPsT | social-scheduler-founder-skips-formal-demand-validation-because-paid-competitors-prove-category-builds-in-months-keeps-job-seo-drives-reported-customers-price-increase-coincides-with-more-revenue-and-buyers-reports-5-point-4k-euro-mrr",
+   "kind": "founder",
+   "title": "A founder entered a saturated market without formal demand validation, but used existing paid alternatives, personal workflow pain and SEO intent as the demand ",
+   "url": "https://www.indiehackers.com/post/tech/carving-out-a-6-3k-mrr-niche-in-a-saturated-market-y1bbTHkoRJmfJzMEmPsT",
+   "date": "28 August 2026",
+   "lensLabels": "Existing-Market Validation, Competitive Switching, Search Intent, Pricing, Founder-Market Fit, Distribution, Customer Acquisition Quality and Evidence Threshold Lens.",
+   "questions": [
+    "When is competitor revenue sufficient evidence to begin building, and what still must be tested about the founder’s specific offer?",
+    "Which competitor or workaround did each of the first ten paying customers use before switching?",
+    "What exact search intent brought them in?",
+    "What evidence shows UX, speed or media-posting reliability actually caused purchase?",
+    "Did the price increase improve visitor-to-paid conversion, retained revenue or merely average revenue per customer?",
+    "Which launch channels produced customers versus attention?"
+   ],
+   "evidence": "Medium-high",
+   "belief": "The founder explicitly said they did not believe formal market validation was necessary because competitors were already making money and the founder personally experienced the problem. The working assumption was that demonstrated category spend plus a dissatisfied user experience created enough demand evidence to justify building, provided the new product could be meaningfully better on speed, UX",
+   "gap": "Which competitor customers switch from and why; what search query or triggering event precedes purchase; whether the customer primarily values price, speed, UX or posting reliability; what percentage of SEO visitors become paying users; why customers retain; whether higher prices filter for stronger intent or increase trust; and what proportion of support conversations reveal repeated unmet jobs that incumbents handle poorly."
+  },
+  {
+   "key": "reddit:1w1e15h",
+   "fingerprint": "reddit:1w1e15h | two-saas-attempts-first-small-business-verbal-problem-interest-no-payment-shutdown-second-proven-government-tender-market-hundreds-registrations-no-return-weekly-visitors-500-to-under-50-missing-session-data-cheaper-only-feedbac",
+   "kind": "founder",
+   "title": "Two SaaS attempts exposed two different false-positive validation signals: verbal problem interest without payment, then registrations without repeat use",
+   "url": "https://www.reddit.com/r/SaaS/comments/1w1e15h/how_do_you_actually_build_a_saas/",
+   "date": "30 August 2026",
+   "lensLabels": "Willingness-to-Pay, Existing-Market Validation, Competitive Switching, Activation, Retention, Pricing, Instrumentation, Feature Decisions and Founder Assumption Lens.",
+   "questions": [
+    "For the first SaaS, what action beyond saying “I want this solved” was requested before building?",
+    "For the second, which registrants already paid an incumbent and what would make them switch this month?",
+    "What percentage completed the core tender-search action and found something useful?",
+    "Which first-session behaviours distinguish returners from vanishers?",
+    "Can ten vanished users be interviewed about the exact task they attempted rather than asked whether they liked the product?",
+    "Is lower price producing commitment or merely positive feedback?"
+   ],
+   "evidence": "High",
+   "belief": "After learning that stated problem interest did not equal willingness to pay, the founders treated existing competitor demand and a strong initial registration spike as better evidence. The second product implicitly assumed that matching most incumbent functionality at a lower or cleaner price could earn a durable slice of an established market.",
+   "gap": "Which registered users had previously paid for tender software; what they expected in the first session; what first useful tender result occurred; why anybody returned; what exact incumbent behaviour they would switch from; whether “cheaper without unwanted AI” is strong enough to trigger a switch; what segment uses tender search frequently enough to retain; and what the vanished users did immediately before leaving."
+  },
+  {
+   "key": "reddit:1w3d8y7",
+   "fingerprint": "reddit:1w3d8y7 | cv-job-search-saas-8k-users-700-ever-paid-350-active-payers-finite-job-to-be-done-churn-founder-personal-brand-acquisition-engine-paid-ads-uneconomic",
+   "kind": "founder",
+   "title": "A successful job-search product may churn when the customer succeeds, leaving acquisition as the real scaling constraint",
+   "url": "https://www.reddit.com/r/advancedentrepreneur/comments/1w3d8y7/8_months_in_8k_users_350_active_paying_subs_how/",
+   "date": "",
+   "lensLabels": "Anticipate → Refine → Remember. Anticipate the natural end of the customer’s need; refine pricing and acquisition around finite customer lifetime; remember exit reasons and successful outcomes so churn can be separated into healthy completion versus product failure.",
+   "questions": [
+    "What percentage of cancellations follow a confirmed job outcome versus abandonment or dissatisfaction?",
+    "What is median paid lifetime by acquisition source?",
+    "What is contribution margin per acquired customer after channel cost?",
+    "Does a customer who finds a job refer others at a higher rate?",
+    "Which founder-led content themes create paid users who retain?",
+    "Would outcome-linked, credit-based, or fixed-duration pricing fit the customer job better than indefinite subscription?"
+   ],
+   "evidence": "Medium-high",
+   "belief": "The founder believes high churn is partly structural because customers leave after finding a job. They also believe the product itself is low-maintenance and sustainable, while acquisition has become the main scaling problem.",
+   "gap": "Why customers actually cancel; how long successful and unsuccessful customers remain paid; which acquisition cohorts retain best; whether successful customer outcomes produce referrals; whether subscription, credits, one-time packs, or another model better matches a temporary need; and which part of founder-led content creates the conversion advantage."
+  },
+  {
+   "key": "reddit:1vxz7mw",
+   "fingerprint": "reddit:1vxz7mw | b2b-saas-customers-prefer-higher-monthly-price-over-discounted-annual-because-optionality-and-uncertain-future-need-outweigh-savings",
+   "kind": "founder",
+   "title": "Customers preferred paying more monthly because optionality mattered more than the annual discount",
+   "url": "https://www.reddit.com/r/SaaS/comments/1vxz7mw/why_do_customers_fight_so_hard_against_annual/",
+   "date": "",
+   "lensLabels": "Pricing; willingness to pay; commitment risk; retention; contract design; customer discovery.",
+   "questions": [
+    "What future uncertainty makes the customer value optionality more than the annual discount?",
+    "Has the customer already experienced enough value to rationally commit for a year?",
+    "Is resistance to annual driven by contract duration, upfront cash, cancellation friction, seat uncertainty, or distrust of future product value?",
+    "What discount actually changes behaviour rather than merely sounding attractive?",
+    "Do annual plans improve true retention, or only postpone when churn becomes observable?",
+    "What usage, seat contraction or outcome signals deteriorate before an annual renewal is lost?"
+   ],
+   "evidence": "Medium-high",
+   "belief": "If the annual plan is cheaper overall, resistance should mainly be about price or paying a large amount upfront.",
+   "gap": "The founder still needs observed conversion and retention data by plan, plus past purchasing behaviour from the actual ICP. The key unanswered question is not “Do customers like monthly?” but “What uncertainty are they paying a premium to preserve the right to exit from?”"
+  },
+  {
+   "key": "reddit:1w3e1g3",
+   "fingerprint": "reddit:1w3e1g3 | shopify-app-founder-makes-product-free-to-accelerate-feedback-reaches-1400-installs-15-reviews-paid-plans-still-unlaunched-free-adoption-skews-starter-merchants-many-stores-close-or-uninstall",
+   "kind": "founder",
+   "title": "Making a Shopify app free solved the founder’s feedback shortage, but left willingness to pay and customer quality unresolved",
+   "url": "https://www.reddit.com/r/shopifyDev/comments/1w3e1g3/being_a_shopify_app_founder_is_brutal/",
+   "date": "",
+   "lensLabels": "Validation ladder; willingness to pay; pricing as a signal; ICP maturity; activation effort; churn decomposition; marketplace dependence; feature prioritisation.",
+   "questions": [
+    "Which free cohort segments convert when paid plans launch?",
+    "Can uninstall be segmented into store closure, setup failure, product dissatisfaction and successful one-off use?",
+    "What is time-to-first customised product?",
+    "How much setup is required by store size?",
+    "Do reviews predict retention or payment?",
+    "How does feedback differ between free users and paying users?"
+   ],
+   "evidence": "Medium-high",
+   "belief": "Earlier, the founder made the app free because installs were too sparse to generate useful feedback and paid acquisition had been too expensive. Free access was treated as a way to increase learning speed and accumulate enough merchant usage and reviews to improve the product.",
+   "gap": "Which free users are healthy, durable merchants; which stores activate deeply; why merchants uninstall; how much setup is required before first value; whether mature stores behave differently from starter stores; which free-user requests correlate with future payment; and what conversion occurs when paid plans launch."
+  },
+  {
+   "key": "reddit:1vgwt01",
+   "fingerprint": "reddit:1vgwt01 | fingerprint: LinkedIn SaaS → 100+ lifetime-deal customers and $12K+ cumulative revenue → founder reduces maintenance → zero current MRR and DAU near zero → one-time purchase evidence did not establish recurring value or ongoing use.",
+   "kind": "founder",
+   "title": "Historical customer count and revenue did not equal current recurring demand",
+   "url": "https://www.reddit.com/r/SaaS/comments/1vgwt01/looking_for_someone_to_acquire_and_run_my_saas/",
+   "date": "",
+   "lensLabels": "Remember / longitudinal value; Understand / what payment validates; Anticipate / retention and pricing risk; Refine / engagement instrumentation.",
+   "questions": [
+    "What did the one-time purchase actually validate?",
+    "How many buyers activated within 7 and 30 days?",
+    "How many remained active at 30, 90 and 180 days?",
+    "Did usage decline before maintenance changed?",
+    "Have customers ever been asked to pay again?",
+    "Which customers still return without prompting?"
+   ],
+   "evidence": "Unrated",
+   "belief": "Historical buyers, feature completeness, domain authority and official API access were treated as evidence of product value.",
+   "gap": "Activation, 30/90/180-day retention, reasons for inactivity, usage before versus after maintenance declined, recurring willingness to pay, and which features created repeat value."
+  },
+  {
+   "key": "reddit:1w8e46o",
+   "fingerprint": "reddit:1w8e46o | self-built-niche-tool-becomes-saas-expert-centric-fifty-control-interface-two-minute-visits-founder-simplifies-onboarding-navigation-and-progressive-disclosure-session-time-reported-near-fifty-minutes-payments-begin",
+   "kind": "founder",
+   "title": "A self-built expert interface attracted visitors but lost newcomers before they understood how to use it",
+   "url": "https://www.reddit.com/r/SaaS/comments/1w8e46o/i_spent_3_months_making_my_saas_dumber_it_made_me/",
+   "date": "6 September 2026",
+   "lensLabels": "First-Time User Comprehension, Expert-Founder Bias, Onboarding, Progressive Disclosure, Activation, Time-to-Value, Product Simplification, Instrumentation and Founder Assumption Lens.",
+   "questions": [
+    "Can five target newcomers use the product without founder explanation and describe what they think it does within 30 seconds?",
+    "What exact event should define first value rather than session duration?",
+    "What did two-minute abandoners attempt before leaving?",
+    "Which controls are essential before first value and which can appear only after the customer demonstrates need?",
+    "Did the users who stayed 50 minutes complete more successful tasks, return later and pay?",
+    "Which intervention, navigation, contextual explanation, tutorial mode, removed controls or video, changed the activation rate?"
+   ],
+   "evidence": "Medium-high",
+   "belief": "Because the founder personally understood the domain and every control, the original product implicitly assumed that new customers would either understand the same concepts or be willing to learn them before receiving value. The founder later framed the problem as people being “lazy” and complexity killing curiosity. QUARR should not accept the laziness explanation as established customer evidence",
+   "gap": "Which controls first-time users genuinely need; what the customer expected to accomplish when they arrived; what happened in the first two minutes before abandonment; which first action predicts eventual payment and retention; which expert concepts can be deferred until after first value; whether a 50-minute session represents successful work or excessive effort; and which of the bundled simplification changes actually altered customer behaviour."
+  },
+  {
+   "key": "reddit:1ujyxb2",
+   "fingerprint": "reddit:1ujyxb2 | india-startup-18-months-12-customers-3-enterprise-seasonality-small-budgets-integration-bottleneck-runway-shutdown",
+   "kind": "founder",
+   "title": "12 customers and 3 enterprise contracts still could not overcome weak market economics and integration drag",
+   "url": "https://www.reddit.com/r/StartUpIndia/comments/1ujyxb2/winding_down_my_startup_after_15_years/",
+   "date": "",
+   "lensLabels": "Customer Discovery; Willingness to Pay; Unit Economics; Enterprise Adoption; Integration Debt; Runway; Market Structure.",
+   "questions": [
+    "What did the 12 customers actually pay and renew?",
+    "Which integrations were table stakes versus custom requests?",
+    "How many qualified prospects were lost specifically on budget, timing or integration requirements?",
+    "Did enterprise contracts produce better economics or simply larger implementation obligations?",
+    "Was seasonality understood before the build?",
+    "What evidence would have justified narrowing the ICP, raising price, standardising integrations, or exiting earlier?"
+   ],
+   "evidence": "Unrated",
+   "belief": "Winning real customers and enterprise contracts would provide enough signal and momentum to keep expanding market share over time.",
+   "gap": "Revenue and gross margin by customer; sales cycle and CAC; implementation/integration hours per account; seasonality by month/quarter; renewal and expansion behaviour; budget ceilings; concentration in the three enterprise accounts; and the precise point at which each additional customer became uneconomic or too slow to acquire."
+  },
+  {
+   "key": "reddit:1wam17b",
+   "fingerprint": "reddit:1wam17b | two-month-saas-117-signups-eight-active-7-99-mrr-negative-economics-primary-users-friends-family-founder-assisted-setup-free-pro-and-feedback-emails-produce-little-response-independent-activation-unproven",
+   "kind": "founder",
+   "title": "117 signups looked like traction, but independent activation was closer to eight users and even those were largely founder-assisted",
+   "url": "https://www.reddit.com/r/SaaS/comments/1wam17b/2_months_in_117_users_26_net_profit_low/",
+   "date": "9 September 2026",
+   "lensLabels": "Signup Quality; Founder-Assisted Activation Bias; Onboarding; First Value; Behavioural Validation; Feedback Quality; Retention; Willingness to Pay; Early Unit Economics.",
+   "questions": [
+    "Of 117 registrations, how many completed onboarding without founder help?",
+    "What exact actions did the eight active users complete, and how many were personally assisted?",
+    "Can five target strangers be observed using a fresh account with no explanation?",
+    "Where does each person stop?",
+    "What did inactive registrants expect when they signed up?",
+    "Which first action predicts a second session?"
+   ],
+   "evidence": "High",
+   "belief": "The headline signup count initially felt encouraging, and the founder framed the immediate challenge as improving retention and activation. The discussion later revealed that the apparent active-user base itself was not an independent activation sample: the people using the product most were friends and the founder’s father, and the founder had personally helped them set it up.",
+   "gap": "Who the 117 registrants are; what triggered signup; how many are genuine target customers; where unaided users stop; what first action creates noticeable value; whether the eight active users would remain active without founder assistance; why registrants ignore feedback emails; whether anyone will pay after reaching first value; and whether a stranger can activate from a fresh account without explanation."
+  },
+  {
+   "key": "reddit:1ukcwix",
+   "fingerprint": "reddit:1ukcwix | indian-startup-six-years-covid-tailwind-demand-collapse-2023-domain-pivot-eighty-percent-channel-shutdown-rebuild-40-crore-arr-first-profitable-month-after-40-crore-burn-temporary-demand-and-channel-concentration-mask-durability",
+   "kind": "founder",
+   "title": "A temporary demand tailwind and an 80%-concentrated channel made growth look durable before both disappeared",
+   "url": "https://www.reddit.com/r/StartUpIndia/comments/1ukcwix/startup_finally_turning_profitable/",
+   "date": "10 September 2026",
+   "lensLabels": "Market Timing; Temporary Tailwinds; Willingness to Pay; Channel Concentration; Acquisition Resilience; Pivot Decisions; Revenue Quality; Unit Economics; Founder Runway; Evidence Across Regime Changes.",
+   "questions": [
+    "What did demand look like before, during and after the external tailwind?",
+    "Which customer behaviours survived when the environment normalised?",
+    "What percentage of acquisition, revenue and retained customers depends on the largest channel?",
+    "If the largest channel disappeared tomorrow, how many customers would still arrive and at what CAC?",
+    "What changed between the original edtech model and the 2023 pivot, customer, problem, price, frequency or distribution?",
+    "Which small cohort first demonstrated that customers would pay enough for the new model to survive?"
+   ],
+   "evidence": "Medium-high",
+   "belief": "The founder’s retrospective account suggests two different growth signals were easier to over-read than they appeared at the time. First, extraordinary COVID-era demand could look like durable product/market demand even though the baseline later collapsed. Second, strong volume through one dominant channel could look like repeatable growth even though the business remained highly dependent on an e",
+   "gap": "Which customers drove COVID-era growth; what their behaviour looked like after normalisation; what the 2023 pivot changed about customer, job-to-be-done and willingness to pay; which channel produced 80% of volume and why; whether customers acquired through that channel retained differently; what replacement channels now drive ARR; how gross margin and CAC changed; how much of the ₹40 crore burn funded learning versus subsidised structurally weak economics; and what evidence finally demonstrated a durable market rather than another temporary growth regime."
+  },
+  {
+   "key": "indiehackers:JhX6p14De0nagI0j1Xg1",
+   "fingerprint": "indiehackers:JhX6p14De0nagI0j1Xg1 | workout-app-built-without-validation-feature-requests-and-founder-interest-create-unclear-product-purpose-500k-downloads-50k-mau-near-5k-mrr-most-users-free-growth-helped-by-app-store-featuring-founder-still-freelances",
+   "kind": "founder",
+   "title": "Four failed interest-led products changed the founder’s validation method, not just the product",
+   "url": "https://www.indiehackers.com/post/tech/building-a-5k-mrr-app-while-freelancing-to-keep-the-lights-on-JhX6p14De0nagI0j1Xg1",
+   "date": "12 September 2026",
+   "lensLabels": "Question, what job are customers hiring the app to do? Understand, separate usage scale from payment and outcome evidence. Anticipate, identify whether platform-driven acquisition changes user quality. Refine, use product purpose and payer behaviour to decide which features and paywall boundaries de",
+   "questions": [
+    "What percentage of the 50,000 monthly active users pay, and how does that change by cohort?",
+    "Which actions in the first week predict subscription or long-term retention?",
+    "What proportion of revenue is subscription versus lifetime purchase?",
+    "Which user-requested features actually increased retained usage or payment?",
+    "How did metrics change after the product purpose was clarified?",
+    "What is acquisition volume and conversion during months with versus without App Store featuring?"
+   ],
+   "evidence": "High",
+   "belief": "Early product decisions were guided largely by what the founder thought sounded interesting or by individual user feature requests. The founder later concluded that this created an app with many unrelated features and no clear identity. A second implicit assumption was that a compelling free product plus optional Pro membership could be balanced over time; six years later, the founder says most us",
+   "gap": "Which customer segment actually pays and retains? What is free-to-paid conversion by acquisition source? How many monthly active users achieve the core “workout coach” outcome rather than merely view workout history? Which feature requests came from retained payers versus free users? Did the clearer product purpose improve activation, engagement, conversion or churn? How dependent is ongoing acquisition on Apple editorial placement, and what happens during periods without featuring? At what MRR/runway threshold can contracting stop safely?"
+  },
+  {
+   "key": "indiehackers:yr495WSeWzC6A4SLoRK8",
+   "fingerprint": "indiehackers:yr495WSeWzC6A4SLoRK8 | former-vc-launches-multiple-narrow-health-apps-customers-pay-recurring-subscriptions-portfolio-reaches-150k-arr-pricing-paywalls-tested-by-segment-60-dollar-creator-campaign-150-users-founders-use-paid-behavior-to-consolidate-toward-tempo",
+   "kind": "founder",
+   "title": "Small paid apps became market probes before the founder consolidated toward a broader health product",
+   "url": "https://www.indiehackers.com/post/tech/quitting-a-career-in-venture-capital-to-build-a-150k-arr-portfolio-of-health-apps-yr495WSeWzC6A4SLoRK8",
+   "date": "13 September 2026",
+   "lensLabels": "Idea Validation; Willingness to Pay; Pricing and Paywall Testing; Distribution Experiments; Acquisition Quality; Retention; Portfolio Learning; Product Consolidation.",
+   "questions": [
+    "Which customer action justified building each new app?",
+    "What percentage of each app’s users pay, remain paid at 30/90/180 days and upgrade annually?",
+    "Which paywall variants improve retained revenue rather than only checkout conversion?",
+    "For the $60 creator test, how many of the 150 new users activated, paid and remained after one or three months?",
+    "What is CAC to a retained payer across creators, organic content and App Store discovery?",
+    "Is the broader Tempo hypothesis supported by actual multi-app usage, interviews, pre-orders or migration behavior?"
+   ],
+   "evidence": "Medium-high",
+   "belief": "The founder initially believed focused health habits could support useful standalone products. As customers paid for several narrow apps, the founder formed a broader hypothesis that users would prefer one product that understands multiple health signals and helps guide daily decisions. The founder also came to believe that distribution should be treated as an experimental product discipline rathe",
+   "gap": "Which app and customer segment contribute most of the $150K ARR; paid conversion and retained revenue by acquisition source; whether hard paywalls improve retained revenue or merely initial conversion; how many creator-acquired users become paying customers; what behavior predicts annual-plan adoption and churn; whether customers use multiple portfolio apps; and what direct evidence shows customers want consolidation into Tempo rather than continued focused tools."
+  },
+  {
+   "key": "reddit:1wfkonp",
+   "fingerprint": "reddit:1wfkonp | founder-launches-march-2026-no-paid-marketing-reaches-2k-mrr-under-two-months-underestimates-churn-retention-mrr-falls-to-zero-founder-returns-to-job-client-search",
+   "kind": "founder",
+   "title": "Fast acquisition reached $2K MRR, but retention failure drove the business back to zero and forced the founder to seek income again",
+   "url": "https://www.reddit.com/r/SaaS/comments/1wfkonp/2k_mrr_to_0_dont_underestimate_retention/",
+   "date": "14 September 2026",
+   "lensLabels": "Question, What proof does a revenue milestone actually provide? Understand, Separate acquisition from retention by cohort. Anticipate, Model churn before treating MRR as stable income. Refine, Identify activation and recurring-value behaviours that predict staying. Remember, Preserve cancellation re",
+   "questions": [
+    "How many customers produced the first $2K MRR, and how concentrated was revenue?",
+    "What were 30/60/90-day logo and revenue retention by acquisition cohort?",
+    "Which actions did retained customers complete that churned customers did not?",
+    "Why did customers cancel, and did the founder ask before or after churn accelerated?",
+    "Was the product naturally recurring or did customers finish a one-time job and leave?",
+    "How much new MRR per month was required simply to replace churn?"
+   ],
+   "evidence": "Medium-high",
+   "belief": "The founder interpreted the fast climb to $2K MRR as a strong sign that the business had worked. In retrospect, they say they underestimated churn and retention.",
+   "gap": "The founder appears to have measured the peak recurring-revenue level more clearly than the durability of the revenue underneath it. QUARR would need cohort retention, activation-to-retention relationships, cancellation reasons, revenue churn, customer concentration, acquisition velocity and founder runway to understand whether the problem was product value, customer selection, onboarding, pricing, or simply churn outrunning replacement acquisition."
+  },
+  {
+   "key": "reddit:1wgglco",
+   "fingerprint": "reddit:1wgglco | french-fiction-writing-saas-2-point-2k-mrr-118-active-2300-registered-nine-percent-paid-twenty-percent-monthly-churn-instagram-attracts-blank-page-writers-but-existing-manuscript-importers-get-value-faster-and-churn-less-acquisition-message-may-select-wrong-retention-cohort",
+   "kind": "founder",
+   "title": "$2.2K MRR exposed that the founder’s acquisition message was attracting the customer cohort most likely to churn",
+   "url": "https://www.reddit.com/r/SaaS/comments/1wgglco/22k_mrr_but_20_monthly_churn_is_eating_everything/",
+   "date": "15 September 2026",
+   "lensLabels": "Acquisition-to-Retention Fit; Positioning; Activation; Customer Job State; Churn Decomposition; AI Trust; Pricing; Subscription Fit; Cohort Quality.",
+   "questions": [
+    "Of the monthly churn, how many customers had an active manuscript, completed one, shelved one or never activated?",
+    "What are 30/60/90-day retention rates for manuscript importers versus blank-page users?",
+    "Which Instagram messages produce each cohort?",
+    "Does using the consistency checker or continuity tools predict retention better than using AI generation?",
+    "How much churn is involuntary?",
+    "What did retained customers use before this product?"
+   ],
+   "evidence": "High",
+   "belief": "The founder initially built growth around a broad fiction-writer audience and marketing that speaks heavily to blank-page writers. The founder now suspects the more defensible value is manuscript structure, consistency, character and timeline continuity rather than AI text generation. They also recognise that customers who import an existing manuscript appear to get value faster and churn less tha",
+   "gap": "What percentage of cancellations represent completed jobs versus failed outcomes; churn and retention by imported-manuscript versus blank-page cohort; which acquisition creative attracts each cohort; whether customers who use consistency/continuity features retain materially longer; payment-failure share; confirmed writing outcomes; and whether pause or project-based pricing preserves customers who temporarily stop writing."
+  },
+  {
+   "key": "reddit:1wg35ss",
+   "fingerprint": "reddit:1wg35ss | accelerator-funded-solution-first-team-builds-before-customer-discovery-social-reactions-and-shares-but-no-signups-then-switches-to-problem-interviews",
+   "kind": "founder",
+   "title": "Accelerator-backed team launched a solution-first product, received social reactions but no signups, then reversed its discovery process",
+   "url": "https://www.reddit.com/r/startups/comments/1wg35ss/i_will_not_promote/",
+   "date": "18 September 2026",
+   "lensLabels": "Idea Validation, Evidence Hierarchy, Customer Discovery, Launch Conversion and Founder Assumption Lens.",
+   "questions": [
+    "What evidence existed before accelerator entry and before development?",
+    "Which customer behaviour was mistaken for validation?",
+    "Who saw the launch and what percentage reached the signup step?",
+    "What current workaround does the intended customer use?",
+    "What commitment, interview time, data access, pilot, deposit or payment, can be tested before more product work?",
+    "Which discovery findings would cause the team to narrow, change or abandon the current solution?"
+   ],
+   "evidence": "Medium-high",
+   "belief": "The team implicitly treated having an idea, accelerator acceptance, funding and a finished product as sufficient basis to launch, rather than requiring behavioural evidence that a defined customer had an urgent problem and would act on the proposed solution.",
+   "gap": "Who exactly experienced the problem, what they currently did instead, how costly or frequent the problem was, whether the launch audience matched the intended buyer, what action would have counted as pre-build commitment, and why people were willing to react/share but not register."
+  },
+  {
+   "key": "indiehackers:1d819b9463",
+   "fingerprint": "indiehackers:1d819b9463 | chrome-extension-five-day-free-limit-causes-install-uninstall-loop-founder-assumes-audience-problem-extends-free-premium-to-90-days-removes-public-pricing-page-reports-80-percent-new-user-retention-usage-triples-ranking-improves-first-79-lifetime-sale-before-expiry",
+   "kind": "founder",
+   "title": "A five-day trial converted an emerging habit into churn; extending free use to 90 days reversed retention and produced the first sale",
+   "url": "https://www.indiehackers.com/post/my-chrome-extension-made-its-first-sale-after-i-removed-the-pricing-page-1d819b9463",
+   "date": "20 September 2026",
+   "lensLabels": "Trial Design; Time-to-Value; Habit Formation; Monetisation Timing; Marketplace Distribution; Retention; Willingness to Pay; Activation; Founder Assumption Lens.",
+   "questions": [
+    "What percentage of users in the five-day and 90-day cohorts remain active at identical day-5, day-14, day-30 and day-90 checkpoints?",
+    "Which first-week actions predict later retention?",
+    "How many users uninstall specifically when access changes?",
+    "What did the first paying customer do, use and experience immediately before paying while free access was still available?",
+    "Does a softer usage limit or feature-based paywall outperform a time wall?",
+    "What is the conversion rate once 90-day users reach expiry?"
+   ],
+   "evidence": "Medium-high",
+   "belief": "The founder assumed a short trial would force an earlier purchase decision and that weak growth was mainly an audience/distribution problem. In retrospect, the five-day wall appeared before many users had incorporated the product into their routine, turning an attempted conversion mechanism into an uninstall trigger.",
+   "gap": "What behaviour makes the extension become part of a user’s routine; how many days or sessions are needed before first meaningful value; what the first buyer did immediately before purchasing; whether retained users would still stay after day 90; which acquisition sources produce durable users; whether a lifetime plan fits the product better than recurring pricing; and whether the improved store ranking is a consequence of lower uninstall rates or a separate effect."
+  },
+  {
+   "key": "reddit:1wm8e0b",
+   "fingerprint": "reddit:1wm8e0b | viral-founder-subreddit-post-410k-views-995-upvotes-300-comments-eight-followers-two-product-signups-audience-attention-does-not-conver",
+   "kind": "founder",
+   "title": "410,000 founder-community views produced only two product signups",
+   "url": "https://www.reddit.com/r/SaaS/comments/1wm8e0b/i_accidentally_made_the_2_post_of_the_year_here/",
+   "date": "22 September 2026",
+   "lensLabels": "Distribution, Audience Quality, Acquisition Funnel and Validation-Signal Lens.",
+   "questions": [
+    "Which audience actually contains the buyer?",
+    "What percentage of attention reaches the product page?",
+    "What action follows signup?",
+    "Are founders measuring qualified customer behaviour or community engagement?",
+    "What is the smallest higher-cost behaviour that would demonstrate real demand?"
+   ],
+   "evidence": "High",
+   "belief": "Large attention inside founder communities can feel like distribution and can be mistaken for meaningful product reach.",
+   "gap": "Who among the viewers matched the product’s ICP, how many visited the profile or product page, what the two signups did next, and whether a problem-specific post aimed at target customers would behave differently."
+  },
+  {
+   "key": "indiehackers:d466d9ccf8:comment-rethreads-price-49-to-150",
+   "fingerprint": "indiehackers:d466d9ccf8:comment-rethreads-price-49-to-150 | peer-founder-raises-saas-price-from-49-eur-to-150-eur-two-users-leave-98-percent-reported-retained-higher-usage-among-stayers",
+   "kind": "founder",
+   "title": "A roughly 3× price increase reportedly lost only two customers while 98% stayed",
+   "url": "https://www.indiehackers.com/post/still-scared-to-raise-prices-or-did-you-already-do-it-and-survive-d466d9ccf8",
+   "date": "25 September 2026",
+   "lensLabels": "Pricing; Willingness to Pay; Churn; Vocal-Minority Bias; Retention; Founder Fear/Assumption Lens.",
+   "questions": [
+    "What did founders predict would happen before the increase?",
+    "What percentage actually churned at 7, 30 and 90 days?",
+    "How much revenue was gained after losses?",
+    "Which customers complained versus silently stayed or left?",
+    "Did usage genuinely increase within matched retained cohorts?",
+    "What customer value or switching cost made €150 acceptable?"
+   ],
+   "evidence": "Medium",
+   "belief": "The comment directly addresses the common founder fear that a large price increase will trigger substantial customer loss and angry reactions.",
+   "gap": "How many customers were exposed, which plans/segments they occupied, whether they were grandfathered, how long 98% retention was measured, what happened to MRR/ARR and net revenue retention, why the two customers left, and whether higher usage preceded or followed the price increase."
+  }
+ ]
+}

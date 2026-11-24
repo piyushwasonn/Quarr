@@ -10,6 +10,7 @@ Product decisions live in Notion, "QUARR: Source of Truth" (pages 01–07 and th
 - AI (engine/write.ts) rewrites wording only; drafts that add numbers not in the evidence are discarded.
 - Nothing unreviewed is named to a founder unless `isInstantSafe` allows it (engine/summary.ts). Re-checks count, but never name, findings the founder hasn't been shown.
 - The crawler never pays, logs in, enters an OTP or pincode, or submits forms beyond add-to-cart.
+- The framework (engine/framework: QIM, journey lenses, research corpus, reasoning rules) explains findings and frames what is Unknown; it never creates a finding. Every check maps to one lens. "Why buyers care" cites a story only when it is plainly the same situation, and its note carries no numbers. Thinking-story rules stay hypotheses until Bench reviews support them. Regenerate the corpus with scripts/corpus.py.
 - No em dashes in anything a founder sees (site, emails, findings). AI drafts and Bench edits pass through `plainPunctuation` (lib/punctuation.ts); tests/punctuation.test.ts fails if one appears in copy.
 - Brand (docs/brand/QUARR_Fonts_and_Usage.txt, Notion 08): never retype "QUARR" to stand in for the logo; use `BrandLogo` / `BrandIcon` (public/brand/). The full logo carries the strapline, so small placements use the icon. Black artwork goes on light surfaces only.
 

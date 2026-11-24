@@ -1,3 +1,4 @@
+import { lensNameFor, whyBuyersCare } from "@/engine/framework";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AccountHeader } from "@/components/AccountHeader";
@@ -121,7 +122,7 @@ function FullView({ run, reviewed, pageFor }: { run: RunWithPages; reviewed: boo
         <div className="row" style={{ gap: 8 }}>{sum.byLens.map((l) => <span key={l.lens} className="chip fail status">{l.name}: {l.n} possible {l.n === 1 ? "problem" : "problems"}</span>)}</div>
       ) : null}
       {!reviewed && sum?.findings.length
-        ? sum.findings.map((f, i) => <FindingCard key={f.checkId} index={i + 1} {...f} page={pageFor(f.citation?.pageKind)} />)
+        ? sum.findings.map((f, i) => <FindingCard key={f.checkId} index={i + 1} {...f} page={pageFor(f.citation?.pageKind)} why={whyBuyersCare(f.checkId)} lensName={lensNameFor(f.checkId)} />)
         : null}
       {sum ? <p className="small muted">{sum.passed} checks passed.</p> : null}
     </div>

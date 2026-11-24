@@ -17,6 +17,7 @@ export default async function BenchLayout({ children }: { children: React.ReactN
             <Link href="/bench">Queue</Link>
             <Link href="/bench/orders">Orders</Link>
             <Link href="/bench/checks">Checks</Link>
+            <Link href="/bench/framework">Framework</Link>
             <Link href="/bench/new">New runs</Link>
             <Link href="/bench/removals">Removals</Link>
             <Link href="/bench/health">Health</Link>

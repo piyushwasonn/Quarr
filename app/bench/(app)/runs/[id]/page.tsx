@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { markFunnel, rejectRun, requeueRun } from "@/app/bench/actions";
 import { ReviewWorkspace, type WFinding } from "@/components/bench/ReviewWorkspace";
 import { CHECKS_BY_ID } from "@/engine/checks";
+import { coverage } from "@/engine/framework";
 import { checkModes } from "@/engine/promotion";
 import type { Citation } from "@/engine/types";
 import { appUrl } from "@/lib/email";
@@ -78,6 +79,16 @@ export default async function RunReview({ params }: { params: Promise<{ id: stri
         <p className="alert">Crawl failed: <strong>{run.failureCode}</strong>, {run.failureDetail}. {run.source === "PUBLIC" ? "The founder was emailed and offered a manual First Look." : ""}</p>
       ) : null}
       {run.notes ? <p className="alert">{run.notes}</p> : null}
+      <details className="card card-pad">
+        <summary className="small"><strong>Framework coverage</strong>: what this walk could and couldn&apos;t answer</summary>
+        <ul className="list-clean small" style={{ marginTop: 8 }}>
+          {coverage(run.results).map((c) => (
+            <li key={c.lens.id} style={{ marginBottom: 6 }}>
+              <strong>{c.lens.name}</strong>: {c.status === "unknown" ? <span className="muted">Unknown. Ask: {c.lens.founderQuestions.join(" ")}</span> : `${c.failed} fail, ${c.passed} pass, ${c.unseen} not seen`}
+            </li>
+          ))}
+        </ul>
+      </details>
 
       {published ? (
         <div className="card card-pad stack" style={{ boxShadow: "none" }}>

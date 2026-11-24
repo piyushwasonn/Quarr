@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { BrandLogo, SiteFooter, SiteHeader } from "@/components/chrome";
 import { FindingCard, pageLabel } from "@/components/FindingCard";
 import { CHECKS_BY_ID } from "@/engine/checks";
+import { coverage, lensNameFor, whyBuyersCare } from "@/engine/framework";
 import type { Citation } from "@/engine/types";
 import { isBenchSession } from "@/lib/auth";
 import { db } from "@/lib/db";
@@ -17,7 +18,7 @@ export default async function Report({ params }: { params: Promise<{ token: stri
     include: {
       findings: { where: { selected: true, state: { not: "DROPPED" } }, orderBy: { position: "asc" }, include: { checkResult: true } },
       pages: { select: { id: true, kind: true, url: true, finalUrl: true, mobileShot: true, desktopShot: true, mobileHeight: true, desktopHeight: true } },
-      results: { where: { outcome: "PASS" }, select: { checkId: true } },
+      results: { select: { checkId: true, outcome: true } },
     },
   });
   if (!run) notFound();
@@ -28,7 +29,8 @@ export default async function Report({ params }: { params: Promise<{ token: stri
   const date = (run.publishedAt ?? run.updatedAt).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" });
   const order = ["HOME", "PRODUCT_1", "PRODUCT_2", "CART", "CHECKOUT", "SHIPPING", "RETURNS", "TERMS", "PRIVACY", "CONTACT", "ABOUT"];
   const seen = [...run.pages].sort((a, b) => order.indexOf(a.kind) - order.indexOf(b.kind));
-  const passedNames = run.results.map((r) => CHECKS_BY_ID[r.checkId]?.name).filter(Boolean).slice(0, 8);
+  const passedNames = run.results.filter((r) => r.outcome === "PASS").map((r) => CHECKS_BY_ID[r.checkId]?.name).filter(Boolean).slice(0, 8);
+  const lenses = coverage(run.results);
 
   return (
     <>
@@ -75,7 +77,7 @@ export default async function Report({ params }: { params: Promise<{ token: stri
             run.findings.map((f, i) => {
               const citation = f.checkResult.citation as unknown as Citation | null;
               const page = run.pages.find((p) => p.kind === citation?.pageKind) ?? null;
-              return <FindingCard key={f.id} index={i + 1} lens={f.lens} title={f.title} observed={f.observed} likelyEffect={f.likelyEffect} notYetProven={f.notYetProven} citation={citation} page={page} />;
+              return <FindingCard key={f.id} index={i + 1} lens={f.lens} title={f.title} observed={f.observed} likelyEffect={f.likelyEffect} notYetProven={f.notYetProven} citation={citation} page={page} why={whyBuyersCare(f.checkId)} lensName={lensNameFor(f.checkId)} />;
             })
           ) : (
             <div className="card card-pad stack">
@@ -90,6 +92,34 @@ export default async function Report({ params }: { params: Promise<{ token: stri
             We also observed <strong>{run.otherIssues} other {run.otherIssues === 1 ? "issue" : "issues"}</strong> across {run.otherLenses} {run.otherLenses === 1 ? "area" : "areas"} of your store. They are recorded, and the full journey starts from them.
           </p>
         ) : null}
+
+        <section className="card card-pad stack" style={{ marginTop: 40 }} aria-labelledby="journey-h">
+          <p className="eyebrow">The buyer&apos;s journey, question by question</p>
+          <h2 id="journey-h" style={{ fontSize: "clamp(22px, 3vw, 28px)" }}>What we could check, and what only you can answer</h2>
+          <p className="small muted">QUARR looks at a store through the questions a first-time buyer has to answer before trusting you with an order. Where your website can&apos;t show us the answer, we say so rather than guess.</p>
+          <div className="lens-table">
+            {lenses.map((c) => (
+              <div className="lens-row" key={c.lens.id}>
+                <div>
+                  <strong>{c.lens.name}</strong>
+                  <p className="small muted">{c.lens.buyerQuestion}</p>
+                </div>
+                <div>
+                  {c.status === "unknown" ? (
+                    <>
+                      <span className="chip unseen">Not visible from your website</span>
+                      <p className="small" style={{ marginTop: 6 }}>{c.lens.founderQuestions[0]}</p>
+                    </>
+                  ) : (
+                    <span className={`chip ${c.failed ? "fail" : "pass"} status`}>
+                      {c.failed ? `${c.failed} ${c.failed === 1 ? "problem" : "problems"}, ` : ""}{c.passed} passed{c.status === "partly" ? ", partly visible" : ""}
+                    </span>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
 
         <div className="split" style={{ marginTop: 40 }}>
           <div className="card card-pad stack">

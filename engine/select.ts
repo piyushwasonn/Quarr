@@ -1,3 +1,4 @@
+import { CHECK_LENS } from "./framework/lenses";
 import { CHECKS_BY_ID } from "./checks";
 import type { Lens } from "./types";
 
@@ -35,7 +36,7 @@ export function selectFindings(cands: Candidate[]) {
     selected: chosen,
     rest,
     otherIssues: rest.length,
-    otherLenses: new Set(rest.map((c) => c.lens)).size,
+    otherLenses: new Set(rest.map((c) => CHECK_LENS[c.checkId] ?? c.lens)).size,
   };
 }
 
