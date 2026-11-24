@@ -158,7 +158,7 @@ Everything below goes in GitHub → **piyushwasonn/Quarr** → **Settings** → 
 
 **B. OpenAI**
 1. Go to **platform.openai.com** → **API keys** → **Create new secret key**, name it `QUARR crawler`, and add it as the secret `OPENAI_API_KEY`. Your existing OpenAI credit pays for it.
-2. Add the variable `OPENAI_MODEL` with the exact model ID from OpenAI's models page (platform.openai.com/docs/models). QUARR won't guess it. Use at least a mid-tier model; the smallest ones are fine for wording but miss too much when checking.
+2. Add the variable `OPENAI_MODEL` = `gpt-6.2-sol` (GPT-6.2 Sol, OpenAI's mid-tier model). `gpt-6.2-astra` is the top tier, at several times the price; worth it only if Step 0 shows Sol missing real problems. Don't use GPT-6 Luna: it's fine for wording but misses too much when checking.
 3. If that model doesn't support a reasoning effort setting, also add the variable `OPENAI_REASONING` = `off`.
 
 **C. Choose**

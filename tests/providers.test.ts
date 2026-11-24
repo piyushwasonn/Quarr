@@ -122,7 +122,7 @@ describe("OpenAI (Responses API)", () => {
     status: "completed",
     model: "test-model",
     output: [{ type: "message", id: "msg_1", role: "assistant", status: "completed", content }],
-    usage: { input_tokens: 10000, input_tokens_details: { cached_tokens: 9000, cache_write_tokens: 0 }, output_tokens: 300, output_tokens_details: { reasoning_tokens: 200 }, total_tokens: 10300 },
+    usage: { input_tokens: 10000, input_tokens_details: { cached_tokens: 8000, cache_write_tokens: 1500 }, output_tokens: 300, output_tokens_details: { reasoning_tokens: 200 }, total_tokens: 10300 },
     incomplete_details: null,
     error: null,
     ...extra,
@@ -138,19 +138,22 @@ describe("OpenAI (Responses API)", () => {
     handler = () => ({ json: response([{ type: "output_text", text: JSON.stringify(answer), annotations: [] }]) });
     const res = await callModel(req, "openai");
     expect(res.ok && res.value).toEqual(answer);
-    // Cached tokens are reported separately, as for Claude.
-    expect(res.ok && res.usage).toEqual({ input: 1000, output: 300, cacheRead: 9000, cacheWrite: 0 });
-    const body = requests[0].body as { model: string; instructions: string; store: boolean; prompt_cache_key: string; reasoning: { effort: string }; text: { format: { type: string; strict: boolean; name: string } }; input: { role: string; content: { type: string; image_url?: string; text?: string }[] }[] };
+    // Cache reads and writes are reported separately from plain input, as for Claude.
+    expect(res.ok && res.usage).toEqual({ input: 500, output: 300, cacheRead: 8000, cacheWrite: 1500 });
+    const body = requests[0].body as { model: string; instructions?: string; store: boolean; prompt_cache_key: string; reasoning: { effort: string }; text: { format: { type: string; strict: boolean; name: string } }; input: [{ role: string; content: string }, { role: string; content: { type: string; image_url?: string; text?: string; prompt_cache_breakpoint?: unknown }[] }] };
     expect(requests[0].path).toBe("/v1/responses");
     expect(body.model).toBe("test-model");
-    expect(body.instructions).toBe("SYSTEM");
+    // GPT-6.2 puts top-level instructions after the input; QUARR sends them first, as a developer message.
+    expect(body.instructions).toBeUndefined();
+    expect(body.input[0]).toEqual({ role: "developer", content: "SYSTEM" });
     expect(body.store).toBe(false);
     expect(body.prompt_cache_key).toBe("quarr-run1");
     expect(body.reasoning.effort).toBe("medium");
     expect(body.text.format).toMatchObject({ type: "json_schema", strict: true, name: "judge" });
-    const content = body.input[0].content;
+    const content = body.input[1].content;
     expect(content[1].type).toBe("input_image");
     expect(content[1].image_url).toMatch(/^data:image\/jpeg;base64,/);
+    expect(content[2].prompt_cache_breakpoint).toEqual({ mode: "explicit" }); // end of the shared evidence
     expect(content[3]).toEqual({ type: "input_text", text: "TASK" });
   });
   it("leaves out reasoning effort when OPENAI_REASONING=off", async () => {

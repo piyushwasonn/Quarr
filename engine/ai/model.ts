@@ -115,17 +115,26 @@ const callOpenAI = async <T extends z.ZodType>(req: ModelRequest<T>): Promise<Mo
   const started = Date.now();
   const model = modelFor("openai")!;
   const client = new OpenAI({ timeout: 180_000, maxRetries: 2 });
+  // Same layout as Claude: stable instructions, then the shared evidence, then this call's task.
+  // GPT-6.2 appends top-level `instructions` after the input, so the instructions go in a
+  // developer message at the start instead, and the end of the evidence is an explicit
+  // cache breakpoint (OpenAI's GPT-6.2 guide: prompt caching, prefix matching).
+  const last = req.evidence.length - 1;
   const content: OpenAI.Responses.ResponseInputContent[] = [
-    ...req.evidence.map((b): OpenAI.Responses.ResponseInputContent =>
-      b.type === "image" ? { type: "input_image", image_url: `data:${b.mediaType};base64,${b.data}`, detail: "high" } : { type: "input_text", text: b.text },
+    ...req.evidence.map((b, i): OpenAI.Responses.ResponseInputContent =>
+      b.type === "image"
+        ? { type: "input_image", image_url: `data:${b.mediaType};base64,${b.data}`, detail: "high" }
+        : { type: "input_text", text: b.text, ...(i === last ? { prompt_cache_breakpoint: { mode: "explicit" as const } } : {}) },
     ),
     { type: "input_text", text: req.task },
   ];
   try {
     const response = await client.responses.parse({
       model,
-      instructions: req.system,
-      input: [{ role: "user", content }],
+      input: [
+        { role: "developer", content: req.system },
+        { role: "user", content },
+      ],
       text: { format: zodTextFormat(req.schema, req.name) },
       // Reasoning models take an effort level; set OPENAI_REASONING=off for a model that doesn't.
       ...(process.env.OPENAI_REASONING === "off" ? {} : { reasoning: { effort: req.effort } }),
@@ -135,8 +144,10 @@ const callOpenAI = async <T extends z.ZodType>(req: ModelRequest<T>): Promise<Mo
     });
     const u = response.usage;
     const cached = u?.input_tokens_details?.cached_tokens ?? 0;
-    // OpenAI counts cached tokens inside input_tokens; QUARR reports them separately, like Anthropic.
-    const usage: Usage = { input: (u?.input_tokens ?? 0) - cached, output: u?.output_tokens ?? 0, cacheRead: cached, cacheWrite: u?.input_tokens_details?.cache_write_tokens ?? 0 };
+    const written = u?.input_tokens_details?.cache_write_tokens ?? 0;
+    // OpenAI's cache reads and writes are a breakdown of input_tokens; QUARR reports the three
+    // separately, like Anthropic, so each is priced once.
+    const usage: Usage = { input: Math.max(0, (u?.input_tokens ?? 0) - cached - written), output: u?.output_tokens ?? 0, cacheRead: cached, cacheWrite: written };
     const ms = Date.now() - started;
     const refused = response.output.some((o) => o.type === "message" && o.content.some((c) => c.type === "refusal"));
     if (refused) return { ok: false, reason: "OpenAI declined the request", usage, ms };
