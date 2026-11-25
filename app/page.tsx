@@ -4,11 +4,15 @@ import { FindingCard } from "@/components/FindingCard";
 import { ScanForm } from "@/components/ScanForm";
 import { SAMPLE_FINDING } from "@/components/sample";
 import { CHECKS } from "@/engine/checks";
-import { LENS_NAMES } from "@/engine/types";
+import { LENSES, STAGES } from "@/engine/framework/lenses";
 import { priceOf, rupees } from "@/lib/payments";
 import { jsonLd, pageMetadata, siteUrl } from "@/lib/seo";
 
+// Lenses with at least one check on a website walk: the honest "N of the 19" for the free First Look.
 const lensCount = new Set(CHECKS.map((c) => c.lens)).size;
+const checkedLens = new Set(CHECKS.map((c) => c.lens));
+// "Partly" where a lens also needs a person or the founder's numbers to answer in full.
+const freeLabel = (l: (typeof LENSES)[number]) => (l.site === "yes" ? "In the free First Look" : "Partly in the free First Look");
 
 export const metadata = pageMetadata(
   "/",
@@ -117,7 +121,7 @@ export default function Home() {
         <div className="steps">
           {[
             ["01", "Paste your store link", "No sign-up, no app, no access to your admin. In about a minute you see how many things may stop a first-time buyer ordering."],
-            ["02", "Sign up free to see what to fix", `QUARR walks your store on a phone and a desktop and runs ${CHECKS.length} checks across ${lensCount} areas (prices, delivery, returns, trust, checkout). You get each problem with its screenshot and what to do.`],
+            ["02", "Sign up free to see what to fix", `QUARR walks your store on a phone and a desktop and runs ${CHECKS.length} checks across ${lensCount} of its 19 lenses (prices, delivery, returns, trust, checkout and more). You get each problem with its screenshot and what to do.`],
             ["03", `Fix, then re-check for ${rupees(priceOf("RECHECK").basePaise)}`, "Make the changes. A re-check walks your store again and shows you what you fixed, what's still open and anything new."],
           ].map(([n, t, d]) => (
             <div className="card step" key={n}>
@@ -141,6 +145,35 @@ export default function Home() {
         <p className="small muted" style={{ marginTop: 12 }}>From a demonstration store built for testing. Real First Looks use your live pages.</p>
       </section>
 
+      <section className="section wrap" id="lenses">
+        <div className="section-head">
+          <p className="eyebrow brass">The method</p>
+          <h2>19 lenses, from finding you to recommending you.</h2>
+          <p className="lede">
+            Every finding belongs to one of them. Your free First Look checks {lensCount} of the 19 from your website. The rest need someone to place a test order, message your support or look at your own numbers, and your report tells you which instead of guessing.
+          </p>
+        </div>
+        <div className="lens-grid">
+          {STAGES.map((stage) => (
+            <div key={stage.id} className="lens-stage">
+              <p className="eyebrow">{stage.name}</p>
+              <ul className="list-clean">
+                {LENSES.filter((l) => l.stage === stage.id).map((l) => (
+                  <li key={l.id} className="lens-item">
+                    <span className="lens-code">{l.code}</span>
+                    <div>
+                      <strong>{l.name}</strong>
+                      <p className="small muted">{l.buyerQuestion}</p>
+                      {checkedLens.has(l.id) ? <span className="lens-auto">{freeLabel(l)}</span> : null}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </section>
+
       <section className="section wrap">
         <div className="split">
           <div className="card card-pad stack">
@@ -149,11 +182,7 @@ export default function Home() {
             <p className="muted">
               A finding only exists when one of QUARR&apos;s checks fires against your live store, and every finding must point at a screenshot and the exact words on your page. QUARR&apos;s AI reads your pages the way a careful buyer would: it answers the questions a simple rule can&apos;t, and double-checks every finding before you see it. It can only point at words that are really on your page, and it can&apos;t add a number that isn&apos;t there.
             </p>
-            <div className="row" style={{ gap: 8 }}>
-              {Object.values(LENS_NAMES).map((l) => (
-                <span className="chip" key={l}>{l}</span>
-              ))}
-            </div>
+            <a href="#lenses" className="small">See the 19 lenses →</a>
           </div>
           <div className="card card-pad stack">
             <p className="eyebrow brass">On your store</p>

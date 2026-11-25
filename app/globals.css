@@ -319,3 +319,15 @@ details.more > summary { cursor: pointer; font-weight: 600; font-size: 14px; col
 .next-steps ol { margin: 0; padding-left: 22px; display: grid; gap: 12px; }
 .next-steps li { line-height: 1.55; }
 .next-steps li::marker { color: var(--pass); font-weight: 600; }
+
+/* Homepage: the 19 lenses */
+.lens-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; align-items: start; }
+.lens-stage { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 18px; }
+.lens-stage .eyebrow { margin-bottom: 10px; }
+.lens-item { display: grid; grid-template-columns: 52px 1fr; gap: 8px; padding: 10px 0; border-top: 1px solid var(--line); }
+.lens-item:first-child { border-top: 0; padding-top: 0; }
+.lens-item p { margin: 2px 0 0; }
+.lens-code { font-size: 11px; letter-spacing: .08em; font-weight: 600; color: var(--muted); padding-top: 3px; }
+.lens-auto { display: inline-block; margin-top: 4px; font-size: 12px; color: var(--pass); }
+@media (max-width: 1000px) { .lens-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 620px) { .lens-grid { grid-template-columns: 1fr; } }

@@ -4,7 +4,7 @@ import { BrandLogo, SiteFooter, SiteHeader } from "@/components/chrome";
 import { FindingCard, pageLabel } from "@/components/FindingCard";
 import { CHECKS_BY_ID } from "@/engine/checks";
 import { whatToDo } from "@/engine/checks/fixes";
-import { coverage, lensNameFor, whyBuyersCare } from "@/engine/framework";
+import { STAGES, coverage, coverageLabel, lensNameFor, whyBuyersCare } from "@/engine/framework";
 import type { Citation } from "@/engine/types";
 import { isBenchSession } from "@/lib/auth";
 import { db } from "@/lib/db";
@@ -122,31 +122,32 @@ export default async function Report({ params }: { params: Promise<{ token: stri
         ) : null}
 
         <section className="card card-pad stack" style={{ marginTop: 40 }} aria-labelledby="journey-h">
-          <p className="eyebrow">The buyer&apos;s journey, question by question</p>
-          <h2 id="journey-h" style={{ fontSize: "clamp(22px, 3vw, 28px)" }}>What we could check, and what only you can answer</h2>
-          <p className="small muted">QUARR looks at a store through the questions a first-time buyer has to answer before trusting you with an order. Where your website can&apos;t show us the answer, we say so rather than guess.</p>
-          <div className="lens-table">
-            {lenses.map((c) => (
-              <div className="lens-row" key={c.lens.id}>
-                <div>
-                  <strong>{c.lens.name}</strong>
-                  <p className="small muted">{c.lens.buyerQuestion}</p>
-                </div>
-                <div>
-                  {c.status === "unknown" ? (
-                    <>
-                      <span className="chip unseen">Not visible from your website</span>
-                      <p className="small" style={{ marginTop: 6 }}>{c.lens.founderQuestions[0]}</p>
-                    </>
-                  ) : (
-                    <span className={`chip ${c.failed ? "fail" : "pass"} status`}>
-                      {c.failed ? `${c.failed} ${c.failed === 1 ? "problem" : "problems"}, ` : ""}{c.passed} passed{c.status === "partly" ? ", partly visible" : ""}
-                    </span>
-                  )}
-                </div>
+          <p className="eyebrow">The 19 lenses</p>
+          <h2 id="journey-h" style={{ fontSize: "clamp(22px, 3vw, 28px)" }}>What we could check, and what needs more than your website</h2>
+          <p className="small muted">QUARR looks at a store through 19 lenses, from a buyer finding you to recommending you. This walk could see {lenses.filter((c) => c.status === "checked" || c.status === "partly").length} of them. Some need a person to try them, such as a test order or a message to your support, and some need your own numbers. Where that&apos;s the case we say so, with the question to ask yourself, rather than guess.</p>
+          {STAGES.map((stage) => (
+            <div key={stage.id} className="stack" style={{ ["--stack" as string]: "6px" }}>
+              <p className="mini" style={{ marginTop: 8, textTransform: "uppercase", letterSpacing: ".12em" }}>{stage.name}</p>
+              <div className="lens-table">
+                {lenses.filter((c) => c.lens.stage === stage.id).map((c) => {
+                  const label = coverageLabel(c);
+                  return (
+                    <div className="lens-row" key={c.lens.id}>
+                      <div>
+                        <strong>{c.lens.name}</strong>
+                        <p className="small muted">{c.lens.buyerQuestion}</p>
+                      </div>
+                      <div>
+                        <span className={`chip ${label.tone}${label.tone === "unseen" ? "" : " status"}`}>{label.chip}</span>
+                        {label.note ? <p className="small" style={{ marginTop: 6 }}>{label.note}</p> : null}
+                        {label.remark ? <p className="mini" style={{ marginTop: 4 }}>{label.remark}</p> : null}
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
         </section>
 
         <div className="split" style={{ marginTop: 40 }}>

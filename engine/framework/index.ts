@@ -1,6 +1,7 @@
-import type { Outcome } from "../types";
+import { CHECKS, CHECKS_BY_ID } from "../checks";
+import type { Lens, Outcome } from "../types";
 import corpus from "./corpus.json";
-import { CHECK_LENS, FRAMEWORK_LENS_BY_ID, FRAMEWORK_LENSES, type FrameworkLens, type FrameworkLensId, lensesForLabels } from "./lenses";
+import { LENS_BY_ID, LENSES, type LensDef, lensesForLabels } from "./lenses";
 import { REASONING_RULES } from "./rules";
 
 export * from "./lenses";
@@ -18,17 +19,17 @@ export type Story = {
   gap: string;
   belief?: string;
   complaint?: string;
-  lenses: FrameworkLensId[];
+  lenses: Lens[];
 };
 
 // Regenerate with scripts/corpus.py from the Drive corpora listed in Notion 90.
 export const STORIES: Story[] = (corpus.stories as Omit<Story, "lenses">[]).map((s) => ({
   ...s,
-  lenses: lensesForLabels(s.lensLabels, s.kind),
+  lenses: lensesForLabels(s.lensLabels),
 }));
 export const STORY_BY_KEY = Object.fromEntries(STORIES.map((s) => [s.key, s]));
 
-export function storiesFor(lens: FrameworkLensId) {
+export function storiesFor(lens: Lens) {
   return STORIES.filter((s) => s.lenses.includes(lens));
 }
 
@@ -61,9 +62,19 @@ export const WHY_BUYERS_CARE: Record<string, Why> = {
   "CLAR-01": { note: "Visitors who can't tell within seconds what is on offer leave before they find out, however good it is.", stories: ["reddit:1w8e46o", "reddit:1vgs2bu"] },
 };
 
+// A check's lens is its `lens` field (engine/checks), so there is one source for the mapping.
+export function lensOf(checkId: string): Lens | undefined {
+  return CHECKS_BY_ID[checkId]?.lens;
+}
+
 export function lensNameFor(checkId: string) {
-  const id = CHECK_LENS[checkId];
-  return id ? FRAMEWORK_LENS_BY_ID[id].name : undefined;
+  const id = lensOf(checkId);
+  return id ? LENS_BY_ID[id].name : undefined;
+}
+
+// The checks that answer each lens on a website walk.
+export function checksFor(lens: Lens) {
+  return CHECKS.filter((c) => c.lens === lens);
 }
 
 export function whyBuyersCare(checkId: string) {
@@ -86,27 +97,75 @@ export function sourceName(url: string) {
   }
 }
 
-// What a run covered, lens by lens. "unknown" is a real answer (QIM 2), with questions
-// for the founder in place of a guess.
+// What a run covered, lens by lens. "unknown" is a real answer (QIM 2), with questions for
+// the founder in place of a guess. A lens the website can't answer says what it needs instead:
+//  checked / partly   checks ran and saw something
+//  unknown            checks ran but the pages didn't show it
+//  assessment         needs a person to try it (test order, support enquiry): the paid assessment
+//  your-data          needs the founder's own numbers
+//  conditional        applies only to some stores, and nothing yet shows whether this one is one
+//  not-applicable     every check said it doesn't apply to this store
+export type CoverageStatus = "checked" | "partly" | "unknown" | "assessment" | "your-data" | "conditional" | "not-applicable";
+
 export type LensCoverage = {
-  lens: FrameworkLens;
+  lens: LensDef;
   checks: number;
   passed: number;
   failed: number;
   unseen: number;
-  status: "checked" | "partly" | "unknown";
+  notApplicable: number;
+  status: CoverageStatus;
 };
 
 export function coverage(rows: { checkId: string; outcome: Outcome | string; ai?: unknown }[]): LensCoverage[] {
   // A failed rule the AI refuted with a verified quote is not a problem with the store.
   const results = rows.map((r) => (r.outcome === "FAIL" && (r.ai as { verdict?: string } | null | undefined)?.verdict === "REFUTED" ? { ...r, outcome: "NOT_OBSERVABLE" } : r));
-  return FRAMEWORK_LENSES.map((lens) => {
-    const mine = results.filter((r) => CHECK_LENS[r.checkId] === lens.id);
+  return LENSES.map((lens) => {
+    const mine = results.filter((r) => lensOf(r.checkId) === lens.id);
     const passed = mine.filter((r) => r.outcome === "PASS").length;
     const failed = mine.filter((r) => r.outcome === "FAIL").length;
     const unseen = mine.filter((r) => r.outcome === "NOT_OBSERVABLE").length;
-    const seen = passed + failed;
-    const status: LensCoverage["status"] = seen === 0 ? "unknown" : lens.website === "yes" && unseen === 0 ? "checked" : "partly";
-    return { lens, checks: mine.length, passed, failed, unseen, status };
+    const notApplicable = mine.filter((r) => r.outcome === "NOT_APPLICABLE").length;
+    return { lens, checks: mine.length, passed, failed, unseen, notApplicable, status: statusOf(lens, { checks: mine.length, seen: passed + failed, unseen, notApplicable }) };
   });
+}
+
+function statusOf(lens: LensDef, n: { checks: number; seen: number; unseen: number; notApplicable: number }): CoverageStatus {
+  if (n.seen > 0) return lens.site === "yes" && n.unseen === 0 ? "checked" : "partly";
+  if (n.checks > 0 && n.notApplicable === n.checks) return "not-applicable";
+  if (lens.appliesWhen) return "conditional";
+  if (n.checks > 0) return "unknown";
+  if (lens.needs.includes("person")) return "assessment";
+  if (lens.needs.includes("data")) return "your-data";
+  return "unknown";
+}
+
+// How many lenses a website walk can answer at least in part today: the honest number for
+// "the free First Look checks N of the 19".
+export function lensesCheckedAutomatically() {
+  return LENSES.filter((l) => checksFor(l.id).length > 0).length;
+}
+
+// How a lens's coverage reads to a founder: the chip, its tone, and either a question for the
+// founder (QIM 2) or a quieter remark about what else the lens needs.
+export function coverageLabel(c: LensCoverage): { chip: string; tone: "pass" | "fail" | "unseen"; note?: string; remark?: string } {
+  switch (c.status) {
+    case "checked":
+    case "partly":
+      return {
+        chip: `${c.failed ? `${c.failed} ${c.failed === 1 ? "problem" : "problems"}, ` : ""}${c.passed} passed${c.status === "partly" ? ", partly visible" : ""}`,
+        tone: c.failed ? "fail" : "pass",
+        remark: c.status === "partly" && c.lens.needs.includes("person") ? "The rest needs a person to try it." : undefined,
+      };
+    case "unknown":
+      return { chip: "Not visible from your website", tone: "unseen", note: c.lens.founderQuestions[0] };
+    case "assessment":
+      return { chip: "Needs a person to try it", tone: "unseen", note: c.lens.founderQuestions[0] };
+    case "your-data":
+      return { chip: "Needs your own numbers", tone: "unseen", note: c.lens.founderQuestions[0] };
+    case "conditional":
+      return { chip: c.lens.appliesWhen ?? "Applies to some stores", tone: "unseen", note: c.lens.founderQuestions[0] };
+    case "not-applicable":
+      return { chip: "Doesn't apply to your store", tone: "unseen" };
+  }
 }

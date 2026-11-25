@@ -111,7 +111,7 @@ export async function processRun(runId: string) {
   if (shadowLine) log(shadowLine);
 
   const results = await db.checkResult.findMany({ where: { runId: run.id } });
-  const checked = { PASS: 0, FAIL: 0, NOT_OBSERVABLE: 0 };
+  const checked = { PASS: 0, FAIL: 0, NOT_OBSERVABLE: 0, NOT_APPLICABLE: 0 };
   for (const r of results) checked[r.outcome === "FAIL" && aiVerdictOf(r) === "REFUTED" ? "NOT_OBSERVABLE" : r.outcome]++;
 
   const modes = await checkModes();
@@ -216,7 +216,7 @@ export async function processRun(runId: string) {
 }
 
 export async function runChecks(runId: string, ctx: CheckContext) {
-  const checked = { PASS: 0, FAIL: 0, NOT_OBSERVABLE: 0 };
+  const checked = { PASS: 0, FAIL: 0, NOT_OBSERVABLE: 0, NOT_APPLICABLE: 0 };
   const results = [];
   for (const def of CHECKS) {
     let v: CheckVerdict;

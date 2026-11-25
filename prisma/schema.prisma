@@ -43,6 +43,7 @@ enum Outcome {
   PASS
   FAIL
   NOT_OBSERVABLE
+  NOT_APPLICABLE // the check doesn't apply to this store; neither a pass nor a gap
 }
 
 enum FindingState {
@@ -137,7 +138,7 @@ model CheckResult {
   runId            String
   run              Run      @relation(fields: [runId], references: [id], onDelete: Cascade)
   checkId          String
-  lens             String
+  lens             String // one of the 19 (engine/types.ts LENS_IDS); older rows may hold a pre-19 code, read via toLens
   outcome          Outcome
   severity         Int
   evidenceStrength Float
@@ -187,7 +188,7 @@ model Learning {
   runId     String?
   run       Run?     @relation(fields: [runId], references: [id], onDelete: SetNull)
   kind      String // MISSED | NOTE
-  lens      String? // framework lens id (engine/framework/lenses.ts)
+  lens      String? // one of the 19 lenses; notes saved before 25 Nov 2026 hold a pre-19 id, read via toLens
   note      String
   status    String   @default("OPEN") // OPEN | BUILT (became a check) | DISMISSED
   createdAt DateTime @default(now())

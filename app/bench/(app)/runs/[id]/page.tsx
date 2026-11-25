@@ -6,8 +6,8 @@ import { aiSummaryLine, type AiReport } from "@/engine/ai/analyse";
 import { costUsd } from "@/engine/ai/compare";
 import { CHECKS_BY_ID } from "@/engine/checks";
 import { whatToDo } from "@/engine/checks/fixes";
-import { coverage } from "@/engine/framework";
-import { FRAMEWORK_LENS_BY_ID, FRAMEWORK_LENSES, type FrameworkLensId } from "@/engine/framework/lenses";
+import { coverage, coverageLabel } from "@/engine/framework";
+import { LENS_BY_ID, LENSES, toLens } from "@/engine/framework/lenses";
 import { isStoreRun } from "@/engine/learn";
 import { MissedForm } from "@/components/bench/MissedForm";
 import { checkModes } from "@/engine/promotion";
@@ -93,7 +93,7 @@ export default async function RunReview({ params }: { params: Promise<{ id: stri
     id: f.id,
     checkId: f.checkId,
     checkName: CHECKS_BY_ID[f.checkId]?.name ?? f.checkId,
-    lens: f.lens,
+    lens: CHECKS_BY_ID[f.checkId]?.lens ?? toLens(f.lens) ?? f.lens,
     title: f.title,
     observed: f.observed,
     likelyEffect: f.likelyEffect,
@@ -159,11 +159,11 @@ export default async function RunReview({ params }: { params: Promise<{ id: stri
       {run.ai ? <AiCard report={run.ai as unknown as RunAi} /> : null}
       {notesWithoutAi(run.notes, run.ai as unknown as RunAi | null) ? <p className="alert">{notesWithoutAi(run.notes, run.ai as unknown as RunAi | null)}</p> : null}
       <details className="card card-pad">
-        <summary className="small"><strong>Framework coverage</strong>: what this walk could and couldn&apos;t answer</summary>
+        <summary className="small"><strong>Lens coverage</strong>: what this walk could and couldn&apos;t answer, across the 19 lenses</summary>
         <ul className="list-clean small" style={{ marginTop: 8 }}>
           {coverage(run.results).map((c) => (
             <li key={c.lens.id} style={{ marginBottom: 6 }}>
-              <strong>{c.lens.name}</strong>: {c.status === "unknown" ? <span className="muted">Unknown. Ask: {c.lens.founderQuestions.join(" ")}</span> : `${c.failed} fail, ${c.passed} pass, ${c.unseen} not seen`}
+              <strong>{c.lens.code} · {c.lens.name}</strong>: {c.status === "checked" || c.status === "partly" ? `${c.failed} fail, ${c.passed} pass, ${c.unseen} not seen` : <span className="muted">{coverageLabel(c).chip}. Ask: {c.lens.founderQuestions.join(" ")}</span>}
             </li>
           ))}
         </ul>
@@ -206,11 +206,11 @@ export default async function RunReview({ params }: { params: Promise<{ id: stri
           {run.learnings.length ? (
             <ul className="list-clean small">
               {run.learnings.map((l) => (
-                <li key={l.id}><div><span className="mini">{l.kind === "NOTE" ? "Note" : "Missed"}{l.lens ? ` · ${FRAMEWORK_LENS_BY_ID[l.lens as FrameworkLensId]?.name ?? l.lens}` : ""} · {l.status.toLowerCase()}</span><br />{l.note}</div></li>
+                <li key={l.id}><div><span className="mini">{l.kind === "NOTE" ? "Note" : "Missed"}{l.lens ? ` · ${toLens(l.lens) ? LENS_BY_ID[toLens(l.lens)!].name : l.lens}` : ""} · {l.status.toLowerCase()}</span><br />{l.note}</div></li>
               ))}
             </ul>
           ) : null}
-          <MissedForm runId={run.id} lenses={FRAMEWORK_LENSES.map((l) => ({ id: l.id, name: l.name }))} />
+          <MissedForm runId={run.id} lenses={LENSES.map((l) => ({ id: l.id, name: `${l.code} · ${l.name}` }))} />
         </section>
       ) : null}
     </div>

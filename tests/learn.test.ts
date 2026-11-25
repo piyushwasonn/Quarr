@@ -62,7 +62,7 @@ describe("learning from every crawl", () => {
     expect(out.reviewedStores).toBe(3);
     expect(out.enough).toBe(false);
     const delv = out.patterns.find((p) => p.checkId === "DELV-01")!;
-    expect(delv).toMatchObject({ kept: 2, droppedWrong: 1, firedUnreviewed: 0, lens: "PROMISE" });
+    expect(delv).toMatchObject({ kept: 2, droppedWrong: 1, firedUnreviewed: 0, lens: "DELV" });
     expect(out.patterns.find((p) => p.checkId === "PRIC-03")).toMatchObject({ kept: 0, firedUnreviewed: 3 });
     const many = Array.from({ length: MIN_STORES_FOR_PATTERN }, (_, i) => reviewed(`s${i}.in`, true));
     expect(storePatterns(many).enough).toBe(true);
@@ -76,6 +76,6 @@ describe("learning from every crawl", () => {
         { checkId: "DELV-01", outcome: "PASS", detail: {}, ai: null },
       ],
     });
-    expect(goodPractice(r)).toEqual([{ domain: "shop.in", checkId: "AI-COMMIT-01", lens: "COMMIT", quotes: [{ page: "SHIPPING", text: "Cash on delivery available" }] }]);
+    expect(goodPractice(r)).toEqual([{ domain: "shop.in", checkId: "AI-COMMIT-01", lens: "TRIAL", quotes: [{ page: "SHIPPING", text: "Cash on delivery available" }] }]);
   });
 });

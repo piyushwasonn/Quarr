@@ -85,7 +85,9 @@ export type Citation = {
   searched?: PageKind[]; // for absence findings: where we looked
 };
 
-export type Outcome = "PASS" | "FAIL" | "NOT_OBSERVABLE";
+// NOT_APPLICABLE: the check doesn't apply to this store (no subscriptions to check, say). It is
+// neither a pass nor a gap, and is never shown as "couldn't check".
+export type Outcome = "PASS" | "FAIL" | "NOT_OBSERVABLE" | "NOT_APPLICABLE";
 
 export type CheckVerdict = {
   outcome: Outcome;
@@ -110,20 +112,35 @@ export type CheckContext = {
   signals: CrawlSignals;
 };
 
-export type Lens = "PRIC" | "DELV" | "RTRN" | "TRST" | "LGL" | "AVAIL" | "CHKT" | "CLAR" | "PROM" | "STAT";
+// QUARR's 19 lenses (Notion 01): the parts of a buyer's journey QUARR looks at, from finding
+// the store to recommending it. Definitions, stages and what each needs live in
+// engine/framework/lenses.ts; the names are here so client components can show them.
+export const LENS_IDS = ["DISC", "CLAR", "RELV", "TRST", "PRIC", "PROM", "AVAIL", "CHKT", "DELV", "ONBD", "TRIAL", "SUBS", "CANC", "RTRN", "SUPP", "ENFC", "RETN", "ADVO", "STAT"] as const;
+export type Lens = (typeof LENS_IDS)[number];
 
 export const LENS_NAMES: Record<Lens, string> = {
-  PRIC: "Pricing",
-  DELV: "Delivery",
-  RTRN: "Returns",
-  TRST: "Trust",
-  LGL: "Legal labelling",
-  AVAIL: "Availability",
-  CHKT: "Checkout",
-  CLAR: "Clarity",
-  PROM: "Promises",
-  STAT: "Reliability",
+  DISC: "Finding you",
+  CLAR: "Understanding the offer",
+  RELV: "Is it for me",
+  TRST: "Trusting the business",
+  PRIC: "Knowing the full cost",
+  PROM: "Claims that hold up",
+  AVAIL: "There and working",
+  CHKT: "Paying without friction",
+  DELV: "Knowing when it arrives",
+  ONBD: "After paying",
+  TRIAL: "A low-risk first try",
+  SUBS: "Renewals made clear",
+  CANC: "Changing my mind",
+  RTRN: "Returns and refunds",
+  SUPP: "Getting help",
+  ENFC: "My rights as a buyer",
+  RETN: "Coming back",
+  ADVO: "Recommending you",
+  STAT: "What I chose stays right",
 };
+
+export const isLens = (v: unknown): v is Lens => typeof v === "string" && (LENS_IDS as readonly string[]).includes(v);
 
 export type FindingCopy = {
   title: string;

@@ -19,8 +19,9 @@ describe("selection rules", () => {
     expect(r.selected.map((s) => s.checkId)).toEqual(["PRIC-02", "CLAR-01"]);
   });
   it("never leads with Legal Metrology", () => {
-    const r = selectFindings([c("LGL-01", "LGL", 5, 1), c("CLAR-01", "CLAR", 2)]);
-    expect(r.selected[0].lens).not.toBe("LGL");
+    // The LGL checks sit under "My rights as a buyer" (ENFC); the rule follows the checks, not the lens.
+    const r = selectFindings([c("LGL-01", "ENFC", 5, 1), c("CLAR-01", "CLAR", 2)]);
+    expect(r.selected[0].checkId).not.toMatch(/^LGL-/);
   });
 });
 

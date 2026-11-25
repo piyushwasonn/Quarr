@@ -11,6 +11,7 @@ import { plainPunctuation } from "@/lib/punctuation";
 import { deletePrefix } from "@/lib/storage";
 import { newPublicToken } from "@/lib/tokens";
 import { isValidEmail, normalizeStoreUrl } from "@/lib/url";
+import { toLens } from "@/engine/framework/lenses";
 
 const REASONS: EditReason[] = ["WORDING", "SEVERITY", "EVIDENCE_WRONG", "FALSE_POSITIVE", "MISSED", "UNSAFE"];
 const reasonOf = (v: FormDataEntryValue | null) => (REASONS.includes(String(v) as EditReason) ? (String(v) as EditReason) : null);
@@ -126,7 +127,7 @@ async function compactPositions(runId: string) {
 
 async function recountOthers(runId: string) {
   const rest = await db.finding.findMany({ where: { runId, selected: false, state: { not: "DROPPED" } }, select: { lens: true } });
-  await db.run.update({ where: { id: runId }, data: { otherIssues: rest.length, otherLenses: new Set(rest.map((r) => r.lens)).size } });
+  await db.run.update({ where: { id: runId }, data: { otherIssues: rest.length, otherLenses: new Set(rest.map((r) => toLens(r.lens) ?? r.lens)).size } });
 }
 
 export async function publish(_prev: { error?: string }, form: FormData) {
@@ -235,7 +236,7 @@ export async function addLearning(_prev: { error?: string; ok?: boolean }, form:
   const note = plainPunctuation(String(form.get("note") ?? "").trim()).slice(0, 2000);
   if (note.length < 8) return { error: "Describe what QUARR missed in a sentence." };
   const runId = String(form.get("runId") ?? "") || null;
-  const lens = String(form.get("lens") ?? "") || null;
+  const lens = toLens(String(form.get("lens") ?? ""));
   const kind = form.get("kind") === "NOTE" ? "NOTE" : "MISSED";
   await db.learning.create({ data: { runId, lens, note, kind } });
   if (runId) revalidatePath(`/bench/runs/${runId}`);

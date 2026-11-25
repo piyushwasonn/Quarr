@@ -2,7 +2,7 @@ import { CHECKS_BY_ID } from "./checks";
 import { whatToDo } from "./checks/fixes";
 import { candidateFrom, selectFindings } from "./select";
 import { ENGINE_VERSION } from "./version";
-import { CHECK_LENS, FRAMEWORK_LENS_BY_ID, type FrameworkLensId } from "./framework/lenses";
+import { toLens } from "./framework/lenses";
 import { LENS_NAMES, type Citation, type FindingCopy, type Lens, type Outcome } from "./types";
 
 // What QUARR may show without a person reading it first (Notion 07):
@@ -43,18 +43,18 @@ function shown(r: ResultRow, platform?: string | null): ShownFinding {
   const def = CHECKS_BY_ID[r.checkId];
   const citation = (r.citation ?? null) as Citation | null;
   const copy = def.copy((r.detail ?? {}) as Record<string, unknown>, citation as Citation);
-  return { ...copy, checkId: r.checkId, lens: r.lens, citation, whatToDo: whatToDo(r.checkId, r.detail, platform) };
+  return { ...copy, checkId: r.checkId, lens: def.lens, citation, whatToDo: whatToDo(r.checkId, r.detail, platform) };
 }
 
-// Grouped by the buyer-journey lens (engine/framework), the same names the First Look uses.
+// Grouped by lens (the 19 in engine/framework/lenses.ts), the same names the First Look uses.
 function countsByLens(fails: ResultRow[]) {
   const by: Record<string, number> = {};
   for (const f of fails) {
-    const key = CHECK_LENS[f.checkId] ?? f.lens;
+    const key = CHECKS_BY_ID[f.checkId]?.lens ?? toLens(f.lens) ?? f.lens;
     by[key] = (by[key] ?? 0) + 1;
   }
   return Object.entries(by)
-    .map(([lens, n]) => ({ lens, name: FRAMEWORK_LENS_BY_ID[lens as FrameworkLensId]?.name ?? LENS_NAMES[lens as Lens] ?? lens, n }))
+    .map(([lens, n]) => ({ lens, name: LENS_NAMES[lens as Lens] ?? lens, n }))
     .sort((a, b) => b.n - a.n);
 }
 
@@ -147,7 +147,7 @@ export function recheckSummary(beforeAll: ResultRow[], afterAll: ResultRow[], vi
     const now = r.outcome;
     const item = (row: ResultRow): RecheckItem => ({
       checkId: row.checkId,
-      lens: row.lens,
+      lens: def.lens,
       name: def.name,
       title: def.copy((row.detail ?? {}) as Record<string, unknown>, (row.citation ?? null) as Citation).title,
       citation: (row.citation ?? null) as Citation | null,

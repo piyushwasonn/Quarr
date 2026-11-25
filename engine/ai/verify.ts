@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { CHECKS_BY_ID } from "../checks";
-import { CHECK_LENS, FRAMEWORK_LENS_BY_ID } from "../framework/lenses";
+import { LENS_BY_ID } from "../framework/lenses";
 import type { Citation, PageKind, StoredPage } from "../types";
 import { callModel, type Evidence, type Provider, type Usage } from "./model";
 import { ANALYST_SYSTEM } from "./prompt";
@@ -54,7 +54,7 @@ export async function verifyFails(evidence: Evidence, pages: Partial<Record<Page
     const def = CHECKS_BY_ID[r.checkId];
     const citation = (r.citation ?? null) as Citation | null;
     const copy = def.copy((r.detail ?? {}) as Record<string, unknown>, citation as Citation);
-    const lens = FRAMEWORK_LENS_BY_ID[CHECK_LENS[r.checkId]];
+    const lens = LENS_BY_ID[def.lens];
     return {
       checkId: r.checkId,
       rule: def.name,

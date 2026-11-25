@@ -105,7 +105,7 @@ export const AI_CHECKS: CheckDef[] = [
   },
   {
     id: "AI-COMMIT-01",
-    lens: "CHKT",
+    lens: "TRIAL",
     name: "A first order can be small and low-risk",
     severity: 3,
     money: true,

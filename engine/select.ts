@@ -1,4 +1,3 @@
-import { CHECK_LENS } from "./framework/lenses";
 import { CHECKS_BY_ID } from "./checks";
 import type { Lens } from "./types";
 
@@ -12,7 +11,7 @@ export function scoreOf(c: Pick<Candidate, "severity" | "evidenceStrength" | "mo
 }
 
 // Pick up to three: at most one per lens and per group, and never open with
-// Legal Metrology on its own.
+// Legal Metrology (the LGL checks, under "My rights as a buyer") on its own.
 export function selectFindings(cands: Candidate[]) {
   const ranked = [...cands].sort((a, b) => scoreOf(b) - scoreOf(a) || a.checkId.localeCompare(b.checkId));
   const chosen: Candidate[] = [];
@@ -26,8 +25,9 @@ export function selectFindings(cands: Candidate[]) {
     lenses.add(c.lens);
     if (c.group) groups.add(c.group);
   }
-  if (chosen[0]?.lens === "LGL") {
-    const lead = chosen.findIndex((c) => c.lens !== "LGL");
+  const legal = (c: Candidate) => c.checkId.startsWith("LGL-");
+  if (chosen[0] && legal(chosen[0])) {
+    const lead = chosen.findIndex((c) => !legal(c));
     if (lead > 0) [chosen[0], chosen[lead]] = [chosen[lead], chosen[0]];
   }
   const chosenIds = new Set(chosen.map((c) => c.resultId));
@@ -36,7 +36,7 @@ export function selectFindings(cands: Candidate[]) {
     selected: chosen,
     rest,
     otherIssues: rest.length,
-    otherLenses: new Set(rest.map((c) => CHECK_LENS[c.checkId] ?? c.lens)).size,
+    otherLenses: new Set(rest.map((c) => c.lens)).size,
   };
 }
 

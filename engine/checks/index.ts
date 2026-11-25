@@ -260,7 +260,7 @@ const RULE_CHECKS: CheckDef[] = [
   // ───────────── TRUST ─────────────
   {
     id: "TRST-01",
-    lens: "TRST",
+    lens: "SUPP",
     name: "Contact method reachable from homepage",
     severity: 4,
     money: false,
@@ -431,7 +431,7 @@ const RULE_CHECKS: CheckDef[] = [
   }),
   {
     id: "LGL-04",
-    lens: "LGL",
+    lens: "ENFC",
     name: "Consumer care contact",
     severity: 2,
     money: false,
@@ -565,7 +565,7 @@ const RULE_CHECKS: CheckDef[] = [
   },
   {
     id: "CHKT-02",
-    lens: "CHKT",
+    lens: "PRIC",
     name: "Cart total includes shipping before login",
     severity: 3,
     money: true,
@@ -650,7 +650,7 @@ const RULE_CHECKS: CheckDef[] = [
   },
   {
     id: "CLAR-02",
-    lens: "CLAR",
+    lens: "DISC",
     name: "Page titles and descriptions present",
     severity: 1,
     money: false,
@@ -697,7 +697,7 @@ const RULE_CHECKS: CheckDef[] = [
   },
   {
     id: "CLAR-04",
-    lens: "CLAR",
+    lens: "RELV",
     name: "Size / specification block present",
     severity: 3,
     money: false,
@@ -829,7 +829,7 @@ const RULE_CHECKS: CheckDef[] = [
 function lgl(id: string, name: string, re: RegExp, what: string, copy: ReturnType<CheckDef["copy"]>): CheckDef {
   return {
     id,
-    lens: "LGL",
+    lens: "ENFC",
     name,
     severity: 2,
     money: false,

@@ -1,4 +1,4 @@
-import { CHECK_LENS } from "./framework/lenses";
+import { CHECKS_BY_ID } from "./checks";
 
 // What QUARR learns from every crawl, worked out from what each run already stores: the
 // pages reached, the rule results, the AI's verdicts and the reviewer's decisions. It covers
@@ -85,7 +85,7 @@ export function storePatterns(runs: LearnRun[]): { reviewedStores: number; patte
   const reviewed = runs.filter((r) => isStoreRun(r) && r.findings.some((f) => truthOf(f) !== null));
   const by = new Map<string, Pattern>();
   const get = (checkId: string) => {
-    if (!by.has(checkId)) by.set(checkId, { checkId, lens: CHECK_LENS[checkId] ?? "", kept: 0, droppedWrong: 0, firedUnreviewed: 0 });
+    if (!by.has(checkId)) by.set(checkId, { checkId, lens: CHECKS_BY_ID[checkId]?.lens ?? "", kept: 0, droppedWrong: 0, firedUnreviewed: 0 });
     return by.get(checkId)!;
   };
   for (const r of reviewed) {
@@ -108,6 +108,6 @@ export type GoodPractice = { domain: string; checkId: string; lens: string; quot
 export function goodPractice(r: LearnRun): GoodPractice[] {
   return r.results
     .filter((x) => x.checkId.startsWith("AI-") && x.outcome === "PASS")
-    .map((x) => ({ domain: r.domain, checkId: x.checkId, lens: CHECK_LENS[x.checkId] ?? "", quotes: ((x.detail as { quotes?: { page: string; text: string }[] } | null)?.quotes ?? []).slice(0, 2) }))
+    .map((x) => ({ domain: r.domain, checkId: x.checkId, lens: CHECKS_BY_ID[x.checkId]?.lens ?? "", quotes: ((x.detail as { quotes?: { page: string; text: string }[] } | null)?.quotes ?? []).slice(0, 2) }))
     .filter((g) => g.quotes.length > 0);
 }

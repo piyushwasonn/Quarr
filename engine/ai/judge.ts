@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { plainPunctuation } from "@/lib/punctuation";
 import { AI_CHECKS } from "../checks/ai";
-import { CHECK_LENS, FRAMEWORK_LENS_BY_ID } from "../framework/lenses";
+import { LENS_BY_ID } from "../framework/lenses";
 import type { CheckDef, CheckVerdict, FindingCopy, PageKind, StoredPage } from "../types";
 import { callModel, type Evidence, type Provider, type Usage } from "./model";
 import { ANALYST_SYSTEM } from "./prompt";
@@ -40,7 +40,7 @@ ${JSON.stringify(
   checks.map((c) => ({
     checkId: c.id,
     question: c.ai!.question,
-    buyerQuestion: FRAMEWORK_LENS_BY_ID[CHECK_LENS[c.id]]?.buyerQuestion,
+    buyerQuestion: LENS_BY_ID[c.lens]?.buyerQuestion,
     failWhen: c.ai!.failWhen,
     passWhen: c.ai!.passWhen,
     pagesToRead: c.ai!.pages,

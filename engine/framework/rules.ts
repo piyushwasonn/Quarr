@@ -1,4 +1,4 @@
-import type { FrameworkLensId } from "./lenses";
+import type { Lens } from "../types";
 
 // QUARR Intelligence Model v1.0 (Drive, 03 Reasoning Engine). Locked; changes only on real customer evidence.
 export const QIM_PRINCIPLES = [
@@ -16,7 +16,8 @@ export const QIM_PRINCIPLES = [
 // confirm it (QIM change policy). They explain findings; they never create one.
 export type ReasoningRule = {
   id: string;
-  lens: FrameworkLensId;
+  // The lens it explains. Rules about how QUARR reasons with the founder's own evidence have none.
+  lens?: Lens;
   rule: string;
   source: string;
   status: "hypothesis" | "confirmed" | "rejected";
@@ -24,21 +25,21 @@ export type ReasoningRule = {
 };
 
 export const REASONING_RULES: ReasoningRule[] = [
-  { id: "TR-01", lens: "COST", rule: "Check whether the buyer can see the complete likely cost before starting to pay.", source: "Thinking Stories 001, Rule 007", status: "hypothesis", checks: ["PRIC-02", "PRIC-03", "CHKT-02"] },
-  { id: "TR-02", lens: "COST", rule: "A pleasant surprise at checkout is not good information design. Hidden essential costs still lose the less committed buyer.", source: "Thinking Stories 001, Rule 011", status: "hypothesis", checks: ["PRIC-02", "CHKT-02"] },
-  { id: "TR-03", lens: "TRUST", rule: "Showing how something is made is stronger evidence than claiming it is high quality.", source: "Thinking Stories 001, Rule 003", status: "hypothesis", checks: ["PROM-01", "CLAR-04"] },
-  { id: "TR-04", lens: "TRUST", rule: "When trust rises suddenly, find the exact proof, behaviour or value signal that caused it.", source: "Thinking Stories 001, Rule 005", status: "hypothesis" },
-  { id: "TR-05", lens: "COMMIT", rule: "Let buyers experience the outcome, or a small part of it, before asking for a large commitment.", source: "Thinking Stories 003 (Canva)", status: "hypothesis" },
-  { id: "TR-06", lens: "COMMIT", rule: "Where trial and repeat buyers both exist, show how the price changes from a sample to a larger order.", source: "Thinking Stories 001, Rule 010", status: "hypothesis" },
-  { id: "TR-07", lens: "COMMIT", rule: "A low price can act as a risk ceiling: below it, buyers don't need to justify the purchase.", source: "Thinking Stories 005", status: "hypothesis" },
-  { id: "TR-08", lens: "PROMISE", rule: "When there is a real trade-off between price and speed, let the buyer choose.", source: "Thinking Stories 001, Rule 009", status: "hypothesis", checks: ["DELV-01"] },
-  { id: "TR-09", lens: "PROMISE", rule: "A third-party courier or payment provider is judged as part of the brand.", source: "Thinking Stories 001, Rule 008", status: "hypothesis" },
-  { id: "TR-10", lens: "AFTER", rule: "The moment after payment has its own anxiety. A confirmation should say the order was received, what happens now, and how to follow it.", source: "Thinking Stories 001, Rules 013 and 014", status: "hypothesis" },
-  { id: "TR-11", lens: "RECOVERY", rule: "A customer's own mistake is a loyalty moment. Fair recovery can earn more trust than a flawless transaction.", source: "Thinking Stories 003 (Canva)", status: "hypothesis", checks: ["TRST-01"] },
-  { id: "TR-12", lens: "RECOVERY", rule: "Response speed must match what the problem is costing the customer right now.", source: "Thinking Stories 006 (Zomato Dine-In)", status: "hypothesis", checks: ["TRST-01", "LGL-04"] },
-  { id: "TR-13", lens: "VALUE", rule: "Adding to cart proves interest, not readiness. Desire often depends on an imagined occasion, and fades when it does.", source: "Thinking Stories 004", status: "hypothesis" },
-  { id: "TR-14", lens: "VALUE", rule: "Repurchase intent measures lasting value better than the first conversion.", source: "Thinking Stories 002", status: "hypothesis" },
-  { id: "TR-15", lens: "VALUE", rule: "Measure trust withdrawal, such as a buyer who stays but stops spending, not only churn.", source: "Thinking Stories 006", status: "hypothesis" },
-  { id: "TR-16", lens: "EVIDENCE", rule: "Don't recommend a fix when the business didn't cause the problem. Sometimes the finding is weak fit, not a broken journey.", source: "Thinking Stories 002", status: "hypothesis" },
-  { id: "TR-17", lens: "EVIDENCE", rule: "Ask what earlier loss is shaping the buyer's current sensitivity to risk.", source: "Thinking Stories 001, Rule 002", status: "hypothesis" },
+  { id: "TR-01", lens: "PRIC", rule: "Check whether the buyer can see the complete likely cost before starting to pay.", source: "Thinking Stories 001, Rule 007", status: "hypothesis", checks: ["PRIC-02", "PRIC-03", "CHKT-02"] },
+  { id: "TR-02", lens: "PRIC", rule: "A pleasant surprise at checkout is not good information design. Hidden essential costs still lose the less committed buyer.", source: "Thinking Stories 001, Rule 011", status: "hypothesis", checks: ["PRIC-02", "CHKT-02"] },
+  { id: "TR-03", lens: "PROM", rule: "Showing how something is made is stronger evidence than claiming it is high quality.", source: "Thinking Stories 001, Rule 003", status: "hypothesis", checks: ["PROM-01", "CLAR-04"] },
+  { id: "TR-04", lens: "TRST", rule: "When trust rises suddenly, find the exact proof, behaviour or value signal that caused it.", source: "Thinking Stories 001, Rule 005", status: "hypothesis" },
+  { id: "TR-05", lens: "TRIAL", rule: "Let buyers experience the outcome, or a small part of it, before asking for a large commitment.", source: "Thinking Stories 003 (Canva)", status: "hypothesis" },
+  { id: "TR-06", lens: "TRIAL", rule: "Where trial and repeat buyers both exist, show how the price changes from a sample to a larger order.", source: "Thinking Stories 001, Rule 010", status: "hypothesis" },
+  { id: "TR-07", lens: "TRIAL", rule: "A low price can act as a risk ceiling: below it, buyers don't need to justify the purchase.", source: "Thinking Stories 005", status: "hypothesis" },
+  { id: "TR-08", lens: "DELV", rule: "When there is a real trade-off between price and speed, let the buyer choose.", source: "Thinking Stories 001, Rule 009", status: "hypothesis", checks: ["DELV-01"] },
+  { id: "TR-09", lens: "DELV", rule: "A third-party courier or payment provider is judged as part of the brand.", source: "Thinking Stories 001, Rule 008", status: "hypothesis" },
+  { id: "TR-10", lens: "ONBD", rule: "The moment after payment has its own anxiety. A confirmation should say the order was received, what happens now, and how to follow it.", source: "Thinking Stories 001, Rules 013 and 014", status: "hypothesis" },
+  { id: "TR-11", lens: "SUPP", rule: "A customer's own mistake is a loyalty moment. Fair recovery can earn more trust than a flawless transaction.", source: "Thinking Stories 003 (Canva)", status: "hypothesis", checks: ["TRST-01"] },
+  { id: "TR-12", lens: "SUPP", rule: "Response speed must match what the problem is costing the customer right now.", source: "Thinking Stories 006 (Zomato Dine-In)", status: "hypothesis", checks: ["TRST-01", "LGL-04"] },
+  { id: "TR-13", lens: "RETN", rule: "Adding to cart proves interest, not readiness. Desire often depends on an imagined occasion, and fades when it does.", source: "Thinking Stories 004", status: "hypothesis" },
+  { id: "TR-14", lens: "RETN", rule: "Repurchase intent measures lasting value better than the first conversion.", source: "Thinking Stories 002", status: "hypothesis" },
+  { id: "TR-15", lens: "RETN", rule: "Measure trust withdrawal, such as a buyer who stays but stops spending, not only churn.", source: "Thinking Stories 006", status: "hypothesis" },
+  { id: "TR-16", rule: "Don't recommend a fix when the business didn't cause the problem. Sometimes the finding is weak fit, not a broken journey.", source: "Thinking Stories 002", status: "hypothesis" },
+  { id: "TR-17", rule: "Ask what earlier loss is shaping the buyer's current sensitivity to risk.", source: "Thinking Stories 001, Rule 002", status: "hypothesis" },
 ];

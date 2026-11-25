@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { setLearningStatus } from "@/app/bench/actions";
 import { CHECKS_BY_ID } from "@/engine/checks";
-import { FRAMEWORK_LENS_BY_ID, type FrameworkLensId } from "@/engine/framework/lenses";
+import { LENS_BY_ID, toLens } from "@/engine/framework/lenses";
 import { aiMistakes, crawlGaps, goodPractice, isStoreRun, MIN_STORES_FOR_PATTERN, storePatterns, type LearnRun } from "@/engine/learn";
 import { db } from "@/lib/db";
 
@@ -28,7 +28,11 @@ export default async function Learnings() {
   ]);
   const runs = rows as LearnRun[];
   const name = (id: string) => CHECKS_BY_ID[id]?.name ?? id;
-  const lensName = (id: string | null) => (id ? FRAMEWORK_LENS_BY_ID[id as FrameworkLensId]?.name ?? id : "");
+  // Notes saved before the 19 lenses hold an older id; toLens reads them under the new list.
+  const lensName = (id: string | null) => {
+    const l = toLens(id);
+    return l ? `${l} · ${LENS_BY_ID[l].name}` : id ?? "";
+  };
 
   const stores = runs.filter(isStoreRun);
   const outOfScope = runs.filter((r) => !isStoreRun(r));
