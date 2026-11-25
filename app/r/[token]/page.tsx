@@ -3,10 +3,12 @@ import { notFound } from "next/navigation";
 import { BrandLogo, SiteFooter, SiteHeader } from "@/components/chrome";
 import { FindingCard, pageLabel } from "@/components/FindingCard";
 import { CHECKS_BY_ID } from "@/engine/checks";
+import { whatToDo } from "@/engine/checks/fixes";
 import { coverage, lensNameFor, whyBuyersCare } from "@/engine/framework";
 import type { Citation } from "@/engine/types";
 import { isBenchSession } from "@/lib/auth";
 import { db } from "@/lib/db";
+import { priceOf, rupees } from "@/lib/payments";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "First Look", robots: { index: false, follow: false } };
@@ -33,6 +35,9 @@ export default async function Report({ params }: { params: Promise<{ token: stri
   const lenses = coverage(run.results);
   // No product page: QUARR's checks are for stores, so a quiet report must not read as a pass.
   const store = run.pages.some((p) => p.kind.startsWith("PRODUCT"));
+  // The founder's next step per finding: as reviewed on the Bench, else the standard step.
+  const steps = run.findings.map((f) => f.whatToDo || whatToDo(f.checkId, f.checkResult.detail, run.platform));
+  const recheck = `${rupees(priceOf("RECHECK").basePaise)} + GST`;
 
   return (
     <>
@@ -46,9 +51,9 @@ export default async function Report({ params }: { params: Promise<{ token: stri
         <div className="wrap">
           <div style={{ marginBottom: 20 }}><BrandLogo width={200} /></div>
           <p className="eyebrow">First Look · {date}</p>
-          <h1 style={{ marginTop: 14 }}>What a first-time buyer meets on {run.storeName ? `${run.storeName}` : run.domain}.</h1>
+          <h1 style={{ marginTop: 14 }}>Your store, as a first-time buyer meets it.</h1>
           <p className="meta" style={{ marginTop: 14, maxWidth: 620 }}>
-            We walked <strong style={{ color: "#fff" }}>{run.domain}</strong> on a 390 px phone and a desktop screen, from the homepage to the first screen of checkout. These are the pages we looked at:
+            We opened <strong style={{ color: "var(--navy-900)" }}>{run.storeName || run.domain}</strong> on a phone and a desktop, the way a new buyer does, from the homepage to the first screen of checkout. Below is what may stop people ordering, and what to do about it. The pages we looked at:
           </p>
           <div className="pages-seen">
             {seen.map((p) => (
@@ -62,7 +67,7 @@ export default async function Report({ params }: { params: Promise<{ token: stri
         <div className="summary-tiles">
           <div className="card tile">
             <div className="n">{run.findings.length}</div>
-            <div className="t">{run.findings.length === 1 ? "finding" : "findings"} worth your attention first</div>
+            <div className="t">{run.findings.length === 1 ? "thing" : "things"} to fix first</div>
           </div>
           <div className="card tile">
             <div className="n">{run.otherIssues}</div>
@@ -70,7 +75,7 @@ export default async function Report({ params }: { params: Promise<{ token: stri
           </div>
           <div className="card tile">
             <div className="n">{run.checksPassed}</div>
-            <div className="t">checks your store passed</div>
+            <div className="t">checks your store already passes</div>
           </div>
         </div>
 
@@ -79,7 +84,7 @@ export default async function Report({ params }: { params: Promise<{ token: stri
             run.findings.map((f, i) => {
               const citation = f.checkResult.citation as unknown as Citation | null;
               const page = run.pages.find((p) => p.kind === citation?.pageKind) ?? null;
-              return <FindingCard key={f.id} index={i + 1} lens={f.lens} title={f.title} observed={f.observed} likelyEffect={f.likelyEffect} notYetProven={f.notYetProven} citation={citation} page={page} why={whyBuyersCare(f.checkId)} lensName={lensNameFor(f.checkId)} />;
+              return <FindingCard key={f.id} index={i + 1} lens={f.lens} title={f.title} observed={f.observed} likelyEffect={f.likelyEffect} notYetProven={f.notYetProven} whatToDo={steps[i]} citation={citation} page={page} why={whyBuyersCare(f.checkId)} lensName={lensNameFor(f.checkId)} />;
             })
           ) : (
             store ? (
@@ -96,9 +101,23 @@ export default async function Report({ params }: { params: Promise<{ token: stri
           )}
         </div>
 
+        {run.findings.length ? (
+          <section className="card card-pad stack next-steps" style={{ marginTop: 40 }} aria-labelledby="next-h">
+            <p className="eyebrow">Your next steps</p>
+            <h2 id="next-h" style={{ fontSize: "clamp(22px, 3vw, 28px)" }}>What to do now</h2>
+            <ol>
+              <li>
+                <strong>Fix the first one: {run.findings[0].title.replace(/[.]$/, "")}.</strong> {steps[0]}
+              </li>
+              {run.findings.length > 1 ? (
+                <li>
+                  <strong>Then {run.findings.length === 2 ? "the second" : "the next two"}:</strong> {run.findings.slice(1).map((f) => f.title.replace(/[.]$/, "")).join("; ")}. Each card above says what to do.
+                </li>
+              ) : null}
+
         {run.otherIssues > 0 ? (
           <p className="lede" style={{ marginTop: 32 }}>
-            We also observed <strong>{run.otherIssues} other {run.otherIssues === 1 ? "issue" : "issues"}</strong> across {run.otherLenses} {run.otherLenses === 1 ? "area" : "areas"} of your store. They are recorded, and the full journey starts from them.
+            We also noticed <strong>{run.otherIssues} other {run.otherIssues === 1 ? "issue" : "issues"}</strong> across {run.otherLenses} {run.otherLenses === 1 ? "area" : "areas"} of your store. They are saved, and the full journey starts from them.
           </p>
         ) : null}
 
@@ -151,11 +170,17 @@ export default async function Report({ params }: { params: Promise<{ token: stri
           </div>
         </div>
 
+              <li>
+                <strong>Re-check your store</strong> once you&apos;ve made the changes. QUARR walks it again and shows you what&apos;s fixed, what&apos;s still open and anything new. {recheck}, from <Link href="/account">your account</Link>.
+              </li>
+            </ol>
+          </section>
+        ) : null}
         <div className="card card-pad" style={{ marginTop: 40, display: "grid", gap: 14, borderColor: "var(--navy-100)" }}>
-          <p className="eyebrow brass">If you want to go further</p>
-          <h3>Walk the full first-purchase journey with QUARR: ₹5,000 + GST</h3>
+          <p className="eyebrow brass">When you want every issue, not just the first few</p>
+          <h3>Walk your whole path to a first order with an expert: {rupees(priceOf("JOURNEY").basePaise)} + GST</h3>
           <p className="muted">
-            A QUARR Expert covers everything above and the {run.otherIssues} other issues, end to end, and gives you a prioritised action guide.
+            A QUARR Expert covers everything above{run.otherIssues ? ` and the ${run.otherIssues} other ${run.otherIssues === 1 ? "issue" : "issues"}` : ""}, end to end, and you leave with a ranked action list.
           </p>
           <Link href={`/journey?from=${run.publicToken}`} className="btn btn-ghost" style={{ justifySelf: "start" }}>See what&apos;s included</Link>
         </div>
@@ -163,8 +188,8 @@ export default async function Report({ params }: { params: Promise<{ token: stri
         <p className="small muted" style={{ marginTop: 32, display: "flex", gap: 10, alignItems: "center" }}>
           <span className="brass-rule" aria-hidden />
           {run.autoPublished
-            ? "Prepared by QUARR's engine using checks that have each passed 30 consecutive expert reviews."
-            : "Reviewed by a QUARR Expert before it was sent."}
+            ? "Every finding was checked before it reached you, by QUARR checks that have each held up in 30 expert reviews in a row."
+            : "A QUARR Expert checked every finding before it reached you."}
         </p>
       </main>
       <SiteFooter />

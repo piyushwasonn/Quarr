@@ -37,6 +37,7 @@ export function FindingCard({
   page,
   why,
   lensName,
+  whatToDo,
 }: {
   index: number;
   lens: string;
@@ -48,6 +49,7 @@ export function FindingCard({
   page: EvidencePage | null;
   why?: WhyView;
   lensName?: string;
+  whatToDo?: string | null;
 }) {
   const desktop = citation?.viewport === "desktop" && page?.desktopShot;
   const shot = desktop ? page?.desktopShot : page?.mobileShot;
@@ -69,9 +71,15 @@ export function FindingCard({
             <p>{observed}</p>
           </div>
           <div className="facet">
-            <span className="label">Likely effect on a buyer</span>
+            <span className="label">Why it may cost you orders</span>
             <p>{likelyEffect}</p>
           </div>
+          {whatToDo ? (
+            <div className="facet todo">
+              <span className="label">What to do</span>
+              <p>{whatToDo}</p>
+            </div>
+          ) : null}
           {why ? (
             <div className="facet">
               <span className="label">Why buyers care</span>
@@ -90,7 +98,7 @@ export function FindingCard({
             </div>
           ) : null}
           <div className="facet">
-            <span className="label">Not yet proven</span>
+            <span className="label">What we couldn&apos;t check</span>
             <p>{notYetProven}</p>
           </div>
         </div>

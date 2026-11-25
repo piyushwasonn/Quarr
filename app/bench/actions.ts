@@ -61,6 +61,7 @@ export async function editFinding(_prev: { error?: string; ok?: boolean }, form:
     observed: plainPunctuation(String(form.get("observed") ?? f.observed)),
     likelyEffect: plainPunctuation(String(form.get("likelyEffect") ?? f.likelyEffect)),
     notYetProven: plainPunctuation(String(form.get("notYetProven") ?? f.notYetProven)),
+    whatToDo: plainPunctuation(String(form.get("whatToDo") ?? f.whatToDo ?? "").trim()),
   };
   if (Object.values(data).some((v) => !v)) return { error: "Every field needs text." };
   await db.$transaction([

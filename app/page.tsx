@@ -13,13 +13,14 @@ const lensCount = new Set(CHECKS.map((c) => c.lens)).size;
 export const metadata = pageMetadata(
   "/",
   { absolute: "QUARR: Free store check for Indian D2C brands" },
-  "See your online store the way a first-time buyer does. QUARR walks your product pages, cart and policies and shows what costs you orders. Free for Indian D2C brands.",
+  "You paid to bring buyers to your store. QUARR checks it like a first-time buyer and shows you what stops people ordering, and how to fix it. Free for Indian D2C brands.",
 );
 
 // Shown on the page and given to search engines as FAQ structured data, so the two never differ.
 const FAQ: [string, string][] = [
   ["Is it really free?", "Yes. The scan and the First Look are free, with no card and no call. Re-checks and the journey are paid, one at a time. There's no subscription."],
-  ["How fast is it?", "The scan takes about a minute. After you sign up, the first findings appear in minutes. The Expert-reviewed First Look follows by email within 12 hours, usually much sooner."],
+  ["What do I get?", "For each problem: what a first-time buyer sees, a screenshot from your live store, why it may cost you orders, and what to do about it, with the exact Shopify setting where we know it."],
+  ["How fast is it?", "The scan takes about a minute. After you sign up, the first findings appear in minutes, and your full First Look follows by email within 12 hours, usually much sooner."],
   ["Why do I need to sign up?", "So your reports, re-checks and purchases live in one place you can come back to. Google or a one-time email code: no password."],
   ["Will this affect my store or my analytics?", "We behave like one careful shopper: a handful of page views, one add-to-cart, no purchase. Our browser identifies itself as QUARRBot, so you can filter it out of analytics."],
   ["Why only three findings?", "Because three you act on beats thirty you skim. We tell you how many other issues we noticed, and the full journey covers them."],
@@ -67,38 +68,57 @@ export default function Home() {
           <div>
             <div style={{ marginBottom: 28 }}><BrandLogo width={300} /></div>
             <p className="eyebrow">Customer Perspective Consultancy</p>
-            <h1 style={{ marginTop: 18 }}>Every founder has blind spots.</h1>
+            <h1 style={{ marginTop: 18 }}>You paid to bring buyers to your store. Find out what sends them away.</h1>
             <p className="lede">
-              Your customers see what you might miss. QUARR helps you uncover the gaps in your customer experience before they cost you sales.
+              QUARR checks your store like a first-time buyer and shows you what stops people ordering, and how to fix it.
             </p>
             <div className="row" style={{ marginTop: 28, gap: 12 }}>
-              <a href="#start" className="btn btn-primary">Get your free store check</a>
-              <Link href="/approach" className="btn btn-ghost">How QUARR works</Link>
+              <a href="#start" className="btn btn-primary">Check my store free</a>
+              <a href="#how" className="btn btn-ghost">How it works</a>
             </div>
             <div className="hero-focus">
-              <p className="eyebrow brass">Starting with Indian D2C brands</p>
-              <p>A guided review of the customer journey, from first impression to purchase.</p>
+              <p className="eyebrow brass">Built for Indian D2C brands</p>
+              <p>You see the problem, the proof and the fix. You decide what to change.</p>
               <ul className="hero-points">
-                <li>A first result in about a minute, before you sign up</li>
-                <li>Every finding traced to a screenshot of your live store</li>
-                <li>The full review is read by a QUARR Expert before it&apos;s final</li>
+                <li>See the proof yourself: a screenshot behind every finding</li>
+                <li>Every finding is double-checked before you see it</li>
+                <li>Free to start. No app, no access to your admin</li>
               </ul>
             </div>
           </div>
           <div className="submit-card" id="start">
             <p className="eyebrow brass">Free · about a minute</p>
-            <h2 style={{ margin: "8px 0 20px" }}>Your free store check</h2>
+            <h2 style={{ margin: "8px 0 20px" }}>Check your store free</h2>
             <ScanForm />
           </div>
         </div>
       </section>
 
-      <section className="wrap lift" id="how">
+      <section className="wrap lift">
         <div className="steps">
           {[
-            ["01", "Scan in a minute", "Paste your store address. No sign-up, no Shopify app, no access to your admin. See how many things a new buyer may question, and one finding in full."],
-            ["02", "Unlock the full walk, free", `Sign up with Google or email. QUARR runs ${CHECKS.length} checks across ${lensCount} areas (pricing, delivery, returns, trust, checkout) on a phone and a desktop.`],
-            ["03", "Fix, then re-check", "Read the three findings most likely to cost you a first order. Fix them, then re-check and see exactly what changed."],
+            ["You pay for every visit", "Ads, influencers and marketplaces bring people to your store. Each one who leaves without ordering is money you've already spent."],
+            ["Buyers don't tell you why they left", "They don't write in. They close the tab, and your analytics shows a drop, not a reason."],
+            ["You know your store too well", "Every founder has blind spots. You can't see your store the way a stranger does, so you can't see what stops them."],
+          ].map(([t, d]) => (
+            <div className="card step" key={t}>
+              <h3>{t}</h3>
+              <p className="muted">{d}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="section wrap" id="how">
+        <div className="section-head">
+          <p className="eyebrow brass">How it works</p>
+          <h2>From your store link to what to fix, in three steps.</h2>
+        </div>
+        <div className="steps">
+          {[
+            ["01", "Paste your store link", "No sign-up, no app, no access to your admin. In about a minute you see how many things may stop a first-time buyer ordering."],
+            ["02", "Sign up free to see what to fix", `QUARR walks your store on a phone and a desktop and runs ${CHECKS.length} checks across ${lensCount} areas (prices, delivery, returns, trust, checkout). You get each problem with its screenshot and what to do.`],
+            ["03", `Fix, then re-check for ${rupees(priceOf("RECHECK").basePaise)}`, "Make the changes. A re-check walks your store again and shows you what you fixed, what's still open and anything new."],
           ].map(([n, t, d]) => (
             <div className="card step" key={n}>
               <span className="num">{n}</span>
@@ -111,10 +131,10 @@ export default function Home() {
 
       <section className="section wrap" id="sample">
         <div className="section-head">
-          <p className="eyebrow brass">What a finding looks like</p>
-          <h2>Evidence first. Opinion never.</h2>
+          <p className="eyebrow brass">What you get for each problem</p>
+          <h2>The problem, the proof, and what to do.</h2>
           <p className="lede">
-            Every finding points at the exact place on your store where it was seen. If we couldn&apos;t see something, we say so instead of guessing.
+            Every finding points at the exact place on your store where we saw it, and ends with your next step. If we couldn&apos;t see something, we say so instead of guessing.
           </p>
         </div>
         <FindingCard index={1} {...SAMPLE_FINDING} />
@@ -153,14 +173,14 @@ export default function Home() {
       <section className="section wrap" id="pricing">
         <div className="section-head">
           <p className="eyebrow brass">Pricing</p>
-          <h2>Free to start. Pay only for what you use.</h2>
-          <p className="lede">No subscription. Buy a re-check when you&apos;ve fixed something, or the full journey when you want an Expert on your whole path to a first order.</p>
+          <h2>Free to start. Pay only when you want more.</h2>
+          <p className="lede">No subscription. Buy a re-check after you&apos;ve made changes, or the full journey when you want an expert on your whole path to a first order.</p>
         </div>
         <div className="steps">
           {[
-            ["Free", "First Look", "Start with a free store check: a one-minute scan, then the full walk and an Expert-reviewed First Look when you sign up.", "Get your free store check", "/#start"],
-            [`${rupees(priceOf("RECHECK").basePaise)} + GST`, "Re-check", "Walk your store again after fixes and see, check by check, what's fixed, still open or new.", "Start with a free scan", "/#start"],
-            [`${rupees(priceOf("JOURNEY").basePaise)} + GST`, "First-purchase journey", "A QUARR Expert walks your whole path to a first order and gives you a prioritised action guide. Full refund if the scope doesn't fit.", "What's included", "/journey"],
+            ["Free", "First Look", "A one-minute scan, then sign up free for the full walk: every finding with its screenshot and what to do.", "Check my store free", "/#start"],
+            [`${rupees(priceOf("RECHECK").basePaise)} + GST`, "Re-check", "After you've made changes, see what you fixed, what's still open and anything new.", "Start with a free scan", "/#start"],
+            [`${rupees(priceOf("JOURNEY").basePaise)} + GST`, "First-purchase journey", "A QUARR Expert walks your whole path to a first order, and you leave with a ranked action list. Full refund if the scope doesn't fit.", "What's included", "/journey"],
           ].map(([price, name, desc, cta, href]) => (
             <div className="card step stack" key={name} style={{ ["--stack" as string]: "10px" }}>
               <span className="num">{name}</span>
@@ -175,14 +195,14 @@ export default function Home() {
       <section className="section wrap">
         <div className="offer">
           <div className="stack">
-            <p className="eyebrow" style={{ color: "rgba(255,255,255,0.7)" }}>When three findings aren&apos;t enough</p>
-            <h2>The full first-purchase journey</h2>
+            <p className="eyebrow" style={{ color: "rgba(255,255,255,0.7)" }}>When you want every issue, not just the first few</p>
+            <h2>Your whole path to a first order, with an expert</h2>
             <p>
-              A QUARR Expert walks your whole path to a first order (discovery, product, cart, checkout, delivery promise, returns) and gives you a prioritised action guide. Every point is backed by evidence, the same way.
+              A QUARR Expert walks every step a buyer takes (finding you, the product page, cart, checkout, the delivery promise, returns), and you leave with a ranked action list. Every point is backed by a screenshot, the same way.
             </p>
           </div>
           <div className="stack" style={{ justifySelf: "start" }}>
-            <p className="price">₹5,000 <span className="small" style={{ fontFamily: "var(--sans)", color: "rgba(255,255,255,0.7)" }}>+ GST per journey</span></p>
+            <p className="price">{rupees(priceOf("JOURNEY").basePaise)} <span className="small" style={{ fontFamily: "var(--sans)", color: "rgba(255,255,255,0.7)" }}>+ GST per journey</span></p>
             <Link href="/journey" className="btn btn-light">See what&apos;s included</Link>
           </div>
         </div>
@@ -199,6 +219,18 @@ export default function Home() {
             <p>{a}</p>
           </details>
         ))}
+      </section>
+
+      <section className="section wrap">
+        <div className="offer">
+          <div className="stack">
+            <p className="eyebrow" style={{ color: "rgba(255,255,255,0.7)" }}>Free · about a minute</p>
+            <h2>Your next buyer is already on the way. Make sure nothing sends them away.</h2>
+          </div>
+          <div className="stack" style={{ justifySelf: "start" }}>
+            <a href="#start" className="btn btn-light" style={{ padding: "14px 22px" }}>Check my store free</a>
+          </div>
+        </div>
       </section>
 
       <SiteFooter />

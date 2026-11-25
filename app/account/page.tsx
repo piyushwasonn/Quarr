@@ -54,7 +54,7 @@ export default async function Account({ searchParams }: { searchParams: Promise<
           <div className="card tile"><div className="n">{domains.length}</div><div className="t">{domains.length === 1 ? "store" : "stores"} walked</div></div>
           <div className="card tile"><div className="n">{credits}</div><div className="t">re-check {credits === 1 ? "credit" : "credits"} left</div></div>
           <div className="card tile stack" style={{ ["--stack" as string]: "8px" }}>
-            <div className="t" style={{ marginTop: 0 }}>Fixed something? Re-walk the store and see what changed.</div>
+            <div className="t" style={{ marginTop: 0 }}>Made changes? Re-check your store and see what you fixed.</div>
             <BuyButton product="RECHECK" label={`Buy a re-check · ${rupees(recheckPrice.basePaise)} + GST`} className="btn btn-ghost btn-sm" />
           </div>
         </div>

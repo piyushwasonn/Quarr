@@ -7,7 +7,8 @@ import { SiteFooter } from "@/components/chrome";
 import { FindingCard, pageLabel } from "@/components/FindingCard";
 import { FULL_STEPS, LiveProgress } from "@/components/LiveProgress";
 import { RecheckForm } from "@/components/RecheckForm";
-import type { InstantSummary, RecheckItem, RecheckSummary } from "@/engine/summary";
+import { whatToDo } from "@/engine/checks/fixes";
+import { recheckHeadline, type InstantSummary, type RecheckItem, type RecheckSummary } from "@/engine/summary";
 import { db } from "@/lib/db";
 import { priceOf, rupees } from "@/lib/payments";
 import { creditsFor } from "@/lib/runs";
@@ -72,17 +73,17 @@ export default async function RunPage({ params }: { params: Promise<{ id: string
             <div className="card card-pad stack">
               <p className="eyebrow brass">Fixed something?</p>
               <h3>Re-check your store</h3>
-              <p className="muted small">We walk it again and show you, check by check, what&apos;s fixed, what&apos;s still open, and anything new.</p>
+              <p className="muted small">See whether your changes worked. We walk your store again and show you, check by check, what you fixed, what&apos;s still open and anything new.</p>
               {credits > 0 ? <RecheckForm runId={run.id} credits={credits} /> : <BuyButton product="RECHECK" label={`Buy a re-check · ${rupees(recheckPrice.basePaise)} + GST`} />}
             </div>
             <div className="card card-pad stack" style={{ borderColor: "var(--navy-100)" }}>
-              <p className="eyebrow brass">Go deeper</p>
-              <h3>The full first-purchase journey</h3>
+              <p className="eyebrow brass">Want every issue, not just the first few?</p>
+              <h3>Walk your whole path to a first order with an expert</h3>
               {journey ? (
                 <p className="muted small">Booked. We&apos;ll email you within one working day to confirm the scope. If it doesn&apos;t fit what you need, we refund in full.</p>
               ) : (
                 <>
-                  <p className="muted small">A QUARR Expert walks your whole path to a first order and gives you a prioritised action guide. If the scope doesn&apos;t fit after we talk, full refund.</p>
+                  <p className="muted small">A QUARR Expert walks your store from first visit to first order, and you leave with a ranked action list. If the scope doesn&apos;t fit after we talk, full refund.</p>
                   <BuyButton product="JOURNEY" runId={run.id} label={`Book the journey · ${rupees(journeyPrice.basePaise)} + GST`} className="btn btn-ghost" />
                   <Link href="/journey" className="small">What&apos;s included</Link>
                 </>
@@ -96,25 +97,25 @@ export default async function RunPage({ params }: { params: Promise<{ id: string
   );
 }
 
-type RunWithPages = { publicToken: string; domain: string; summary: unknown; otherIssues: number; pages: { kind: string }[] };
+type RunWithPages = { publicToken: string; domain: string; platform: string | null; summary: unknown; otherIssues: number; pages: { kind: string }[] };
 
 function FullView({ run, reviewed, pageFor }: { run: RunWithPages; reviewed: boolean; pageFor: (k?: string) => Parameters<typeof FindingCard>[0]["page"] }) {
   const sum = run.summary as InstantSummary | null;
   return (
     <div className="stack" style={{ ["--stack" as string]: "24px", marginTop: 10 }}>
       <h1 style={{ fontSize: "clamp(28px, 4vw, 40px)", maxWidth: "24ch" }}>
-        {reviewed ? "Your reviewed First Look is ready." : sum?.issues ? `We found ${sum.issues} things a first-time buyer may question.` : "Your store held up well."}
+        {reviewed ? "Your First Look is ready." : sum?.issues ? `${sum.issues} ${sum.issues === 1 ? "thing" : "things"} on your store may stop a first-time buyer ordering.` : "Your store held up well."}
       </h1>
       {reviewed ? (
         <div className="card card-pad stack">
-          <p className="muted">A QUARR Expert has read every finding and picked the three most likely to cost you a first order, each with its screenshot.</p>
+          <p className="muted">A QUARR Expert has checked every finding and picked the ones most likely to cost you a first order. Each comes with its screenshot and what to do about it.</p>
           <Link href={`/r/${run.publicToken}`} className="btn btn-primary" style={{ justifySelf: "start" }}>Read your First Look</Link>
         </div>
       ) : (
         <div className="card card-pad row" style={{ gap: 14, alignItems: "flex-start" }}>
           <span className="chip brass">Expert review in progress</span>
           <p className="small muted" style={{ flex: 1, minWidth: 240 }}>
-            Below is what we can show you right away. A QUARR Expert is reading the other {sum?.heldForReview ?? 0} findings now. Your reviewed First Look arrives by email within 12 hours, usually much sooner.
+            Below is what you can start fixing right away. A QUARR Expert is checking the other {sum?.heldForReview ?? 0} {sum?.heldForReview === 1 ? "finding" : "findings"} now, and your full First Look arrives by email within 12 hours, usually much sooner.
           </p>
         </div>
       )}
@@ -122,7 +123,7 @@ function FullView({ run, reviewed, pageFor }: { run: RunWithPages; reviewed: boo
         <div className="row" style={{ gap: 8 }}>{sum.byLens.map((l) => <span key={l.lens} className="chip fail status">{l.name}: {l.n} possible {l.n === 1 ? "problem" : "problems"}</span>)}</div>
       ) : null}
       {!reviewed && sum?.findings.length
-        ? sum.findings.map((f, i) => <FindingCard key={f.checkId} index={i + 1} {...f} page={pageFor(f.citation?.pageKind)} why={whyBuyersCare(f.checkId)} lensName={lensNameFor(f.checkId)} />)
+        ? sum.findings.map((f, i) => <FindingCard key={f.checkId} index={i + 1} {...f} whatToDo={f.whatToDo || whatToDo(f.checkId, null, run.platform)} page={pageFor(f.citation?.pageKind)} why={whyBuyersCare(f.checkId)} lensName={lensNameFor(f.checkId)} />)
         : null}
       {sum ? <p className="small muted">{sum.passed} checks passed.</p> : null}
     </div>
@@ -131,6 +132,7 @@ function FullView({ run, reviewed, pageFor }: { run: RunWithPages; reviewed: boo
 
 function RecheckView({ sum }: { sum: RecheckSummary }) {
   const hidden = sum.hidden ?? { fixed: 0, stillOpen: 0, appeared: 0, unverified: 0 };
+  const head = recheckHeadline(sum);
   const block = (title: string, items: RecheckItem[], tone: string, empty: string, more = 0) => (
     <div className="card card-pad stack">
       <div className="spread"><h3>{title}</h3><span className={`chip status ${tone}`}>{items.length + more} {tone === "pass" ? "fixed" : tone === "fail" ? (items.length + more === 1 ? "problem" : "problems") : "not assessed"}</span></div>
@@ -150,7 +152,8 @@ function RecheckView({ sum }: { sum: RecheckSummary }) {
   );
   return (
     <div className="stack" style={{ ["--stack" as string]: "18px", marginTop: 10 }}>
-      <h1 style={{ fontSize: "clamp(28px, 4vw, 40px)" }}>{sum.fixed.length + hidden.fixed} fixed · {sum.stillOpen.length + hidden.stillOpen} still open · {sum.appeared.length + hidden.appeared} new</h1>
+      <h1 style={{ fontSize: "clamp(28px, 4vw, 40px)" }}>{head.headline}</h1>
+      <p className="lede" style={{ marginTop: -6 }}>{head.line}</p>
       <p className="muted small">&quot;Fixed&quot; means a check that failed last time now passes on your live store. Nothing more is assumed.</p>
       {block("Fixed", sum.fixed, "pass", "Nothing from last time is fixed yet.", hidden.fixed)}
       {block("Still open", sum.stillOpen, "fail", "Nothing from last time is still open.", hidden.stillOpen)}

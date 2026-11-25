@@ -1,3 +1,5 @@
+import { whatToDo } from "@/engine/checks/fixes";
+import { recheckHeadline } from "@/engine/summary";
 import { db } from "./db";
 import { appUrl, sendEmail } from "./email";
 
@@ -8,22 +10,28 @@ export async function publishRun(runId: string) {
   const run = await db.run.update({
     where: { id: runId },
     data: { status: "PUBLISHED", publishedAt: new Date() },
-    include: { findings: { where: { selected: true, state: { not: "DROPPED" } }, orderBy: { position: "asc" } } },
+    include: { findings: { where: { selected: true, state: { not: "DROPPED" } }, orderBy: { position: "asc" }, include: { checkResult: { select: { detail: true } } } } },
   });
   if (run.source !== "PUBLIC" || !run.email) return run;
 
   const link = appUrl(`/r/${run.publicToken}`);
-  const items = run.findings.map((f, i) => `${i + 1}. ${f.title}`);
-  const subject = `Your QUARR First Look for ${run.domain} is ready`;
+  const store = run.storeName || run.domain;
+  const steps = run.findings.map((f) => f.whatToDo || whatToDo(f.checkId, f.checkResult.detail, run.platform));
+  const items = run.findings.flatMap((f, i) => [`${i + 1}. ${f.title}`, steps[i] ? `   What to do: ${steps[i]}` : ""].filter(Boolean));
+  // Only a person-reviewed report may say a person reviewed it.
+  const checkedBy = run.autoPublished
+    ? "Every finding was checked before it reached you, by QUARR checks that have each held up in 30 expert reviews in a row."
+    : "A QUARR Expert checked every finding before it reached you.";
+  const subject = `Your QUARR First Look for ${run.domain}: what to fix first`;
   const text = [
-    `We walked ${run.domain} the way a first-time buyer would.`,
+    `Here's what a first-time buyer meets on ${store}, and what to fix first.`,
     "",
-    items.length ? "What stood out:" : "We found nothing serious enough to lead with, which is a good result.",
+    items.length ? "What to fix first:" : "We found nothing serious enough to lead with, which is a good result.",
     ...items,
     "",
-    `Read the full First Look, with a screenshot behind every finding: ${link}`,
+    `Read your First Look, with a screenshot behind every finding: ${link}`,
     "",
-    "Every report is reviewed by a QUARR Expert before it's sent.",
+    checkedBy,
     "QUARR",
   ].join("\n");
   const html = `<!doctype html><html><body style="margin:0;background:#F7F9FC;font-family:-apple-system,Segoe UI,Inter,Arial,sans-serif;color:#1F2933">
@@ -31,14 +39,14 @@ export async function publishRun(runId: string) {
   <table role="presentation" width="100%" style="max-width:560px;background:#fff;border:1px solid #DDE2E8;border-radius:12px" cellpadding="0" cellspacing="0">
   <tr><td style="padding:28px 28px 4px"><img src="${appUrl("/brand/quarr-logo-on-white.png")}" width="168" alt="QUARR" style="display:block;border:0;width:168px;height:auto"></td></tr>
   <tr><td style="padding:12px 28px 8px;font-size:12px;letter-spacing:.14em;color:#4F6275">FIRST LOOK</td></tr>
-  <tr><td style="padding:0 28px;font-family:Manrope,Inter,Arial,sans-serif;font-weight:700;font-size:22px;line-height:1.3;color:#0B1F44">We walked ${esc(run.domain)} as a first-time buyer.</td></tr>
+  <tr><td style="padding:0 28px;font-family:Manrope,Inter,Arial,sans-serif;font-weight:700;font-size:22px;line-height:1.3;color:#0B1F44">Here's what a first-time buyer meets on ${esc(store)}, and what to fix first.</td></tr>
   <tr><td style="padding:16px 28px 0;font-size:15px;line-height:1.6">${
     items.length
-      ? `Here's what stood out:<ol style="padding-left:20px;margin:8px 0">${run.findings.map((f) => `<li style="margin:6px 0">${esc(f.title)}</li>`).join("")}</ol>`
+      ? `<ol style="padding-left:20px;margin:8px 0">${run.findings.map((f, i) => `<li style="margin:10px 0"><strong>${esc(f.title)}</strong>${steps[i] ? `<br><span style="color:#1F6B4A">What to do:</span> ${esc(steps[i])}` : ""}</li>`).join("")}</ol>`
       : "We found nothing serious enough to lead with, which is a good result."
   }</td></tr>
   <tr><td style="padding:20px 28px"><a href="${link}" style="display:inline-block;background:#0B1F44;color:#fff;text-decoration:none;padding:12px 20px;border-radius:8px;font-weight:600">Read your First Look</a></td></tr>
-  <tr><td style="padding:0 28px 28px;font-size:13px;color:#5B6675;line-height:1.5">Every finding links to the screenshot it came from. Every report is reviewed by a QUARR Expert before it's sent.</td></tr>
+  <tr><td style="padding:0 28px 28px;font-size:13px;color:#5B6675;line-height:1.5">Every finding links to the screenshot it came from. ${esc(checkedBy)}</td></tr>
   </table></td></tr></table></body></html>`;
 
   await sendEmail(run.email, subject, html, text);
@@ -67,16 +75,13 @@ export async function sendFailureEmail(runId: string) {
 export async function sendRecheckEmail(runId: string) {
   const run = await db.run.findUniqueOrThrow({ where: { id: runId } });
   if (!run.email) return;
-  const sum = (run.summary ?? {}) as { fixed?: unknown[]; stillOpen?: unknown[]; appeared?: unknown[]; hidden?: { fixed: number; stillOpen: number; appeared: number } };
-  const fixed = (sum.fixed?.length ?? 0) + (sum.hidden?.fixed ?? 0);
-  const open = (sum.stillOpen?.length ?? 0) + (sum.hidden?.stillOpen ?? 0);
-  const appeared = (sum.appeared?.length ?? 0) + (sum.hidden?.appeared ?? 0);
+  const { headline, line, fixed, total } = recheckHeadline((run.summary ?? {}) as Parameters<typeof recheckHeadline>[0]);
   const link = appUrl(`/account/runs/${run.id}`);
-  const line = `${fixed} fixed · ${open} still open · ${appeared} new`;
-  const text = `We walked ${run.domain} again and compared it with your last First Look.\n\n${line}\n\nSee exactly what changed: ${link}\n\nQUARR`;
+  const text = `${headline}\n${line}\n\nWe walked ${run.domain} again and compared it with your last First Look. See exactly what changed: ${link}\n\nQUARR`;
   const html = `<div style="font-family:-apple-system,Segoe UI,Inter,Arial,sans-serif;font-size:15px;line-height:1.6;color:#1F2933;max-width:520px">
+  <p style="font-size:20px;color:#14243B;margin-bottom:4px"><strong>${esc(headline)}</strong></p>
+  <p style="margin-top:0;color:#5B6675">${esc(line)}</p>
   <p>We walked <strong>${esc(run.domain)}</strong> again and compared it with your last First Look.</p>
-  <p style="font-size:18px;color:#14243B"><strong>${line}</strong></p>
   <p><a href="${link}" style="display:inline-block;background:#0B1F44;color:#fff;text-decoration:none;padding:12px 20px;border-radius:8px;font-weight:600">See what changed</a></p></div>`;
-  await sendEmail(run.email, `Your QUARR re-check for ${run.domain}: ${fixed} fixed`, html, text);
+  await sendEmail(run.email, `Your QUARR re-check for ${run.domain}: ${total ? `you fixed ${fixed} of ${total}` : "nothing was left open"}`, html, text);
 }

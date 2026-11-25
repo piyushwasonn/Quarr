@@ -8,6 +8,7 @@ export const SAMPLE_FINDING: {
   observed: string;
   likelyEffect: string;
   notYetProven: string;
+  whatToDo: string;
   citation: Citation;
   page: EvidencePage;
 } = {
@@ -16,6 +17,7 @@ export const SAMPLE_FINDING: {
   observed: 'The returns policy contains template placeholder text ("[INSERT COMPANY NAME]") that was never replaced with your details.',
   likelyEffect: "Careful buyers read policies before paying a new brand. Template text tells them nobody has looked at this page, and they wonder what else is unchecked.",
   notYetProven: "Nothing more. The text is on the live page as quoted.",
+  whatToDo: "Replace the placeholder text in your policy pages with your own details, then read each policy once from start to end.",
   citation: {
     pageKind: "RETURNS",
     url: "https://glowbasics.example/policies/refund-policy",

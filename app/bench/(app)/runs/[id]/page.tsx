@@ -5,6 +5,7 @@ import { ReviewWorkspace, type WFinding } from "@/components/bench/ReviewWorkspa
 import { aiSummaryLine, type AiReport } from "@/engine/ai/analyse";
 import { costUsd } from "@/engine/ai/compare";
 import { CHECKS_BY_ID } from "@/engine/checks";
+import { whatToDo } from "@/engine/checks/fixes";
 import { coverage } from "@/engine/framework";
 import { FRAMEWORK_LENS_BY_ID, FRAMEWORK_LENSES, type FrameworkLensId } from "@/engine/framework/lenses";
 import { isStoreRun } from "@/engine/learn";
@@ -97,6 +98,7 @@ export default async function RunReview({ params }: { params: Promise<{ id: stri
     observed: f.observed,
     likelyEffect: f.likelyEffect,
     notYetProven: f.notYetProven,
+    whatToDo: f.whatToDo || whatToDo(f.checkId, f.checkResult.detail, run.platform),
     state: f.state,
     editReason: f.editReason,
     draftedBy: f.draftedBy,

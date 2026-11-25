@@ -9,6 +9,7 @@ import { candidateFrom, scoreOf, selectFindings } from "./select";
 import { instantSummary, previewSummary, recheckSummary, type ResultRow } from "./summary";
 import type { CheckContext, CheckVerdict, Citation, CrawlSignals, PageData, PageKind, StoredPage } from "./types";
 import { draftFindings, lastWriterIssue } from "./write";
+import { whatToDo } from "./checks/fixes";
 import { aiSummaryLine, analyseRun, toShadow } from "./ai/analyse";
 import { providers } from "./ai/model";
 import { aiCleared, aiVerdictOf } from "./summary";
@@ -120,7 +121,7 @@ export async function processRun(runId: string) {
 
   if (run.kind === "PREVIEW") {
     await progress.flush();
-    await db.run.update({ where: { id: run.id }, data: { status: "READY", summary: previewSummary(rows, auto) as unknown as Prisma.InputJsonValue, ...counts, progress: null, lockedAt: null } });
+    await db.run.update({ where: { id: run.id }, data: { status: "READY", summary: previewSummary(rows, auto, crawl.signals.platform) as unknown as Prisma.InputJsonValue, ...counts, progress: null, lockedAt: null } });
     log("preview ready");
     return;
   }
@@ -180,6 +181,7 @@ export async function processRun(runId: string) {
         likelyEffect: copy.likelyEffect,
         notYetProven: copy.notYetProven,
         draftedBy: copy.draftedBy,
+        whatToDo: whatToDo(c.checkId, r.detail, crawl.signals.platform),
         original: { title: copy.title, observed: copy.observed, likelyEffect: copy.likelyEffect, notYetProven: copy.notYetProven },
       },
     });
@@ -197,7 +199,7 @@ export async function processRun(runId: string) {
       otherIssues,
       otherLenses,
       ...counts,
-      summary: instantSummary(rows, auto) as unknown as Prisma.InputJsonValue,
+      summary: instantSummary(rows, auto, crawl.signals.platform) as unknown as Prisma.InputJsonValue,
       progress: null,
       lockedAt: null,
     },

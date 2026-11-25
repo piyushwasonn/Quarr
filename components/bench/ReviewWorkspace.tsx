@@ -14,6 +14,7 @@ export type WFinding = {
   observed: string;
   likelyEffect: string;
   notYetProven: string;
+  whatToDo: string;
   state: string;
   editReason: string | null;
   draftedBy: string;
@@ -227,6 +228,7 @@ function FindingEditor({ f, index, count, active, onFocus, mode, setMode, pendin
           <div className="field"><label>What we saw</label><textarea name="observed" className="textarea" defaultValue={f.observed} /></div>
           <div className="field"><label>Likely effect</label><textarea name="likelyEffect" className="textarea" defaultValue={f.likelyEffect} /></div>
           <div className="field"><label>Not yet proven</label><textarea name="notYetProven" className="textarea" defaultValue={f.notYetProven} /></div>
+          <div className="field"><label>What to do (the founder&apos;s next step)</label><textarea name="whatToDo" className="textarea" defaultValue={f.whatToDo} /></div>
           <ReasonFields />
           {editState.error ? <p className="form-error">{editState.error}</p> : null}
           <div className="row"><button className="btn btn-primary btn-sm" disabled={editing}>Save edit</button><button type="button" className="btn btn-quiet btn-sm" onClick={() => setMode(null)}>Cancel</button></div>
@@ -237,6 +239,7 @@ function FindingEditor({ f, index, count, active, onFocus, mode, setMode, pendin
           <div className="facet observed"><span className="label">What we saw</span><p>{f.observed}</p></div>
           <div className="facet"><span className="label">Likely effect</span><p>{f.likelyEffect}</p></div>
           <div className="facet"><span className="label">Not yet proven</span><p>{f.notYetProven}</p></div>
+          {f.whatToDo ? <div className="facet todo"><span className="label">What to do</span><p>{f.whatToDo}</p></div> : null}
           {f.citation ? <p className="snippet"><strong style={{ fontStyle: "normal" }}>{pageLabel(f.citation.pageKind)}:</strong> {f.citation.snippet}</p> : null}
           <AiNote ai={f.ai} full />
         </>

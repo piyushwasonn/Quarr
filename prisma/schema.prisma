@@ -167,6 +167,7 @@ model Finding {
   likelyEffect  String       @db.Text
   notYetProven  String       @db.Text
   draftedBy     String // claude | openai | template
+  whatToDo      String? // the founder's next step (engine/checks/fixes.ts), editable on the Bench
   original      Json? // the draft as written, before any edit
   state         FindingState @default(DRAFT)
   editReason    EditReason?

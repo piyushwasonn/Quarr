@@ -1,4 +1,5 @@
 import { CHECKS_BY_ID } from "./checks";
+import { whatToDo } from "./checks/fixes";
 import { candidateFrom, selectFindings } from "./select";
 import { ENGINE_VERSION } from "./version";
 import { CHECK_LENS, FRAMEWORK_LENS_BY_ID, type FrameworkLensId } from "./framework/lenses";
@@ -36,13 +37,13 @@ export function effective(rows: ResultRow[]): ResultRow[] {
   return rows.map((r) => (r.outcome === "FAIL" && aiVerdictOf(r) === "REFUTED" ? { ...r, outcome: "NOT_OBSERVABLE" as const } : r));
 }
 
-export type ShownFinding = FindingCopy & { checkId: string; lens: string; citation: Citation | null };
+export type ShownFinding = FindingCopy & { checkId: string; lens: string; citation: Citation | null; whatToDo?: string };
 
-function shown(r: ResultRow): ShownFinding {
+function shown(r: ResultRow, platform?: string | null): ShownFinding {
   const def = CHECKS_BY_ID[r.checkId];
   const citation = (r.citation ?? null) as Citation | null;
   const copy = def.copy((r.detail ?? {}) as Record<string, unknown>, citation as Citation);
-  return { ...copy, checkId: r.checkId, lens: r.lens, citation };
+  return { ...copy, checkId: r.checkId, lens: r.lens, citation, whatToDo: whatToDo(r.checkId, r.detail, platform) };
 }
 
 // Grouped by the buyer-journey lens (engine/framework), the same names the First Look uses.
@@ -57,10 +58,10 @@ function countsByLens(fails: ResultRow[]) {
     .sort((a, b) => b.n - a.n);
 }
 
-function pickSafe(results: ResultRow[], autoChecks: Set<string>, max: number) {
+function pickSafe(results: ResultRow[], autoChecks: Set<string>, max: number, platform?: string | null) {
   const safe = results.filter((r) => r.outcome === "FAIL" && aiCleared(r) && isInstantSafe(r.checkId, r.detail as Record<string, unknown>, autoChecks));
   const cands = safe.map(candidateFrom).filter((c): c is NonNullable<typeof c> => !!c);
-  return selectFindings(cands).selected.slice(0, max).map((c) => shown(results.find((r) => r.id === c.resultId)!));
+  return selectFindings(cands).selected.slice(0, max).map((c) => shown(results.find((r) => r.id === c.resultId)!, platform));
 }
 
 export type PreviewSummary = {
@@ -73,7 +74,7 @@ export type PreviewSummary = {
   teaser: ShownFinding | null;
 };
 
-export function previewSummary(all: ResultRow[], autoChecks: Set<string> = new Set()): PreviewSummary {
+export function previewSummary(all: ResultRow[], autoChecks: Set<string> = new Set(), platform?: string | null): PreviewSummary {
   const results = effective(all);
   const fails = results.filter((r) => r.outcome === "FAIL");
   const byLens = countsByLens(fails);
@@ -84,7 +85,7 @@ export function previewSummary(all: ResultRow[], autoChecks: Set<string> = new S
     areas: byLens.length,
     byLens,
     checked: results.filter((r) => r.outcome !== "NOT_OBSERVABLE").length,
-    teaser: pickSafe(results, autoChecks, 1)[0] ?? null,
+    teaser: pickSafe(results, autoChecks, 1, platform)[0] ?? null,
   };
 }
 
@@ -97,10 +98,10 @@ export type InstantSummary = {
   heldForReview: number;
 };
 
-export function instantSummary(all: ResultRow[], autoChecks: Set<string> = new Set()): InstantSummary {
+export function instantSummary(all: ResultRow[], autoChecks: Set<string> = new Set(), platform?: string | null): InstantSummary {
   const results = effective(all);
   const fails = results.filter((r) => r.outcome === "FAIL");
-  const findings = pickSafe(results, autoChecks, 3);
+  const findings = pickSafe(results, autoChecks, 3, platform);
   return {
     type: "instant",
     issues: fails.length,
@@ -158,4 +159,31 @@ export function recheckSummary(beforeAll: ResultRow[], afterAll: ResultRow[], vi
     else if (was !== "FAIL" && now === "FAIL") add("appeared", r, item(r));
   }
   return out;
+}
+
+// The re-check headline, from the founder's side: what they fixed, out of what was open last
+// time. Counts include findings not yet shown (never named), so the numbers are complete.
+type RecheckCounts = { fixed?: unknown[]; stillOpen?: unknown[]; appeared?: unknown[]; unverified?: unknown[]; hidden?: Partial<RecheckSummary["hidden"]> };
+export function recheckHeadline(sum: RecheckCounts) {
+  const n = (k: "fixed" | "stillOpen" | "appeared" | "unverified") => (sum[k]?.length ?? 0) + (sum.hidden?.[k] ?? 0);
+  const fixed = n("fixed");
+  const open = n("stillOpen");
+  const appeared = n("appeared");
+  const unverified = n("unverified");
+  const total = fixed + open + unverified;
+  const issues = total === 1 ? "issue" : "issues";
+  const headline =
+    total === 0
+      ? "Nothing was left open from last time."
+      : fixed === 0
+        ? total === 1
+          ? "The issue from last time isn't fixed yet."
+          : `None of the ${total} issues from last time are fixed yet.`
+        : fixed === total
+          ? total === 1
+            ? "You fixed the issue from last time."
+            : `You fixed all ${total} issues from last time.`
+          : `You fixed ${fixed} of ${total} ${issues} from last time.`;
+  const line = [`${open} still open`, `${appeared} new`, unverified ? `${unverified} we couldn't check this time` : ""].filter(Boolean).join(" · ");
+  return { headline, line, fixed, open, appeared, unverified, total };
 }
