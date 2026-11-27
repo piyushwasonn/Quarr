@@ -1,6 +1,6 @@
 // QUARR's 19 lenses (Notion 01): one list for the engine, the report, the Bench and the site.
 // Replaces the earlier ten check areas and ten journey questions (25 Nov 2026). The codes are
-// Notion's; the definitions are drafts for Piyush to approve.
+// Notion's; the definitions were approved by Piyush on 27 Nov 2026 (ENFC = enforceable rights).
 //
 // Each lens is a part of the buyer's journey, from finding the store to recommending it.
 // A website walk answers some of it; the rest needs a person (a test order, a support
