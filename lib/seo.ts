@@ -8,6 +8,10 @@ export function siteUrl(path = "") {
 }
 
 export const SITE_NAME = "QUARR";
+
+// The founder, as shown on the homepage and the About page. Facts come from Piyush's own CV
+// (Drive, Aug 2026); keep them to what it states.
+export const FOUNDER = { name: "Piyush Wason", linkedin: "https://www.linkedin.com/in/piyushwason", city: "Gurugram, Haryana, India" };
 export const OG_IMAGE = { url: "/og.png", width: 1200, height: 630, alt: "QUARR: see what a first-time buyer sees on your store. Free store check for Indian D2C brands." };
 
 export function pageMetadata(path: string, title: string | { absolute: string }, description: string): Metadata {

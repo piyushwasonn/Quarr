@@ -27,6 +27,7 @@ export function SiteHeader() {
         <Wordmark />
         <nav className="nav" aria-label="Main">
           <Link href="/approach" className="hide-sm">Our approach</Link>
+          <Link href="/about" className="hide-sm">About</Link>
           <Link href="/#sample" className="hide-sm">Sample</Link>
           <Link href="/#pricing" className="hide-sm">Pricing</Link>
           <Link href="/account">Sign in</Link>
@@ -59,6 +60,7 @@ export function SiteFooter() {
         <div>
           <p className="eyebrow" style={{ marginBottom: 12 }}>Trust</p>
           <ul>
+            <li><Link href="/about">About QUARR</Link></li>
             <li><Link href="/crawler">How our browser behaves</Link></li>
             <li><Link href="/privacy">Privacy</Link></li>
             <li><Link href="/terms">Terms</Link></li>

@@ -6,7 +6,7 @@ import { SAMPLE_FINDING } from "@/components/sample";
 import { CHECKS } from "@/engine/checks";
 import { LENSES, STAGES } from "@/engine/framework/lenses";
 import { priceOf, rupees } from "@/lib/payments";
-import { jsonLd, pageMetadata, siteUrl } from "@/lib/seo";
+import { FOUNDER, jsonLd, pageMetadata, siteUrl } from "@/lib/seo";
 
 // Lenses with at least one check on a website walk: the honest "N of the 19" for the free First Look.
 const lensCount = new Set(CHECKS.map((c) => c.lens)).size;
@@ -45,7 +45,7 @@ function structuredData() {
   return {
     "@context": "https://schema.org",
     "@graph": [
-      { "@type": "Organization", "@id": org, name: "QUARR", url: site, logo: siteUrl("/brand/quarr-logo-on-white.png"), email: process.env.CONTACT_EMAIL || "hello@quarr.in", description: "Customer perspective consultancy for Indian D2C brands.", areaServed: { "@type": "Country", name: "India" } },
+      { "@type": "Organization", "@id": org, name: "QUARR", url: site, logo: siteUrl("/brand/quarr-logo-on-white.png"), email: process.env.CONTACT_EMAIL || "hello@quarr.in", description: "Customer perspective consultancy for Indian D2C brands.", areaServed: { "@type": "Country", name: "India" }, founder: { "@type": "Person", name: FOUNDER.name, sameAs: [FOUNDER.linkedin] } },
       { "@type": "WebSite", "@id": `${site}/#website`, url: site, name: "QUARR", inLanguage: "en-IN", publisher: { "@id": org } },
       {
         "@type": "Service",
@@ -233,6 +233,23 @@ export default function Home() {
           <div className="stack" style={{ justifySelf: "start" }}>
             <p className="price">{rupees(priceOf("JOURNEY").basePaise)} <span className="small" style={{ fontFamily: "var(--sans)", color: "rgba(255,255,255,0.7)" }}>+ GST per journey</span></p>
             <Link href="/journey" className="btn btn-light">See what&apos;s included</Link>
+          </div>
+        </div>
+      </section>
+
+      <section className="section wrap" id="about">
+        <div className="card card-pad about-strip">
+          <div className="stack" style={{ ["--stack" as string]: "10px" }}>
+            <p className="eyebrow brass">Who&apos;s behind QUARR</p>
+            <h2>Founded by {FOUNDER.name}.</h2>
+            <p className="muted">
+              {FOUNDER.name.split(" ")[0]} has spent more than 15 years in customer support and customer experience, building a support organisation from 5 to 50 people and running global customer support across three regions, including an end-to-end redesign of the customer journey. QUARR runs on the rule from that work: understand before you optimise.
+            </p>
+            <p className="small">
+              <Link href="/about">More about QUARR →</Link>
+              <span aria-hidden> · </span>
+              <a href={FOUNDER.linkedin} target="_blank" rel="noreferrer">{FOUNDER.name.split(" ")[0]} on LinkedIn →</a>
+            </p>
           </div>
         </div>
       </section>
